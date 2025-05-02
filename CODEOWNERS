@@ -1,0 +1,8 @@
+/bootstrap/ @chakraborty29
+/apps/**/helm-release.yaml @chakraborty29
+/apps/**/raw/ @chakraborty29
+/apps/**/raw/secrets/ @chakraborty29
+/apps/**/raw/certificates/ @chakraborty29
+/apps/**/raw/storage/ @chakraborty29
+/apps/**/raw/ingress/ @chakraborty29
+/apps/**/raw/middleware/ @chakraborty29

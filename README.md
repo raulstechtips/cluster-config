@@ -1,2 +1,2 @@
 # cluster-config
-kustomize/helm charts, Argo CD applications
+helm charts, Argo CD applications, and raw manifests for the cluster.
