@@ -1,0 +1,190 @@
+---
+authentik:
+  email:
+    from: ${DREAMHOST_SMTP_USERNAME}
+    host: ${DREAMHOST_SMTP_HOST}
+    password: ${DREAMHOST_SMTP_PASSWORD}
+    port: 587
+    timeout: 30
+    use_ssl: false
+    use_tls: true
+    username: ${DREAMHOST_SMTP_USERNAME}
+  events:
+    context_processors:
+      asn: /geoip/GeoLite2-ASN.mmdb
+      geoip: /geoip/GeoLite2-City.mmdb
+  log_level: debug
+  outposts:
+    container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
+  postgresql:
+    host: ${AUTHENTIK_POSTGRESQL__HOST}
+  redis:
+    host: ${AUTHENTIK_REDIS__HOST}
+  secret_key: ${SECRET_KEY}
+  web:
+    path: /
+blueprints:
+  configMaps: []
+  secrets: []
+global:
+  addPrometheusAnnotations: false
+  deploymentAnnotations:
+    secrets.infisical.com/auto-reload: "true"
+  deploymentStrategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  env:
+    - name: AUTHENTIK_POSTGRESQL__USER
+      valueFrom:
+        secretKeyRef:
+          key: username
+          name: authentik-pg-admin-credentials-secret
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: password
+          name: authentik-pg-admin-credentials-secret
+    - name: AUTHENTIK_REDIS__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          key: redis-password
+          name: authentik-redis-admin-credentials-secret
+  envFrom:
+    - secretRef:
+        name: authentik-env
+  image:
+    repository: ghcr.io/goauthentik/server
+    tag: 2025.2.4
+  namespaceOverride: authentik
+  revisionHistoryLimit: 10
+  volumeMounts:
+    - mountPath: /etc/ssl/certs/raulstechtips
+      name: ssl-root-cert
+      readOnly: true
+  volumes:
+    - name: ssl-root-cert
+      secret:
+        items:
+          - key: ca.crt
+            path: ca.crt
+        secretName: raulstechtips-internal-ca-key-pair
+prometheus:
+  rules:
+    annotations: {}
+    enabled: false
+    labels: {}
+    namespace: ""
+    selector: {}
+server:
+  autoscaling:
+    enabled: false
+    maxReplicas: 3
+    metrics: []
+    minReplicas: 1
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 70
+  containerPorts:
+    http: 9000
+    https: 9443
+    metrics: 9300
+  lifecycle: {}
+  livenessProbe:
+    httpGet:
+      path: '{{ .Values.authentik.web.path }}-/health/live/'
+      port: http
+  metrics:
+    enabled: false
+    service:
+      annotations: {}
+      clusterIP: ""
+      labels: {}
+      portName: metrics
+      servicePort: 9300
+      type: ClusterIP
+    serviceMonitor:
+      annotations: {}
+      enabled: false
+      interval: 30s
+      labels: {}
+      metricRelabelings: []
+      namespace: ""
+      relabelings: []
+      scheme: ""
+      scrapeTimeout: 3s
+      selector: {}
+      tlsConfig: {}
+  name: server
+  pdb:
+    enabled: false
+    minAvailable: 1
+  readinessProbe:
+    httpGet:
+      path: '{{ .Values.authentik.web.path }}-/health/ready/'
+      port: http
+  replicas: 3
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  service:
+    servicePortHttp: 80
+    servicePortHttps: 443
+    type: ClusterIP
+  startupProbe:
+    httpGet:
+      path: '{{ .Values.authentik.web.path }}-/health/live/'
+      port: http
+  terminationGracePeriodSeconds: 30
+serviceAccount:
+  annotations: {}
+  create: true
+  fullnameOverride: authentik
+  serviceAccountSecret:
+    enabled: false
+worker:
+  autoscaling:
+    enabled: false
+    maxReplicas: 3
+    metrics: []
+    minReplicas: 1
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 70
+  lifecycle: {}
+  livenessProbe:
+    exec:
+      command:
+        - ak
+        - healthcheck
+  name: worker
+  pdb:
+    enabled: false
+    minAvailable: 1
+  readinessProbe:
+    exec:
+      command:
+        - ak
+        - healthcheck
+    failureThreshold: 10
+    initialDelaySeconds: 30
+    periodSeconds: 15
+    successThreshold: 1
+    timeoutSeconds: 5
+  replicas: 3
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  startupProbe:
+    exec:
+      command:
+        - ak
+        - healthcheck
+  terminationGracePeriodSeconds: 30
