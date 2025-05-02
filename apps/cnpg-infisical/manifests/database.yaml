@@ -1,0 +1,11 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: pg-infisical
+  namespace: infisical
+spec:
+  name: pg-infisical
+  owner: infisical-pg-admin
+  cluster:
+    name: pg-infisical

@@ -1,0 +1,13 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: infisical-postgresql-scheduled-backup
+  namespace: infisical
+spec:
+  cluster:
+    name: pg-infisical
+  schedule: "0 0 0 * * *"
+  backupOwnerReference: none
+  method: volumeSnapshot
+  immediate: true
