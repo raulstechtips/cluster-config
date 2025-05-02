@@ -1,0 +1,70 @@
+---
+infisical:
+  autoDatabaseSchemaMigration: true
+  databaseSchemaMigrationJob:
+    image:
+      repository: ghcr.io/groundnuty/k8s-wait-for
+      tag: no-root-v2.0
+  deploymentAnnotations: {}
+  enabled: true
+  extraVolumeMounts:
+    - mountPath: /etc/custom-certs
+      name: postgres-ca-cert
+      readOnly: true
+  extraVolumes:
+    - name: postgres-ca-cert
+      secret:
+        items:
+          - key: ca.crt
+            path: postgres-ca.crt
+        secretName: raulstechtips-internal-ca-key-pair
+  image:
+    repository: infisical/infisical
+    tag: v0.122.0-postgres
+  kubeSecretRef: infisical-secrets
+  name: infisical
+  podAnnotations: {}
+  replicaCount: 3
+  resources:
+    limits:
+      memory: 600Mi
+    requests:
+      cpu: 350m
+  service:
+    annotations: {}
+    nodePort: ""
+    type: ClusterIP
+ingress:
+  enabled: false
+  nginx:
+    enabled: false
+postgresql:
+  enabled: false
+  useExistingPostgresSecret:
+    customURIParameters:
+      database: pg-infisical
+      enabled: true
+      host: pg-infisical-rw.infisical.svc.cluster.local
+      passwordSecret:
+        key: password
+        name: infisical-pg-admin-credentials-secret
+      port: "5432"
+      ssl:
+        enabled: true
+        mode: verify-ca
+        rootCertPath: /etc/custom-certs/postgres-ca.crt
+      usernameSecret:
+        key: username
+        name: infisical-pg-admin-credentials-secret
+    enabled: true
+redis:
+  enabled: false
+  useExistingRedisSecret:
+    customURIParameters:
+      host: redis-infisical-master.infisical.svc.cluster.local
+      passwordSecret:
+        key: redis-password
+        name: infisical-redis-admin-credentials-secret
+      port: 6379
+      username: ""
+    enabled: true
