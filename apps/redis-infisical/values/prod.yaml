@@ -1,0 +1,41 @@
+---
+auth:
+  enabled: true
+  existingSecret: infisical-redis-admin-credentials-secret
+  existingSecretPasswordKey: redis-password
+  usePasswordFileFromSecret: false
+  usePasswordFiles: false
+global:
+  defaultStorageClass: longhorn-redis-infisical
+master:
+  containerPorts:
+    redis: 6379
+  count: 1
+  persistence:
+    size: 8Gi
+  persistentVolumeClaimRetentionPolicy:
+    enabled: false
+    whenDeleted: Retain
+    whenScaled: Retain
+  revisionHistoryLimit: 10
+  service:
+    portNames:
+      redis: tcp-redis
+    ports:
+      redis: 6379
+    type: ClusterIP
+replica:
+  containerPorts:
+    redis: 6379
+  persistence:
+    size: 8Gi
+  persistentVolumeClaimRetentionPolicy:
+    enabled: false
+    whenDeleted: Retain
+    whenScaled: Retain
+  replicaCount: 1
+  revisionHistoryLimit: 10
+  service:
+    ports:
+      redis: 6379
+    type: ClusterIP
