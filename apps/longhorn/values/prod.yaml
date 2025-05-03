@@ -1,0 +1,5 @@
+---
+defaultSettings:
+  orphanAutoDeletion: true
+longhornUI:
+  replicas: 1
