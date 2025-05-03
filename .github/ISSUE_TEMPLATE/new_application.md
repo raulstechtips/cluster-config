@@ -1,3 +1,11 @@
+---
+name: New Application
+about: Request to add a new application to the cluster
+title: "[NEW APP]: "
+labels: new-app
+assignees: ''
+---
+
 ## Application Information
 - Name: <!-- Application name -->
 - Version: <!-- Application version -->

@@ -1,3 +1,11 @@
+---
+name: Configuration Change
+about: Request a change to existing application configuration
+title: "[CONFIG]: "
+labels: config
+assignees: ''
+---
+
 ## Component
 <!-- Which component/application requires configuration changes? -->
 

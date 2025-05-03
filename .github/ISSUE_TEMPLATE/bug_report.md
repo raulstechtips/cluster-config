@@ -1,3 +1,11 @@
+---
+name: Bug Report
+about: Report a bug in the cluster configuration
+title: "[BUG]: "
+labels: bug
+assignees: ''
+---
+
 ## Description
 <!-- Describe the bug you're experiencing -->
 

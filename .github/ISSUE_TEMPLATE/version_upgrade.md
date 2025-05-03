@@ -1,3 +1,11 @@
+---
+name: Version Upgrade
+about: Request an application version upgrade
+title: "[UPGRADE]: "
+labels: upgrade
+assignees: ''
+---
+
 ## Component
 <!-- Which component/application requires a version upgrade? -->
 
