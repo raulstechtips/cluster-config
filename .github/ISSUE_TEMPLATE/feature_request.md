@@ -1,3 +1,11 @@
+---
+name: Feature Request
+about: Suggest an enhancement or new feature for the cluster
+title: "[FEATURE]: "
+labels: enhancement
+assignees: ''
+---
+
 ## Problem Statement
 <!-- What problem are you trying to solve? -->
 
