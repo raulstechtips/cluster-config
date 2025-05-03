@@ -1,0 +1,23 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tenant-authentik-minio-certificate
+  namespace: authentik
+spec:
+  secretName: tenant-authentik-minio-tls
+  duration: 8760h # 1 year
+  renewBefore: 720h # 30 days
+  subject:
+    organizations:
+      - raulstechtips
+  dnsNames:
+    - minio.authentik
+    - minio.authentik.svc
+    - minio.authentik.svc.cluster.local
+    - '*.tenant-authentik-hl.authentik.svc.cluster.local'
+    - '*.authentik.svc.cluster.local'
+    - '*.tenant-authentik.minio.authentik.svc.cluster.local'
+  issuerRef:
+    name: raulstechtips-internal-ca-issuer
+    kind: ClusterIssuer
