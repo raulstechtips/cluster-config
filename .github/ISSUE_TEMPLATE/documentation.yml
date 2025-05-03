@@ -1,0 +1,82 @@
+---
+name: Documentation
+description: Suggest improvements to documentation
+title: "[DOCS]: "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to suggest documentation improvements or additions.
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation change is needed?
+      multiple: false
+      options:
+        - Component Configuration
+        - Installation/Setup
+        - Upgrade Procedures
+        - Troubleshooting
+        - Architecture/Design
+        - Usage Examples
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Related Component
+      description: Which component/application does this documentation relate to?
+      multiple: true
+      options:
+        - Authentik
+        - Traefik
+        - Infisical
+        - Longhorn
+        - Cert-Manager
+        - Minio
+        - Redis
+        - CNPG (CloudNative PostgreSQL)
+        - General Cluster Configuration
+        - GitOps Process
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-documentation
+    attributes:
+      label: Current Documentation
+      description: Describe the current state of documentation (if any)
+      placeholder: Currently, the documentation lacks information about...
+    validations:
+      required: false
+
+  - type: textarea
+    id: proposed-documentation
+    attributes:
+      label: Proposed Documentation
+      description: Describe what documentation should be added or changed
+      placeholder: I suggest adding documentation that explains...
+    validations:
+      required: true
+
+  - type: textarea
+    id: justification
+    attributes:
+      label: Justification
+      description: Why is this documentation change important?
+      placeholder: This documentation would help users who need to...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to contribute this documentation

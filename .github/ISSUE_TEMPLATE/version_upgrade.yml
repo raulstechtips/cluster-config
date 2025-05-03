@@ -1,0 +1,92 @@
+---
+name: Version Upgrade
+description: Request an application version upgrade
+title: "[UPGRADE]: "
+labels: ["upgrade"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to request a version upgrade for a component.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component/application requires a version upgrade?
+      multiple: false
+      options:
+        - Authentik
+        - Traefik
+        - Infisical
+        - Longhorn
+        - Cert-Manager
+        - Minio
+        - Redis
+        - CNPG (CloudNative PostgreSQL)
+        - Other (specify in description)
+    validations:
+      required: true
+
+  - type: input
+    id: current-version
+    attributes:
+      label: Current Version
+      description: What is the current deployed version?
+      placeholder: e.g., 1.2.3
+    validations:
+      required: true
+
+  - type: input
+    id: target-version
+    attributes:
+      label: Target Version
+      description: What version should it be upgraded to?
+      placeholder: e.g., 1.3.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: changelog
+    attributes:
+      label: Changelog / Release Notes
+      description: Provide a link or summary of the changelog for this upgrade
+      placeholder: |
+        [Link to release notes]
+
+        Key changes:
+        - New feature X
+        - Bug fix for Y
+        - Performance improvement Z
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Upgrade Impact
+      description: Mark applicable statements about this upgrade
+      options:
+        - label: Breaking changes are included
+        - label: Database schema changes are included
+        - label: Configuration format changes are required
+        - label: Downtime is required during upgrade
+        - label: Manual steps are required after upgrade
+
+  - type: textarea
+    id: testing
+    attributes:
+      label: Testing Plan
+      description: How should this upgrade be tested?
+      placeholder: After upgrading, we should verify that...
+    validations:
+      required: false
+
+  - type: textarea
+    id: rollback
+    attributes:
+      label: Rollback Plan
+      description: If the upgrade fails, what is the rollback plan?
+      placeholder: To rollback, we will...
+    validations:
+      required: false

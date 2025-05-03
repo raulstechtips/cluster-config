@@ -1,0 +1,110 @@
+---
+name: New Application
+description: Request to add a new application to the cluster
+title: "[NEW APP]: "
+labels: ["new-app"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to propose adding a new application to the cluster.
+
+  - type: input
+    id: app-name
+    attributes:
+      label: Application Name
+      description: What is the name of the application?
+      placeholder: e.g., Prometheus, Grafana
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: Application Version
+      description: What version should be deployed?
+      placeholder: e.g., 2.40.1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: deployment-method
+    attributes:
+      label: Deployment Method
+      description: How should this application be deployed?
+      multiple: false
+      options:
+        - Helm Chart
+        - Kustomize
+        - Raw Manifests
+        - Other (specify in description)
+    validations:
+      required: true
+
+  - type: textarea
+    id: purpose
+    attributes:
+      label: Purpose and Benefits
+      description: What is the purpose of this application and what benefits will it bring?
+      placeholder: This application will provide...
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Does this application depend on other applications in the cluster?
+      placeholder: |
+        - Requires PostgreSQL database
+        - Needs to connect to Traefik for ingress
+    validations:
+      required: false
+
+  - type: textarea
+    id: configuration
+    attributes:
+      label: Configuration Requirements
+      description: Describe key configuration options and requirements
+      placeholder: |
+        ```yaml
+        # Example configuration values
+        persistence:
+          enabled: true
+          size: 10Gi
+        ingress:
+          enabled: true
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: resources
+    attributes:
+      label: Resource Requirements
+      description: What are the resource requirements for this application?
+      placeholder: |
+        - CPU: 200m minimum
+        - Memory: 512Mi minimum
+        - Storage: 10Gi PVC
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: considerations
+    attributes:
+      label: Additional Considerations
+      options:
+        - label: Requires sensitive credentials/secrets
+        - label: Has security implications
+        - label: Needs backup/restore configuration
+        - label: Requires high availability configuration
+        - label: Affects other applications in the cluster
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other important information for this application request
+    validations:
+      required: false

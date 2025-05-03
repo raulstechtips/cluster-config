@@ -1,0 +1,90 @@
+---
+name: Configuration Change
+description: Request a change to existing application configuration
+title: "[CONFIG]: "
+labels: ["config"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to request changes to existing component configurations.
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component/application requires configuration changes?
+      multiple: false
+      options:
+        - Authentik
+        - Traefik
+        - Infisical
+        - Longhorn
+        - Cert-Manager
+        - Minio
+        - Redis
+        - CNPG (CloudNative PostgreSQL)
+        - Other (specify in description)
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-config
+    attributes:
+      label: Current Configuration
+      description: Describe the current configuration (if known)
+      placeholder: |
+        ```yaml
+        # Current values or configuration
+        resource:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+        ```
+    validations:
+      required: false
+
+  - type: textarea
+    id: requested-config
+    attributes:
+      label: Requested Configuration
+      description: Describe the configuration changes needed
+      placeholder: |
+        ```yaml
+        # Requested values or configuration
+        resource:
+          requests:
+            memory: 512Mi
+            cpu: 200m
+        ```
+    validations:
+      required: true
+
+  - type: textarea
+    id: justification
+    attributes:
+      label: Justification
+      description: Why are these changes needed?
+      placeholder: These changes are needed because...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Impact Assessment
+      description: What is the expected impact of this change?
+      options:
+        - label: Zero downtime expected
+        - label: Brief service interruption expected
+        - label: Requires manual intervention after deployment
+        - label: Affects other components/applications
+        - label: Changes resource utilization
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other context or information that would be helpful
+    validations:
+      required: false
