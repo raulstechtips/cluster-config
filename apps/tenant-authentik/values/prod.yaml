@@ -1,0 +1,68 @@
+---
+tenant:
+  buckets:
+    - name: authentik-media
+  certificate:
+    externalCertSecret:
+      - name: tenant-authentik-minio-tls
+        type: kubernetes.io/tls
+      - name: prod-raulstechtips-tls
+        type: kubernetes.io/tls
+    requestAutoCert: false
+  configSecret:
+    accessKey: ""
+    existingSecret: true
+    name: tenant-authentik-minio-env-configuration
+    secretKey: ""
+  configuration:
+    name: tenant-authentik-minio-env-configuration
+  features:
+    bucketDNS: false
+    domains:
+      console: "https://${S3_AUTENTHIK_DOMAIN}"
+      minio:
+        - "https://${S3_AUTENTHIK_API_DOMAIN}"
+    enableSFTP: true
+  image:
+    pullPolicy: IfNotPresent
+    repository: quay.io/minio/minio
+    tag: RELEASE.2025-04-08T15-41-24Z
+  logging: {}
+  metrics:
+    enabled: false
+    port: 9000
+    protocol: http
+  name: tenant-authentik
+  pools:
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                    - tenant-authentik
+            topologyKey: kubernetes.io/hostname
+    name: pool-0
+    resources:
+      limits:
+        cpu: 500m
+        ephemeral-storage: 500Mi
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        ephemeral-storage: 500Mi
+        memory: 256Mi
+    servers: 4
+    size: 5Gi
+    storageClassName: longhorn-minio-authentik
+    volumesPerServer: 1
+  poolsMetadata:
+    annotations:
+      secrets.infisical.com/auto-reload: "true"
+    existingSecret: true
+    labels: {}
+  prometheusOperator: false
+  users:
+    - name: tenant-authentik-minio-users
