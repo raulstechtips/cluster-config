@@ -1,0 +1,58 @@
+---
+operator:
+  additionalLabels: {}
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: name
+                operator: In
+                values:
+                  - minio-operator
+          topologyKey: kubernetes.io/hostname
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    runAsGroup: 1000
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  env:
+    - name: OPERATOR_STS_ENABLED
+      value: "on"
+    - name: OPERATOR_STS_AUTO_TLS_ENABLED
+      value: "off"
+  image:
+    pullPolicy: IfNotPresent
+    repository: quay.io/minio/operator
+    tag: v7.1.0
+  imagePullSecrets: []
+  initContainers: []
+  nodeSelector: {}
+  priorityClassName: ""
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 500m
+      ephemeral-storage: 500Mi
+      memory: 512Mi
+    requests:
+      cpu: 200m
+      ephemeral-storage: 500Mi
+      memory: 256Mi
+  runtimeClassName: null
+  securityContext:
+    fsGroup: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceAccountAnnotations: []
+  sidecarImage: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  volumeMounts: []
+  volumes: []
