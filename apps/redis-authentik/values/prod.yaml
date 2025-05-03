@@ -1,0 +1,62 @@
+---
+auth:
+  enabled: true
+  existingSecret: authentik-redis-admin-credentials-secret
+  existingSecretPasswordKey: redis-password
+  usePasswordFileFromSecret: false
+  usePasswordFiles: false
+global:
+  defaultStorageClass: longhorn-redis-authentik
+master:
+  containerPorts:
+    redis: 6379
+  count: 1
+  persistence:
+    size: 8Gi
+  persistentVolumeClaimRetentionPolicy:
+    enabled: false
+    whenDeleted: Retain
+    whenScaled: Retain
+  resources:
+    limits:
+      cpu: 375m
+      memory: 384Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  revisionHistoryLimit: 10
+  service:
+    portNames:
+      redis: tcp-redis
+    ports:
+      redis: 6379
+    type: ClusterIP
+replica:
+  containerPorts:
+    redis: 6379
+  persistence:
+    size: 8Gi
+  persistentVolumeClaimRetentionPolicy:
+    enabled: false
+    whenDeleted: Retain
+    whenScaled: Retain
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 375m
+      memory: 384Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  revisionHistoryLimit: 10
+  service:
+    ports:
+      redis: 6379
+    type: ClusterIP
+tls:
+  authClients: false
+  certCAFilename: ca.crt
+  certFilename: tls.crt
+  certKeyFilename: tls.key
+  enabled: true
+  existingSecret: redis-authentik-internal-tls
