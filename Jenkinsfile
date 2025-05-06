@@ -134,8 +134,8 @@ pipeline {
                   sh "helm repo update"
                 }
                 
-                // Create outputs directory
-                sh 'mkdir -p /tmp/manifests'
+                // Create outputs directory in the workspace
+                sh 'mkdir -p manifests'
                 
                 sh """
                   set -eo pipefail
@@ -152,16 +152,16 @@ pipeline {
                     namespace="${config.namespace}"
     
                     # 1. Pull chart + dependencies
-                    helm pull "\$chart_ref" --untar --untardir /tmp
-                    helm dependency update /tmp/"\$chart_name"
+                    helm pull "\$chart_ref" --untar --untardir helm-cache
+                    helm dependency update helm-cache/"\$chart_name"
     
                     # 2. Relaxed Helm Linting - continue even with errors
                     echo "=== STEP 1: HELM LINT (Relaxed) ==="
-                    helm lint /tmp/"\$chart_name" -f "\$values_path" --strict=false || echo "Helm lint found issues but continuing"
+                    helm lint helm-cache/"\$chart_name" -f "\$values_path" --strict=false || echo "Helm lint found issues but continuing"
                     
                     # 3. Template Generation - validate templates render correctly
                     echo "=== STEP 2: TEMPLATE VALIDATION ==="
-                    helm template "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" > /tmp/manifests/${app}.yaml
+                    helm template "${app}" helm-cache/"\$chart_name" -f "\$values_path" --namespace "\$namespace" > manifests/${app}.yaml
                     if [ \$? -eq 0 ]; then
                       echo "✅ Template generation successful"
                     else
@@ -176,12 +176,12 @@ pipeline {
                     echo "=== COLLECTING MANIFESTS ==="
                     
                     # If we already generated manifests from Helm, append the custom manifests
-                    if [ -f "/tmp/manifests/${app}.yaml" ]; then
+                    if [ -f "manifests/${app}.yaml" ]; then
                       echo "=== APPENDING CUSTOM MANIFESTS ==="
-                      find "\$manifests_path" -name "*.yaml" -o -name "*.yml" | xargs cat >> /tmp/manifests/${app}.yaml
+                      find "\$manifests_path" -name "*.yaml" -o -name "*.yml" | xargs cat >> manifests/${app}.yaml
                     else
                       # Otherwise create a new file with just the custom manifests
-                      find "\$manifests_path" -name "*.yaml" -o -name "*.yml" | xargs cat > /tmp/manifests/${app}.yaml
+                      find "\$manifests_path" -name "*.yaml" -o -name "*.yml" | xargs cat > manifests/${app}.yaml
                     fi
                     echo "✅ Manifest collection successful"
                   fi
@@ -190,7 +190,7 @@ pipeline {
                   if [ ! -f "\$values_path" ] && [ ! -d "\$manifests_path" ]; then
                     echo "⚠️ WARNING: ${app} has neither values/prod.yaml nor manifests/ directory"
                     echo "⚠️ Skipping validation for ${app}"
-                    touch /tmp/manifests/${app}.yaml  # Create empty file to avoid errors
+                    touch manifests/${app}.yaml  # Create empty file to avoid errors
                   fi
                 """
               }
@@ -206,13 +206,13 @@ pipeline {
                 def app = params.APP_NAME
                 
                 sh """
-                  if [ -s "/tmp/manifests/${app}.yaml" ]; then  # Check if file exists and has size > 0
+                  if [ -s "manifests/${app}.yaml" ]; then  # Check if file exists and has size > 0
                     echo "=== STEP 3: KUBECONFORM VALIDATION for ${app} ==="
                     # Skip validating CRDs which might not match schema
-                    grep -v "kind: CustomResourceDefinition" /tmp/manifests/${app}.yaml > /tmp/manifests/${app}-nocrd.yaml || true
+                    grep -v "kind: CustomResourceDefinition" manifests/${app}.yaml > manifests/${app}-nocrd.yaml || true
                     
                     # Relaxed validation with generous timeouts and schema skipping
-                    kubeconform -summary -output json -schema-location default -skip CustomResourceDefinition -ignore-missing-schemas /tmp/manifests/${app}-nocrd.yaml || {
+                    kubeconform -summary -output json -schema-location default -skip CustomResourceDefinition -ignore-missing-schemas manifests/${app}-nocrd.yaml || {
                       echo "⚠️  Some resources failed validation, but this is often normal with third-party charts"
                       echo "⚠️  Review validation errors above manually"
                     }
@@ -255,15 +255,15 @@ pipeline {
                     namespace="${config.namespace}"
 
                     # Pull & deps
-                    helm pull "\$chart_ref" --untar --untardir /tmp
-                    helm dependency update /tmp/"\$chart_name"
+                    helm pull "\$chart_ref" --untar --untardir helm-cache
+                    helm dependency update helm-cache/"\$chart_name"
 
                     echo "=== STEP 4: DIFF VS LIVE CLUSTER ==="
                     echo "→ Helm diff for ${app}"
-                    helm diff upgrade "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" --allow-unreleased || echo "Helm diff found changes but continuing"
+                    helm diff upgrade "${app}" helm-cache/"\$chart_name" -f "\$values_path" --namespace "\$namespace" --allow-unreleased || echo "Helm diff found changes but continuing"
 
                     echo "→ Kubectl diff for ${app}"
-                    helm template "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" | kubectl diff --server-side=false -f - || echo "Kubectl diff found changes but continuing"
+                    helm template "${app}" helm-cache/"\$chart_name" -f "\$values_path" --namespace "\$namespace" | kubectl diff --server-side=false -f - || echo "Kubectl diff found changes but continuing"
                   fi
                   
                   if [ -d "\$manifests_path" ]; then
@@ -290,7 +290,7 @@ pipeline {
               def app = params.APP_NAME
               
               sh 'mkdir -p reports'
-              sh "cp /tmp/manifests/${app}.yaml reports/ || true"
+              sh "cp manifests/${app}.yaml reports/ || true"
               archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
             }
           }
