@@ -23,7 +23,7 @@ pipeline {
 
     // ── Stage 2: Helm Validate & Test (PR only) ─────────────────────────
     stage('Helm Validate & Test') {
-      when { changeRequest() }
+      when { not { changeRequest() } }
       agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
       steps {
         container('yq') {
@@ -57,7 +57,7 @@ pipeline {
 
     // ── Stage 3: Diff vs Live Cluster (PR only) ─────────────────────────
     stage('Diff vs Live Cluster') {
-      when { changeRequest() }
+      when { not { changeRequest() } }
       agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
       steps {
         container('helm') {
