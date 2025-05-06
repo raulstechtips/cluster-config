@@ -36,15 +36,14 @@ pipeline {
         }
         container('helm') {
           script {
-            def appList = chartMap.keySet().join(' ')
-            sh """
-              set -eo pipefail
-              for app in ${appList}; do
-                values="./app/\${app}/values.yaml"
-                chart_ref="${chartMap[app]}"
+            chartMap.each { app, chartRef ->
+              sh """
+                set -eo pipefail
+                values="./app/${app}/values.yaml"
+                chart_ref="${chartRef}"
                 chart_name=\$(basename "\$chart_ref")
 
-                echo "→ Processing \$app → \$chart_ref"
+                echo "→ Processing ${app} → \$chart_ref"
 
                 # 1. Pull chart + dependencies
                 helm pull "\$chart_ref" --untar --untardir /tmp
@@ -52,9 +51,9 @@ pipeline {
 
                 # 2. Static lint & template
                 helm lint /tmp/"\$chart_name" -f "\$values"
-                helm template "\$app" /tmp/"\$chart_name" -f "\$values" --debug >/dev/null
-              done
-            """
+                helm template "${app}" /tmp/"\$chart_name" -f "\$values" --debug >/dev/null
+              """
+            }
           }
         }
       }
@@ -70,25 +69,24 @@ pipeline {
           sh 'helm plugin install https://github.com/databus23/helm-diff || true'
           
           script {
-            def appList = chartMap.keySet().join(' ')
-            sh """
-              set -eo pipefail
-              for app in ${appList}; do
-                values="./app/\${app}/values.yaml"
-                chart_ref="${chartMap[app]}"
+            chartMap.each { app, chartRef ->
+              sh """
+                set -eo pipefail
+                values="./app/${app}/values.yaml"
+                chart_ref="${chartRef}"
                 chart_name=\$(basename "\$chart_ref")
 
                 # Pull & deps
                 helm pull "\$chart_ref" --untar --untardir /tmp
                 helm dependency update /tmp/"\$chart_name"
 
-                echo "→ Helm diff for \$app"
-                helm diff upgrade "\$app" /tmp/"\$chart_name" -f "\$values" --allow-unreleased || echo "Helm diff failed but continuing"
+                echo "→ Helm diff for ${app}"
+                helm diff upgrade "${app}" /tmp/"\$chart_name" -f "\$values" --allow-unreleased || echo "Helm diff failed but continuing"
 
-                echo "→ Kubectl diff for \$app"
-                helm template "\$app" /tmp/"\$chart_name" -f "\$values" | kubectl diff --server-side=false -f - || echo "Kubectl diff failed but continuing"
-              done
-            """
+                echo "→ Kubectl diff for ${app}"
+                helm template "${app}" /tmp/"\$chart_name" -f "\$values" | kubectl diff --server-side=false -f - || echo "Kubectl diff failed but continuing"
+              """
+            }
           }
         }
       }
