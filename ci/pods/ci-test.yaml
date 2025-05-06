@@ -28,5 +28,5 @@ spec:
       tty: true
     - name: validator
       image: ghcr.io/yannh/kubeconform:v0.6.7
-      command: ["cat"]
+      command: ["/kubeconform", "-h"]
       tty: true
