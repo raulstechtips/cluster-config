@@ -4,8 +4,8 @@ pipeline {
   // 2.1 Define your app→chart map here:
   //    Customize per-repo with any app names & their corresponding chart refs
   def chartMap = [
-    cert-manager: "jetstack/cert-manager",
-    infisical: "infisical/infisical",
+    ('cert-manager'): "jetstack/cert-manager",
+    ('infisical'): "infisical/infisical",
   ]
 
   stages {
