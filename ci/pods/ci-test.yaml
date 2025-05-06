@@ -17,14 +17,11 @@ spec:
       tty: true
       volumeMounts:
         - name: kubeconfig
-          mountPath: /home/jenkins/.kube/config
-          subPath: config
+          mountPath: /home/jenkins/.kube
+          readOnly: true
       env:
         - name: KUBECONFIG
-          valueFrom:
-            secretKeyRef:
-              name: jenkins-kube-config
-              key: config
+          value: /home/jenkins/.kube/config
     - name: yq
       image: mikefarah/yq:4.21.1
       command: ["cat"]
