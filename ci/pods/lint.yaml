@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins-agent: lint
+spec:
+  restartPolicy: Never
+  containers:
+    - name: helm
+      image: dtzar/helm-kubectl:3.5.0
+      command: ["cat"]
+      tty: true
+    - name: yamllint
+      image: cytopia/yamllint:latest
+      command: ["cat"]
+      tty: true
