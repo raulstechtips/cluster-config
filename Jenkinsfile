@@ -8,7 +8,6 @@ def chartMap = [
 pipeline {
   agent none
 
-
   stages {
 
     // ── Stage 1: YAML Lint (Pushes only) ────────────────────────────────
@@ -17,7 +16,7 @@ pipeline {
       agent { kubernetes { yamlFile 'ci/pods/lint.yaml' } }
       steps {
         container('yamllint') {
-          sh 'yamllint -d relaxed app/'  // raw YAML check :contentReference[oaicite:15]{index=15}
+          sh 'yamllint -d relaxed .'  // raw YAML check :contentReference[oaicite:15]{index=15}
         }
       }
     }
@@ -34,7 +33,7 @@ pipeline {
           sh '''
             set -eo pipefail
             for app in ${chartMap.keySet().join(' ')}; do
-              values="app/${app}/values.yaml"
+              values="./app/${app}/values.yaml"
               chart_ref="${chartMap[app]}"
               chart_name=$(basename "$chart_ref")
 
@@ -67,7 +66,7 @@ pipeline {
             helm plugin install https://github.com/databus23/helm-diff       # :contentReference[oaicite:21]{index=21}
 
             for app in ${chartMap.keySet().join(' ')}; do
-              values="app/${app}/values.yaml"
+              values="./app/${app}/values.yaml"
               chart_ref="${chartMap[app]}"
               chart_name=$(basename "$chart_ref")
 
