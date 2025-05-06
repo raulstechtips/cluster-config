@@ -12,7 +12,7 @@ pipeline {
 
     // ── Stage 1: YAML Lint (Pushes only) ────────────────────────────────
     stage('YAML Lint') {
-      when { branch() }
+      when { not { changeRequest() } }
       agent { kubernetes { yamlFile 'ci/pods/lint.yaml' } }
       steps {
         container('yamllint') {
@@ -88,7 +88,6 @@ pipeline {
 
     // ── Stage 4: Archive Reports ───────────────────────────────────────
     stage('Archive Reports') {
-      when { branch() }
       agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
       steps {
         archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
