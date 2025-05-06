@@ -27,6 +27,7 @@ spec:
       command: ["cat"]
       tty: true
     - name: validator
-      image: ghcr.io/yannh/kubeconform:v0.6.7
-      command: ["/kubeconform", "-h"]
+      image: alpine:3.18
+      command: ["sh", "-c"]
+      args: ["wget -q https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz && tar -xzf kubeconform-linux-amd64.tar.gz && mv kubeconform /usr/local/bin/ && cat"]
       tty: true

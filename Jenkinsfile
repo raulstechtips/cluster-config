@@ -123,7 +123,7 @@ pipeline {
                   grep -v "kind: CustomResourceDefinition" /tmp/manifests/${app}.yaml > /tmp/manifests/${app}-nocrd.yaml || true
                   
                   # Relaxed validation with generous timeouts and schema skipping
-                  /kubeconform -summary -output json -schema-location default -skip CustomResourceDefinition -ignore-missing-schemas -kubernetes-version v1.30.2+k3s2 /tmp/manifests/${app}-nocrd.yaml || {
+                  kubeconform -summary -output json -schema-location default -skip CustomResourceDefinition -ignore-missing-schemas /tmp/manifests/${app}-nocrd.yaml || {
                     echo "⚠️  Some resources failed validation, but this is often normal with third-party charts"
                     echo "⚠️  Review validation errors above manually"
                   }
