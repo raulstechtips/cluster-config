@@ -12,7 +12,7 @@ spec:
         defaultMode: 0400
   containers:
     - name: helm
-      image: dtzar/helm-kubectl:3.5.0
+      image: ghcr.io/helmfile/helmfile:v0.157.0
       command: ["cat"]
       tty: true
       volumeMounts:
@@ -24,5 +24,9 @@ spec:
           value: /home/jenkins/.kube/config
     - name: yq
       image: mikefarah/yq:4.21.1
+      command: ["cat"]
+      tty: true
+    - name: validator
+      image: ghcr.io/yannh/kubeconform:v0.6.3
       command: ["cat"]
       tty: true
