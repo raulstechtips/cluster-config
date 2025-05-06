@@ -54,7 +54,14 @@ pipeline {
             chartMap.each { app, chartRef ->
               sh """
                 set -eo pipefail
-                values="./app/${app}/values.yaml"
+                values="./apps/${app}/values.yaml"
+                
+                # Check if values file exists
+                if [ ! -f "\$values" ]; then
+                  echo "ERROR: Values file \$values not found"
+                  exit 1
+                fi
+
                 chart_ref="${chartRef}"
                 chart_name=\$(basename "\$chart_ref")
 
@@ -93,7 +100,14 @@ pipeline {
             chartMap.each { app, chartRef ->
               sh """
                 set -eo pipefail
-                values="./app/${app}/values.yaml"
+                values="./apps/${app}/values.yaml"
+                
+                # Check if values file exists
+                if [ ! -f "\$values" ]; then
+                  echo "ERROR: Values file \$values not found"
+                  exit 1
+                fi
+                
                 chart_ref="${chartRef}"
                 chart_name=\$(basename "\$chart_ref")
 
