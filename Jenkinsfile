@@ -1,5 +1,14 @@
 // Define apps configuration with comprehensive information
 def appsConfig = [
+  "authentik": [
+    isHelm: true,
+    namespace: "authentik",
+    chart: "authentik/authentik",
+    helmRepo: [
+      name: "authentik",
+      url: "https://charts.goauthentik.io"
+    ]
+  ],
   "cert-manager": [
     isHelm: true,
     namespace: "cert-manager",
@@ -9,6 +18,14 @@ def appsConfig = [
       url: "https://charts.jetstack.io"
     ]
   ],
+  "cnpg-authentik": [
+    isHelm: false,
+    namespace: "authentik"
+  ],
+  "cnpg-infisical": [
+    isHelm: false,
+    namespace: "infisical"
+  ],
   "infisical": [
     isHelm: true,
     namespace: "infisical",
@@ -16,6 +33,91 @@ def appsConfig = [
     helmRepo: [
       name: "infisical-helm-charts", 
       url: "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/"
+    ]
+  ],
+  "infisical-secrets-operator": [
+    isHelm: true,
+    namespace: "default",
+    chart: "infisical-helm-charts/secrets-operator",
+    helmRepo: [
+      name: "infisical-helm-charts", 
+      url: "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/"
+    ]
+  ],
+  "internal-issuer": [
+    isHelm: false,
+    namespace: "cert-manager"
+  ],
+  "jenkins": [
+    isHelm: true,
+    namespace: "jenkins",
+    chart: "jenkins/jenkins",
+    helmRepo: [
+      name: "jenkins",
+      url: "https://charts.jenkins.io"
+    ]
+  ],
+  "longhorn": [
+    isHelm: true,
+    namespace: "longhorn-system",
+    chart: "longhorn/longhorn",
+    helmRepo: [
+      name: "longhorn",
+      url: "https://charts.longhorn.io"
+    ]
+  ],
+  "minio-operator": [
+    isHelm: true,
+    namespace: "minio-operator",
+    chart: "minio/operator",
+    helmRepo: [
+      name: "minio",
+      url: "https://operator.min.io"
+    ]
+  ],
+  "redis-authentik": [
+    isHelm: true,
+    namespace: "authentik",
+    chart: "bitnami/redis",
+    helmRepo: [
+      name: "bitnami",
+      url: "https://charts.bitnami.com/bitnami"
+    ]
+  ],
+  "redis-infisical": [
+    isHelm: true,
+    namespace: "infisical",
+    chart: "bitnami/redis",
+    helmRepo: [
+      name: "bitnami",
+      url: "https://charts.bitnami.com/bitnami"
+    ]
+  ],
+  "reflector": [
+    isHelm: true,
+    namespace: "default",
+    chart: "emberstack/reflector",
+    helmRepo: [
+      name: "emberstack",
+      url: "https://emberstack.github.io/helm-charts"
+    ]
+  ],
+  "tenant-authentik": [
+    isHelm: true,
+    namespace: "authentik",
+    chart: "minio/tenant",
+    helmRepo: [
+      name: "minio",
+      url: "https://operator.min.io"
+    ]
+  ],
+  "traefik": [
+    isHelm: true,
+    namespace: "traefik",
+    chart: "traefik/traefik",
+    helmRepo: [
+      name: "traefik",
+      url: "https://helm.traefik.io/traefik"
     ]
   ]
 ]
