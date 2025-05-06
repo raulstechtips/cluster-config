@@ -1,14 +1,23 @@
-// 2.1 Define your app→chart map here:
-//    Customize per-repo with any app names & their corresponding chart refs
-def chartMap = [
-  "cert-manager": "jetstack/cert-manager",
-  "infisical": "infisical-helm-charts/infisical-standalone",
-]
-
-// Define Helm repos that need to be added
-def helmRepos = [
-  "jetstack": "https://charts.jetstack.io",
-  "infisical-helm-charts": "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/"
+// Define apps configuration with comprehensive information
+def appsConfig = [
+  "cert-manager": [
+    isHelm: true,
+    namespace: "cert-manager",
+    chart: "jetstack/cert-manager",
+    helmRepo: [
+      name: "jetstack",
+      url: "https://charts.jetstack.io"
+    ]
+  ],
+  "infisical": [
+    isHelm: true,
+    namespace: "infisical",
+    chart: "infisical-helm-charts/infisical-standalone",
+    helmRepo: [
+      name: "infisical-helm-charts", 
+      url: "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/"
+    ]
+  ]
 ]
 
 pipeline {
@@ -35,24 +44,25 @@ pipeline {
         container('yq') {
           script {
             echo "Apps to process:"
-            chartMap.keySet().each { app ->
+            appsConfig.keySet().each { app ->
               echo app
             }
           }
         }
         container('helm') {
           script {
-            
             // Add Helm repositories first
-            helmRepos.each { repoName, repoUrl ->
-              sh "helm repo add ${repoName} ${repoUrl} || true"
+            appsConfig.each { app, config ->
+              if (config.isHelm) {
+                sh "helm repo add ${config.helmRepo.name} ${config.helmRepo.url} || true"
+              }
             }
             sh "helm repo update"
             
             // Create outputs directory
             sh 'mkdir -p /tmp/manifests'
             
-            chartMap.each { app, chartRef ->
+            appsConfig.each { app, config ->
               sh """
                 set -eo pipefail
                 values_path="./apps/${app}/values/prod.yaml"
@@ -63,8 +73,9 @@ pipeline {
                   # Process as a Helm app
                   echo "→ Processing ${app} with Helm (values/prod.yaml found)"
                   
-                  chart_ref="${chartRef}"
+                  chart_ref="${config.chart}"
                   chart_name=\$(basename "\$chart_ref")
+                  namespace="${config.namespace}"
 
                   # 1. Pull chart + dependencies
                   helm pull "\$chart_ref" --untar --untardir /tmp
@@ -76,7 +87,7 @@ pipeline {
                   
                   # 3. Template Generation - validate templates render correctly
                   echo "=== STEP 2: TEMPLATE VALIDATION ==="
-                  helm template "${app}" /tmp/"\$chart_name" -f "\$values_path" > /tmp/manifests/${app}.yaml
+                  helm template "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" > /tmp/manifests/${app}.yaml
                   if [ \$? -eq 0 ]; then
                     echo "✅ Template generation successful"
                   else
@@ -115,7 +126,7 @@ pipeline {
         // Validate manifests with Kubeconform
         container('validator') {
           script {
-            chartMap.keySet().each { app ->
+            appsConfig.keySet().each { app ->
               sh """
                 if [ -s "/tmp/manifests/${app}.yaml" ]; then  # Check if file exists and has size > 0
                   echo "=== STEP 3: KUBECONFORM VALIDATION for ${app} ==="
@@ -148,12 +159,14 @@ pipeline {
           
           script {
             // Add Helm repositories first
-            helmRepos.each { repoName, repoUrl ->
-              sh "helm repo add ${repoName} ${repoUrl} || true"
+            appsConfig.each { app, config ->
+              if (config.isHelm) {
+                sh "helm repo add ${config.helmRepo.name} ${config.helmRepo.url} || true"
+              }
             }
             sh "helm repo update"
             
-            chartMap.each { app, chartRef ->
+            appsConfig.each { app, config ->
               sh """
                 set -eo pipefail
                 values_path="./apps/${app}/values/prod.yaml"
@@ -162,8 +175,9 @@ pipeline {
                 # Process app based on what exists
                 if [ -f "\$values_path" ]; then
                   # Process as a Helm app
-                  chart_ref="${chartRef}"
+                  chart_ref="${config.chart}"
                   chart_name=\$(basename "\$chart_ref")
+                  namespace="${config.namespace}"
 
                   # Pull & deps
                   helm pull "\$chart_ref" --untar --untardir /tmp
@@ -171,10 +185,10 @@ pipeline {
 
                   echo "=== STEP 4: DIFF VS LIVE CLUSTER ==="
                   echo "→ Helm diff for ${app}"
-                  helm diff upgrade "${app}" /tmp/"\$chart_name" -f "\$values_path" --allow-unreleased || echo "Helm diff found changes but continuing"
+                  helm diff upgrade "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" --allow-unreleased || echo "Helm diff found changes but continuing"
 
                   echo "→ Kubectl diff for ${app}"
-                  helm template "${app}" /tmp/"\$chart_name" -f "\$values_path" | kubectl diff --server-side=false -f - || echo "Kubectl diff found changes but continuing"
+                  helm template "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" | kubectl diff --server-side=false -f - || echo "Kubectl diff found changes but continuing"
                 fi
                 
                 if [ -d "\$manifests_path" ]; then
