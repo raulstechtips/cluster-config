@@ -4,7 +4,6 @@ metadata:
   labels:
     jenkins-agent: ci-test
 spec:
-  serviceAccountName: jenkins-runner
   restartPolicy: Never
   volumes:
     - name: kubeconfig
