@@ -86,11 +86,15 @@ pipeline {
       }
     }
 
+    // ── Stage 4: Archive Reports ───────────────────────────────────────
+    stage('Archive Reports') {
+      when { always() }
+      agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
+      steps {
+        archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
+      }
+    }
+
   }
 
-  post {
-    always {
-      archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
-    }
-  }
 }
