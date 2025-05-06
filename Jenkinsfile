@@ -54,7 +54,7 @@ pipeline {
             chartMap.each { app, chartRef ->
               sh """
                 set -eo pipefail
-                values="./apps/${app}/values/values.yaml"
+                values="./apps/${app}/values/prod.yaml"
                 
                 # Check if values file exists
                 if [ ! -f "\$values" ]; then
@@ -100,7 +100,7 @@ pipeline {
             chartMap.each { app, chartRef ->
               sh """
                 set -eo pipefail
-                values="./apps/${app}/values/values.yaml"
+                values="./apps/${app}/values/prod.yaml"
                 
                 # Check if values file exists
                 if [ ! -f "\$values" ]; then
