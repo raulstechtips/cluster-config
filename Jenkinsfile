@@ -1,8 +1,14 @@
 // 2.1 Define your app→chart map here:
 //    Customize per-repo with any app names & their corresponding chart refs
 def chartMap = [
-  ('cert-manager'): "jetstack/cert-manager",
-  ('infisical'): "infisical/infisical",
+  "cert-manager": "jetstack/cert-manager",
+  "infisical": "infisical/infisical",
+]
+
+// Define Helm repos that need to be added
+def helmRepos = [
+  "jetstack": "https://charts.jetstack.io",
+  "infisical-helm-charts": "https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/"
 ]
 
 pipeline {
@@ -36,6 +42,15 @@ pipeline {
         }
         container('helm') {
           script {
+            // Verify kubeconfig is properly loaded
+            sh 'kubectl config view'
+            
+            // Add Helm repositories first
+            helmRepos.each { repoName, repoUrl ->
+              sh "helm repo add ${repoName} ${repoUrl} || true"
+            }
+            sh "helm repo update"
+            
             chartMap.each { app, chartRef ->
               sh """
                 set -eo pipefail
@@ -69,6 +84,12 @@ pipeline {
           sh 'helm plugin install https://github.com/databus23/helm-diff || true'
           
           script {
+            // Add Helm repositories first
+            helmRepos.each { repoName, repoUrl ->
+              sh "helm repo add ${repoName} ${repoUrl} || true"
+            }
+            sh "helm repo update"
+            
             chartMap.each { app, chartRef ->
               sh """
                 set -eo pipefail
