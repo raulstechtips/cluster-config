@@ -120,9 +120,10 @@ pipeline {
         expression { params.MODE == 'app-specific' && params.APP_NAME }
       }
       stages {
-        stage('Helm Validation') {
+        stage('Validate and Schema Check') {
           agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
           steps {
+            // First generate manifests with Helm
             container('helm') {
               script {
                 def app = params.APP_NAME
@@ -192,24 +193,23 @@ pipeline {
                     echo "⚠️ Skipping validation for ${app}"
                     touch manifests/${app}.yaml  # Create empty file to avoid errors
                   fi
+                  
+                  # Process the manifests for validation (remove CRDs)
+                  if [ -f "manifests/${app}.yaml" ]; then
+                    grep -v "kind: CustomResourceDefinition" manifests/${app}.yaml > manifests/${app}-nocrd.yaml || true
+                  fi
                 """
               }
             }
-          }
-        }
-        
-        stage('Schema Validation') {
-          agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
-          steps {
+            
+            // Then validate the schema in the same pod
             container('validator') {
               script {
                 def app = params.APP_NAME
                 
                 sh """
-                  if [ -s "manifests/${app}.yaml" ]; then  # Check if file exists and has size > 0
+                  if [ -s "manifests/${app}-nocrd.yaml" ]; then  # Check if file exists and has size > 0
                     echo "=== STEP 3: KUBECONFORM VALIDATION for ${app} ==="
-                    # Skip validating CRDs which might not match schema
-                    grep -v "kind: CustomResourceDefinition" manifests/${app}.yaml > manifests/${app}-nocrd.yaml || true
                     
                     # Relaxed validation with generous timeouts and schema skipping
                     kubeconform -summary -output json -schema-location default -skip CustomResourceDefinition -ignore-missing-schemas manifests/${app}-nocrd.yaml || {
@@ -221,6 +221,14 @@ pipeline {
                   fi
                 """
               }
+            }
+            
+            // Archive results for reference
+            script {
+              def app = params.APP_NAME
+              sh 'mkdir -p reports'
+              sh "cp manifests/${app}*.yaml reports/ || true"
+              archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
             }
           }
         }
@@ -279,19 +287,6 @@ pipeline {
                   fi
                 """
               }
-            }
-          }
-        }
-        
-        stage('Archive Results') {
-          agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
-          steps {
-            script {
-              def app = params.APP_NAME
-              
-              sh 'mkdir -p reports'
-              sh "cp manifests/${app}.yaml reports/ || true"
-              archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
             }
           }
         }
