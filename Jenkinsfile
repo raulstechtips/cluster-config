@@ -22,203 +22,280 @@ def appsConfig = [
 
 pipeline {
   agent none
-
+  
+  parameters {
+    string(name: 'MODE', defaultValue: 'coordinator', description: 'Pipeline mode: coordinator or app-specific')
+    string(name: 'APP_NAME', defaultValue: '', description: 'App to validate (only for app-specific mode)')
+    booleanParam(name: 'FORCE_ALL_APPS', defaultValue: false, description: 'Force validation of all apps')
+  }
+  
   stages {
-
-    // ── Stage 1: YAML Lint (Pushes only) ────────────────────────────────
-    stage('YAML Lint') {
-      when { not { changeRequest() } }
-      agent { kubernetes { yamlFile 'ci/pods/lint.yaml' } }
-      steps {
-        container('yamllint') {
-          sh 'yamllint -d relaxed .'
-        }
+    // COORDINATOR MODE STAGES
+    stage('Coordinator Mode') {
+      when {
+        expression { params.MODE == 'coordinator' }
       }
-    }
-
-    // ── Stage 2: Multi-layer Helm Validation & Test ─────────────────────
-    stage('Helm Validation') {
-      when { not { changeRequest() } }
-      agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
-      steps {
-        container('yq') {
-          script {
-            echo "Apps to process:"
-            appsConfig.keySet().each { app ->
-              echo app
+      stages {
+        stage('YAML Lint') {
+          agent { kubernetes { yamlFile 'ci/pods/lint.yaml' } }
+          steps {
+            container('yamllint') {
+              sh 'yamllint -d relaxed .'
             }
           }
         }
-        container('helm') {
-          script {
-            // Add Helm repositories first
-            appsConfig.each { app, config ->
-              if (config.isHelm) {
-                sh "helm repo add ${config.helmRepo.name} ${config.helmRepo.url} || true"
+  
+        stage('Detect Changes') {
+          agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
+          steps {
+            script {
+              // Initialize change detection
+              def changedApps = []
+              def isPR = env.CHANGE_ID != null
+              
+              // For PRs: always check all apps
+              if (isPR) {
+                echo "Pull Request detected - will validate all apps"
+                appsConfig.keySet().each { app ->
+                  changedApps.add(app)
+                }
+              } else {
+                // For direct pushes: check only changed apps
+                echo "Direct push detected - will validate only changed apps"
+                
+                sh "git diff --name-only HEAD^ HEAD > changed_files.txt"
+                def changedFiles = readFile('changed_files.txt').trim()
+                
+                appsConfig.keySet().each { app ->
+                  if (changedFiles.contains("apps/${app}/") || params.FORCE_ALL_APPS) {
+                    changedApps.add(app)
+                    echo "App '${app}' has changed or validation forced"
+                  }
+                }
               }
+              
+              // Store changed apps for later stages
+              env.CHANGED_APPS = changedApps.join(',')
             }
-            sh "helm repo update"
-            
-            // Create outputs directory
-            sh 'mkdir -p /tmp/manifests'
-            
-            appsConfig.each { app, config ->
-              sh """
-                set -eo pipefail
-                values_path="./apps/${app}/values/prod.yaml"
-                manifests_path="./apps/${app}/manifests"
+          }
+        }
+  
+        stage('Trigger App Validations') {
+          steps {
+            script {
+              def changedApps = env.CHANGED_APPS ? env.CHANGED_APPS.tokenize(',') : []
+              
+              if (changedApps.isEmpty()) {
+                echo "No apps to validate. Skipping app validation."
+                return
+              }
+              
+              echo "Apps to validate: ${changedApps}"
+              
+              def appBuilds = [:]
+              
+              changedApps.each { app ->
+                // Create a job for each app that calls this same pipeline with app-specific mode
+                appBuilds["Validate ${app}"] = {
+                  build job: env.JOB_NAME, 
+                      parameters: [
+                        string(name: 'MODE', value: 'app-specific'),
+                        string(name: 'APP_NAME', value: app)
+                      ],
+                      wait: true // Wait for each to complete to see the results
+                }
+              }
+              
+              // Run all app builds in parallel
+              parallel appBuilds
+            }
+          }
+        }
+      }
+    }
+    
+    // APP-SPECIFIC MODE STAGES
+    stage('App-Specific Mode') {
+      when {
+        expression { params.MODE == 'app-specific' && params.APP_NAME }
+      }
+      stages {
+        stage('Helm Validation') {
+          agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
+          steps {
+            container('helm') {
+              script {
+                def app = params.APP_NAME
+                def config = appsConfig[app]
                 
-                # Process app based on what exists
-                if [ -f "\$values_path" ]; then
-                  # Process as a Helm app
-                  echo "→ Processing ${app} with Helm (values/prod.yaml found)"
+                // Add Helm repositories
+                if (config.isHelm) {
+                  sh "helm repo add ${config.helmRepo.name} ${config.helmRepo.url} || true"
+                  sh "helm repo update"
+                }
+                
+                // Create outputs directory
+                sh 'mkdir -p /tmp/manifests'
+                
+                sh """
+                  set -eo pipefail
+                  values_path="./apps/${app}/values/prod.yaml"
+                  manifests_path="./apps/${app}/manifests"
                   
-                  chart_ref="${config.chart}"
-                  chart_name=\$(basename "\$chart_ref")
-                  namespace="${config.namespace}"
-
-                  # 1. Pull chart + dependencies
-                  helm pull "\$chart_ref" --untar --untardir /tmp
-                  helm dependency update /tmp/"\$chart_name"
-
-                  # 2. Relaxed Helm Linting - continue even with errors
-                  echo "=== STEP 1: HELM LINT (Relaxed) ==="
-                  helm lint /tmp/"\$chart_name" -f "\$values_path" --strict=false || echo "Helm lint found issues but continuing"
-                  
-                  # 3. Template Generation - validate templates render correctly
-                  echo "=== STEP 2: TEMPLATE VALIDATION ==="
-                  helm template "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" > /tmp/manifests/${app}.yaml
-                  if [ \$? -eq 0 ]; then
-                    echo "✅ Template generation successful"
-                  else
-                    echo "❌ Template generation failed"
-                    exit 1
+                  # Process app based on what exists
+                  if [ -f "\$values_path" ]; then
+                    # Process as a Helm app
+                    echo "→ Processing ${app} with Helm (values/prod.yaml found)"
+                    
+                    chart_ref="${config.chart}"
+                    chart_name=\$(basename "\$chart_ref")
+                    namespace="${config.namespace}"
+    
+                    # 1. Pull chart + dependencies
+                    helm pull "\$chart_ref" --untar --untardir /tmp
+                    helm dependency update /tmp/"\$chart_name"
+    
+                    # 2. Relaxed Helm Linting - continue even with errors
+                    echo "=== STEP 1: HELM LINT (Relaxed) ==="
+                    helm lint /tmp/"\$chart_name" -f "\$values_path" --strict=false || echo "Helm lint found issues but continuing"
+                    
+                    # 3. Template Generation - validate templates render correctly
+                    echo "=== STEP 2: TEMPLATE VALIDATION ==="
+                    helm template "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" > /tmp/manifests/${app}.yaml
+                    if [ \$? -eq 0 ]; then
+                      echo "✅ Template generation successful"
+                    else
+                      echo "❌ Template generation failed"
+                      exit 1
+                    fi
                   fi
-                fi
-                
-                if [ -d "\$manifests_path" ]; then
-                  # Process manifests directory
-                  echo "→ Processing manifests for ${app}"
-                  echo "=== COLLECTING MANIFESTS ==="
                   
-                  # If we already generated manifests from Helm, append the custom manifests
-                  if [ -f "/tmp/manifests/${app}.yaml" ]; then
-                    echo "=== APPENDING CUSTOM MANIFESTS ==="
-                    find "\$manifests_path" -name "*.yaml" -o -name "*.yml" | xargs cat >> /tmp/manifests/${app}.yaml
-                  else
-                    # Otherwise create a new file with just the custom manifests
-                    find "\$manifests_path" -name "*.yaml" -o -name "*.yml" | xargs cat > /tmp/manifests/${app}.yaml
+                  if [ -d "\$manifests_path" ]; then
+                    # Process manifests directory
+                    echo "→ Processing manifests for ${app}"
+                    echo "=== COLLECTING MANIFESTS ==="
+                    
+                    # If we already generated manifests from Helm, append the custom manifests
+                    if [ -f "/tmp/manifests/${app}.yaml" ]; then
+                      echo "=== APPENDING CUSTOM MANIFESTS ==="
+                      find "\$manifests_path" -name "*.yaml" -o -name "*.yml" | xargs cat >> /tmp/manifests/${app}.yaml
+                    else
+                      # Otherwise create a new file with just the custom manifests
+                      find "\$manifests_path" -name "*.yaml" -o -name "*.yml" | xargs cat > /tmp/manifests/${app}.yaml
+                    fi
+                    echo "✅ Manifest collection successful"
                   fi
-                  echo "✅ Manifest collection successful"
-                fi
-                
-                # If no values or manifests were found
-                if [ ! -f "\$values_path" ] && [ ! -d "\$manifests_path" ]; then
-                  echo "⚠️ WARNING: ${app} has neither values/prod.yaml nor manifests/ directory"
-                  echo "⚠️ Skipping validation for ${app}"
-                  touch /tmp/manifests/${app}.yaml  # Create empty file to avoid errors
-                fi
-              """
+                  
+                  # If no values or manifests were found
+                  if [ ! -f "\$values_path" ] && [ ! -d "\$manifests_path" ]; then
+                    echo "⚠️ WARNING: ${app} has neither values/prod.yaml nor manifests/ directory"
+                    echo "⚠️ Skipping validation for ${app}"
+                    touch /tmp/manifests/${app}.yaml  # Create empty file to avoid errors
+                  fi
+                """
+              }
             }
           }
         }
         
-        // Validate manifests with Kubeconform
-        container('validator') {
-          script {
-            appsConfig.keySet().each { app ->
-              sh """
-                if [ -s "/tmp/manifests/${app}.yaml" ]; then  # Check if file exists and has size > 0
-                  echo "=== STEP 3: KUBECONFORM VALIDATION for ${app} ==="
-                  # Skip validating CRDs which might not match schema
-                  grep -v "kind: CustomResourceDefinition" /tmp/manifests/${app}.yaml > /tmp/manifests/${app}-nocrd.yaml || true
-                  
-                  # Relaxed validation with generous timeouts and schema skipping
-                  kubeconform -summary -output json -schema-location default -skip CustomResourceDefinition -ignore-missing-schemas /tmp/manifests/${app}-nocrd.yaml || {
-                    echo "⚠️  Some resources failed validation, but this is often normal with third-party charts"
-                    echo "⚠️  Review validation errors above manually"
-                  }
-                else
-                  echo "Skipping validation for ${app} - no manifests to validate"
-                fi
-              """
-            }
-          }
-        }
-      }
-    }
-
-    // ── Stage 3: Diff vs Live Cluster (PR only) ─────────────────────────
-    stage('Diff vs Live Cluster') {
-      when { not { changeRequest() } }
-      agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
-      steps {
-        container('helm') {
-          // Install helm-diff plugin first as a separate step
-          sh 'helm plugin install https://github.com/databus23/helm-diff || true'
-          
-          script {
-            // Add Helm repositories first
-            appsConfig.each { app, config ->
-              if (config.isHelm) {
-                sh "helm repo add ${config.helmRepo.name} ${config.helmRepo.url} || true"
+        stage('Schema Validation') {
+          agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
+          steps {
+            container('validator') {
+              script {
+                def app = params.APP_NAME
+                
+                sh """
+                  if [ -s "/tmp/manifests/${app}.yaml" ]; then  # Check if file exists and has size > 0
+                    echo "=== STEP 3: KUBECONFORM VALIDATION for ${app} ==="
+                    # Skip validating CRDs which might not match schema
+                    grep -v "kind: CustomResourceDefinition" /tmp/manifests/${app}.yaml > /tmp/manifests/${app}-nocrd.yaml || true
+                    
+                    # Relaxed validation with generous timeouts and schema skipping
+                    kubeconform -summary -output json -schema-location default -skip CustomResourceDefinition -ignore-missing-schemas /tmp/manifests/${app}-nocrd.yaml || {
+                      echo "⚠️  Some resources failed validation, but this is often normal with third-party charts"
+                      echo "⚠️  Review validation errors above manually"
+                    }
+                  else
+                    echo "Skipping validation for ${app} - no manifests to validate"
+                  fi
+                """
               }
             }
-            sh "helm repo update"
-            
-            appsConfig.each { app, config ->
-              sh """
-                set -eo pipefail
-                values_path="./apps/${app}/values/prod.yaml"
-                manifests_path="./apps/${app}/manifests"
+          }
+        }
+        
+        stage('Diff vs Live Cluster') {
+          agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
+          steps {
+            container('helm') {
+              script {
+                def app = params.APP_NAME
+                def config = appsConfig[app]
                 
-                # Process app based on what exists
-                if [ -f "\$values_path" ]; then
-                  # Process as a Helm app
-                  chart_ref="${config.chart}"
-                  chart_name=\$(basename "\$chart_ref")
-                  namespace="${config.namespace}"
-
-                  # Pull & deps
-                  helm pull "\$chart_ref" --untar --untardir /tmp
-                  helm dependency update /tmp/"\$chart_name"
-
-                  echo "=== STEP 4: DIFF VS LIVE CLUSTER ==="
-                  echo "→ Helm diff for ${app}"
-                  helm diff upgrade "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" --allow-unreleased || echo "Helm diff found changes but continuing"
-
-                  echo "→ Kubectl diff for ${app}"
-                  helm template "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" | kubectl diff --server-side=false -f - || echo "Kubectl diff found changes but continuing"
-                fi
+                // Install helm-diff plugin
+                sh 'helm plugin install https://github.com/databus23/helm-diff || true'
                 
-                if [ -d "\$manifests_path" ]; then
-                  # Direct kubectl diff for manifest-only apps
-                  echo "=== KUBECTL DIFF FOR MANIFESTS ==="
-                  echo "→ Kubectl diff for ${app} manifests"
-                  kubectl diff --server-side=false -f "\$manifests_path/" || echo "Kubectl diff found changes but continuing"
-                fi
+                // Add Helm repo if needed
+                if (config.isHelm) {
+                  sh "helm repo add ${config.helmRepo.name} ${config.helmRepo.url} || true"
+                  sh "helm repo update"
+                }
                 
-                # If no values or manifests were found
-                if [ ! -f "\$values_path" ] && [ ! -d "\$manifests_path" ]; then
-                  echo "Skipping diff for ${app} - no configuration found"
-                fi
-              """
+                sh """
+                  set -eo pipefail
+                  values_path="./apps/${app}/values/prod.yaml"
+                  manifests_path="./apps/${app}/manifests"
+                  
+                  # Process app based on what exists
+                  if [ -f "\$values_path" ]; then
+                    # Process as a Helm app
+                    chart_ref="${config.chart}"
+                    chart_name=\$(basename "\$chart_ref")
+                    namespace="${config.namespace}"
+
+                    # Pull & deps
+                    helm pull "\$chart_ref" --untar --untardir /tmp
+                    helm dependency update /tmp/"\$chart_name"
+
+                    echo "=== STEP 4: DIFF VS LIVE CLUSTER ==="
+                    echo "→ Helm diff for ${app}"
+                    helm diff upgrade "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" --allow-unreleased || echo "Helm diff found changes but continuing"
+
+                    echo "→ Kubectl diff for ${app}"
+                    helm template "${app}" /tmp/"\$chart_name" -f "\$values_path" --namespace "\$namespace" | kubectl diff --server-side=false -f - || echo "Kubectl diff found changes but continuing"
+                  fi
+                  
+                  if [ -d "\$manifests_path" ]; then
+                    # Direct kubectl diff for manifest-only apps
+                    echo "=== KUBECTL DIFF FOR MANIFESTS ==="
+                    echo "→ Kubectl diff for ${app} manifests"
+                    kubectl diff --server-side=false -f "\$manifests_path/" || echo "Kubectl diff found changes but continuing"
+                  fi
+                  
+                  # If no values or manifests were found
+                  if [ ! -f "\$values_path" ] && [ ! -d "\$manifests_path" ]; then
+                    echo "Skipping diff for ${app} - no configuration found"
+                  fi
+                """
+              }
+            }
+          }
+        }
+        
+        stage('Archive Results') {
+          agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
+          steps {
+            script {
+              def app = params.APP_NAME
+              
+              sh 'mkdir -p reports'
+              sh "cp /tmp/manifests/${app}.yaml reports/ || true"
+              archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
             }
           }
         }
       }
     }
-
-    // ── Stage 4: Archive Reports ───────────────────────────────────────
-    stage('Archive Reports') {
-      agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
-      steps {
-        sh 'mkdir -p reports'
-        sh 'cp /tmp/manifests/*.yaml reports/ || true'
-        archiveArtifacts artifacts: 'reports/**', allowEmptyArchive: true
-      }
-    }
-
   }
-
 }
