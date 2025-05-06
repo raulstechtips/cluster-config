@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins-agent: ci-test
+spec:
+  serviceAccountName: jenkins-runner
+  restartPolicy: Never
+  volumes:
+    - name: kubeconfig
+      secret:
+        secretName: jenkins-kube-config
+        defaultMode: 0400
+  containers:
+    - name: helm
+      image: dtzar/helm-kubectl:3.5.0
+      command: ["cat"]
+      tty: true
+      volumeMounts:
+        - name: kubeconfig
+          mountPath: /home/jenkins/.kube/config
+          subPath: config
+      env:
+        - name: KUBECONFIG
+          valueFrom:
+            secretKeyRef:
+              name: jenkins-kube-config
+              key: config
+    - name: yq
+      image: mikefarah/yq:4.21.1
+      command: ["cat"]
+      tty: true
