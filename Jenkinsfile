@@ -2,7 +2,7 @@
 //    Customize per-repo with any app names & their corresponding chart refs
 def chartMap = [
   "cert-manager": "jetstack/cert-manager",
-  "infisical": "infisical/infisical",
+  "infisical": "infisical-helm-charts/infisical-standalone",
 ]
 
 // Define Helm repos that need to be added
