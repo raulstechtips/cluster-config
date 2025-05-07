@@ -155,25 +155,24 @@ pipeline {
               def changedApps = []
               def isPR = env.CHANGE_ID != null
               
-              // For PRs: always check all apps
+              // For PRs: check only apps with changes
               if (isPR) {
-                echo "Pull Request detected - will validate all apps"
-                appsConfig.keySet().each { app ->
-                  changedApps.add(app)
-                }
-              } else {
-                // For direct pushes: check only changed apps
-                echo "Direct push detected - will validate only changed apps"
+                echo "Pull Request detected - will validate only changed apps"
                 
-                sh "git diff --name-only HEAD^ HEAD > changed_files.txt"
+                // Get changed files in PR
+                sh "git diff --name-only origin/main HEAD > changed_files.txt"
                 def changedFiles = readFile('changed_files.txt').trim()
                 
                 appsConfig.keySet().each { app ->
                   if (changedFiles.contains("apps/${app}/") || params.FORCE_ALL_APPS) {
                     changedApps.add(app)
-                    echo "App '${app}' has changed or validation forced"
+                    echo "App '${app}' has changes in PR"
                   }
                 }
+              } else {
+                // For direct pushes: only do YAML linting, no app validation
+                echo "Direct push detected - will only do YAML linting (skip app validation)"
+                // Leave changedApps empty to skip app-specific validation
               }
               
               // Store changed apps for later stages
@@ -183,6 +182,9 @@ pipeline {
         }
   
         stage('Trigger App Validations') {
+          when {
+            expression { !env.CHANGED_APPS.isEmpty() }
+          }
           steps {
             script {
               def changedApps = env.CHANGED_APPS ? env.CHANGED_APPS.tokenize(',') : []
