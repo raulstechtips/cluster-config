@@ -159,9 +159,12 @@ pipeline {
               if (isPR) {
                 echo "Pull Request detected - will validate only changed apps"
                 
-                // Get changed files in PR
-                sh "git diff --name-only origin/main HEAD > changed_files.txt"
+                // Fetch the target branch and do proper change detection for PRs
+                sh "git fetch --no-tags origin +refs/heads/${env.CHANGE_TARGET}:refs/remotes/origin/${env.CHANGE_TARGET}"
+                sh "git diff --name-only origin/${env.CHANGE_TARGET} HEAD > changed_files.txt"
                 def changedFiles = readFile('changed_files.txt').trim()
+                
+                echo "Changed files in PR: ${changedFiles}"
                 
                 appsConfig.keySet().each { app ->
                   if (changedFiles.contains("apps/${app}/") || params.FORCE_ALL_APPS) {
