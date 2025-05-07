@@ -22,10 +22,6 @@ spec:
       env:
         - name: KUBECONFIG
           value: /home/jenkins/.kube/config
-    - name: yq
-      image: mikefarah/yq:4.21.1
-      command: ["cat"]
-      tty: true
     - name: validator
       image: alpine:3.18
       command: ["sh", "-c"]
