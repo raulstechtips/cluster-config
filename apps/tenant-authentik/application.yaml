@@ -19,6 +19,10 @@ spec:
           value: $ARGOCD_ENV_S3_AUTENTHIK_PROD_API_DOMAIN
         - name: INFISICAL_PROD_HOST_API
           value: $ARGOCD_ENV_INFISICAL_PROD_HOST_API
+        - name: INFISICAL_PROJECT_SLUG
+          value: $ARGOCD_ENV_INFISICAL_PROJECT_SLUG
+        - name: INFISICAL_ENV_SLUG
+          value: $ARGOCD_ENV_INFISICAL_ENV_SLUG
   destination:
     server: https://kubernetes.default.svc
     namespace: authentik
