@@ -19,9 +19,9 @@ tenant:
   features:
     bucketDNS: false
     domains:
-      console: "https://${S3_AUTENTHIK_DOMAIN}"
+      console: "https://${S3_AUTENTHIK_PROD_DOMAIN}"
       minio:
-        - "https://${S3_AUTENTHIK_API_DOMAIN}"
+        - "https://${S3_AUTENTHIK_PROD_DOMAIN}"
     enableSFTP: true
   image:
     pullPolicy: IfNotPresent
