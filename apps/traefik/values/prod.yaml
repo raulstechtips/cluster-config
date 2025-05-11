@@ -1,9 +1,27 @@
 ---
 additionalArguments:
   - --serversTransport.insecureSkipVerify=true
-  - --log.level=DEBUG
   - --entryPoints.redis.address=:6379/tcp
   - --entryPoints.postgres.address=:5432/tcp
+logs:
+  level: INFO
+  access:
+    enabled: false
+    format: json
+    fields:
+      general:
+        defaultMode: drop
+        names:
+          ClientAddr: keep
+          RequestHost: keep
+          RouterName: keep
+          ServiceName: keep
+          StartUTC: keep
+      headers:
+        defaultMode: drop
+        names:
+          X-Forwarded-For: keep
+          CF-Connecting-IP: keep
 deployment:
   additionalContainers: []
   annotations: {}
@@ -45,6 +63,23 @@ ports:
       enabled: true
     tls:
       enabled: true
+    forwardedHeaders:
+      trustedIPs:
+        - 173.245.48.0/20
+        - 103.21.244.0/22
+        - 103.22.200.0/22
+        - 103.31.4.0/22
+        - 141.101.64.0/18
+        - 108.162.192.0/18
+        - 190.93.240.0/20
+        - 188.114.96.0/20
+        - 197.234.240.0/22
+        - 198.41.128.0/17
+        - 162.158.0.0/15
+        - 104.16.0.0/13
+        - 104.24.0.0/14
+        - 172.64.0.0/13
+        - 131.0.72.0/22
 providers:
   kubernetesCRD:
     allowCrossNamespace: true
@@ -65,5 +100,6 @@ service:
   labels: {}
   loadBalancerSourceRanges: []
   spec:
+    externalTrafficPolicy: Local
     loadBalancerIP: "${TRAEFIK_LOAD_BALANCER_IP}"
   type: LoadBalancer

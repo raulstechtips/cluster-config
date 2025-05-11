@@ -34,30 +34,30 @@ tenant:
     protocol: http
   name: tenant-authentik
   pools:
-    affinity:
-      podAntiAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-                - key: app.kubernetes.io/instance
-                  operator: In
-                  values:
-                    - tenant-authentik
-            topologyKey: kubernetes.io/hostname
-    name: pool-0
-    resources:
-      limits:
-        cpu: 500m
-        ephemeral-storage: 500Mi
-        memory: 512Mi
-      requests:
-        cpu: 200m
-        ephemeral-storage: 500Mi
-        memory: 256Mi
-    servers: 4
-    size: 5Gi
-    storageClassName: longhorn-minio-authentik
-    volumesPerServer: 1
+    - affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/instance
+                    operator: In
+                    values:
+                      - tenant-authentik
+              topologyKey: kubernetes.io/hostname
+      name: pool-0
+      resources:
+        limits:
+          cpu: 500m
+          ephemeral-storage: 500Mi
+          memory: 512Mi
+        requests:
+          cpu: 200m
+          ephemeral-storage: 500Mi
+          memory: 256Mi
+      servers: 4
+      size: 5Gi
+      storageClassName: longhorn-minio-authentik
+      volumesPerServer: 1
   poolsMetadata:
     annotations:
       secrets.infisical.com/auto-reload: "true"

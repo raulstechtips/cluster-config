@@ -29,10 +29,12 @@ flowchart TD
         subgraph "Applications"
             Authentik
             Infisical
+            Jenkins
         end
 
         Infisical --> |Database</br>Cache| LonghornStorage
         Authentik --> |Database</br>Cache</br>S3| LonghornStorage
+        Jenkins --> |PVC| LonghornStorage
             
         %% Storage Layer
         subgraph "LonghornStorage"

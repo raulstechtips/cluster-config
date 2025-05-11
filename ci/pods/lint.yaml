@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins-agent: lint
+spec:
+  restartPolicy: Never
+  containers:
+    - name: yamllint
+      image: cytopia/yamllint:latest
+      command: ["cat"]
+      tty: true

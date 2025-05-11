@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins-agent: ci-test
+spec:
+  restartPolicy: Never
+  volumes:
+    - name: kubeconfig
+      secret:
+        secretName: jenkins-kube-config
+        defaultMode: 0400
+  containers:
+    - name: helm
+      image: ghcr.io/helmfile/helmfile:v1.0.0
+      command: ["cat"]
+      tty: true
+      volumeMounts:
+        - name: kubeconfig
+          mountPath: /home/jenkins/.kube
+          readOnly: true
+      env:
+        - name: KUBECONFIG
+          value: /home/jenkins/.kube/config
+    - name: validator
+      image: alpine:3.18
+      command: ["sh", "-c"]
+      args: ["wget -q https://github.com/yannh/kubeconform/releases/download/v0.6.7/kubeconform-linux-amd64.tar.gz && tar -xzf kubeconform-linux-amd64.tar.gz && mv kubeconform /usr/local/bin/ && cat"]
+      tty: true
