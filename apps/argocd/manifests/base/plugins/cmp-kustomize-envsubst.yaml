@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cmp-kustomize-envsubst
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/config-management-plugin: kustomize-envsubst-v1
+data:
+  plugin.yaml: |
+    apiVersion: argoproj.io/v1alpha1
+    kind: ConfigManagementPlugin
+    metadata:
+      name: kustomize-envsubst
+    spec:
+      version: v1
+      generate:
+        command: ["sh","-c"]
+        args: ["kustomize build {{ .path }} | envsubst"]
