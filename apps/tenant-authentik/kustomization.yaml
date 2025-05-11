@@ -12,7 +12,7 @@ helmCharts:
     valuesFile: values/prod.yaml
 
 resources:
-  - manifests/secrets
-  - manifests/ingress
-  - manifests/storage
-  - manifests/certificates
+  - manifests/secrets/kustomization.yaml
+  - manifests/ingress/kustomization.yaml
+  - manifests/storage/kustomization.yaml
+  - manifests/certificates/kustomization.yaml
