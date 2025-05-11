@@ -6,52 +6,27 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  sources:
-    - repoURL: https://operator.min.io/
-      chart: minio/tenant
-      targetRevision: 7.1.1
-      helm:
-        releaseName: tenant-authentik
-        namespace: authentik
-        valuesFiles:
-          - values/prod.yaml
-      plugin:
-        name: helm-envsubst-v1
-        env:
-          - name: S3_AUTENTHIK_PROD_DOMAIN
-            valueFrom:
-              secretKeyRef:
-                name: argocd-app-env
-                key: S3_AUTENTHIK_PROD_DOMAIN
-          - name: S3_AUTENTHIK_PROD_API_DOMAIN
-            valueFrom:
-              secretKeyRef:
-                name: argocd-app-env
-                key: S3_AUTENTHIK_PROD_API_DOMAIN
-    - repoURL: https://github.com/raulstechtips/cluster-config.git
-      targetRevision: "6-feature-authentik-with-argocd"
-      path: apps/tenant-authentik/manifests/
-      plugin:
-        name: kustomize-envsubst-v1
-        env:
-          - name: S3_AUTENTHIK_PROD_DOMAIN
-            valueFrom:
-              secretKeyRef:
-                name: argocd-app-env
-                key: S3_AUTENTHIK_PROD_DOMAIN
-          - name: S3_AUTENTHIK_PROD_API_DOMAIN
-            valueFrom:
-              secretKeyRef:
-                name: argocd-app-env
-                key: S3_AUTENTHIK_PROD_API_DOMAIN
-          - name: INFISICAL_PROD_HOST_API
-            valueFrom:
-              secretKeyRef:
-                name: argocd-app-env
-                key: INFISICAL_PROD_HOST_API
-
+  source:
+    repoURL: https://github.com/raulstechtips/cluster-config.git
+    targetRevision: refs/heads/6-feature-automate-cluster-deployments-with-argocd
+    path: apps/tenant-authentik
+    plugin:
+      name: kustomize-envsubst
+      env:
+        - name: S3_AUTENTHIK_PROD_DOMAIN
+          value: $ARGOCD_ENV_S3_AUTENTHIK_PROD_DOMAIN
+        - name: S3_AUTENTHIK_PROD_API_DOMAIN
+          value: $ARGOCD_ENV_S3_AUTENTHIK_PROD_API_DOMAIN
+        - name: INFISICAL_PROD_HOST_API
+          value: $ARGOCD_ENV_INFISICAL_PROD_HOST_API
   destination:
     server: https://kubernetes.default.svc
     namespace: authentik
-  syncPolicy: {}
+  syncPolicy:
+    retry:
+      limit: 10
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
   revisionHistoryLimit: 10
