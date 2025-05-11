@@ -12,7 +12,9 @@ helmCharts:
     valuesFile: values/prod.yaml
 
 resources:
-  - manifests/secrets
-  - manifests/ingress
-  - manifests/storage
-  - manifests/certificates
+  - manifests/secrets/secret-minio-tenant-authentik-root-credentials.yaml
+  - manifests/secrets/secret-minio-tenant-authentik-user-credentials.yaml
+  - manifests/ingress/prod.yaml
+  - manifests/storage/longhorn-minio-tenant-authentik.yaml
+  - manifests/certificates/tls-certificate-minio-tenant-authentik.yaml
+  - manifests/debug-env.yaml
