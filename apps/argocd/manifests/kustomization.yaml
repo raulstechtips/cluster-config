@@ -8,12 +8,14 @@ resources:
   - https://raw.githubusercontent.com/argoproj/argo-cd/v3.0.0/manifests/ha/install.yaml
 
   # Cluster‑wide extras that never vary by env
-  - base/plugins/cmp-helm-envsubst.yaml
+  # - base/plugins/cmp-helm-envsubst.yaml
   - base/plugins/cmp-kustomize-envsubst.yaml
   - base/rbac/cmp-rbac.yaml
   - base/ingress/prod.yaml
   - base/secrets/secret-argocd-app-env.yaml
 
 patches:
-  - path: overlays/repo-server-tools.yaml
+  - path: overlays/cmp-kustomize-envsubst-sidecar.yaml
   - path: overlays/argocd-cmd-params-cm.yaml
+  - path: overlays/argocd-cm.yaml
+  - path: overlays/repo-server-tools.yaml

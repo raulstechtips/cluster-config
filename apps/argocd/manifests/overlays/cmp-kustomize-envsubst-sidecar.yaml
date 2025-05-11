@@ -1,0 +1,79 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-repo-server
+spec:
+  template:
+    spec:
+      containers:
+        - name: kustomize-envsubst
+          image: alpine:3.20
+          command: [/var/run/argocd/argocd-cmp-server]
+          volumeMounts:
+            - mountPath: /var/run/argocd
+              name: var-files
+            - mountPath: /home/argocd/cmp-server/plugins
+              name: plugins
+            - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+              subPath: plugin.yaml
+              name: cmp-kustomize-envsubst
+            - mountPath: /tmp
+              name: cmp-tmp
+          # Standard ArgoCD variables required for the plugin to function
+          env:
+            - name: ARGOCD_APP_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['app.kubernetes.io/name']
+            - name: ARGOCD_APP_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          # Optional: Access to the environment variables if needed for substitution
+          envFrom:
+            - secretRef:
+                name: argocd-app-env
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 256Mi
+              cpu: 200m
+          # Install necessary tools in the sidecar
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - |
+                    # Install dependencies
+                    apk add --no-cache gettext curl jq
+
+                    # Install kustomize
+                    KUSTOMIZE_VERSION=v5.1.1
+                    curl -sL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" | tar -xz -C /tmp
+                    mv /tmp/kustomize /usr/local/bin/
+                    chmod +x /usr/local/bin/kustomize
+
+                    # Fix socket permissions in the background
+                    (
+                      # Wait for socket to be created
+                      while true; do
+                        if [ -S /home/argocd/cmp-server/plugins/kustomize-envsubst.sock ]; then
+                          chmod 777 /home/argocd/cmp-server/plugins/kustomize-envsubst.sock
+                          echo "Fixed socket permissions"
+                          break
+                        fi
+                        echo "Waiting for socket creation..."
+                        sleep 1
+                      done
+                    ) &
+      volumes:
+        - name: cmp-kustomize-envsubst
+          configMap:
+            name: cmp-kustomize-envsubst
+        - name: cmp-tmp
+          emptyDir: {}

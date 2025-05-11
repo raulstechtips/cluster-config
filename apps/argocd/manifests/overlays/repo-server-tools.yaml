@@ -6,33 +6,11 @@ metadata:
 spec:
   template:
     spec:
-      volumes:
-        - name: custom-tools
-          emptyDir: {}
-      initContainers:
-        - name: install-tools
-          image: alpine:3.20            # public; no registry to maintain
-          command:
-            - sh
-            - -c
-          args:
-            - |
-              apk add --no-cache helm kustomize gettext && \
-              cp /usr/bin/helm /custom-tools/ && \
-              cp /usr/bin/kustomize /custom-tools/ && \
-              cp /usr/bin/envsubst /custom-tools/
-          volumeMounts:
-            - name: custom-tools
-              mountPath: /custom-tools
       containers:
         - name: argocd-repo-server
-          volumeMounts:
-            - name: custom-tools
-              mountPath: /usr/local/bin/helm
-              subPath: helm
-            - name: custom-tools
-              mountPath: /usr/local/bin/kustomize
-              subPath: kustomize
-            - name: custom-tools
-              mountPath: /usr/local/bin/envsubst
-              subPath: envsubst
+          envFrom:
+            - secretRef:
+                name: argocd-app-env
+          env:
+            - name: ARGOCD_CMP_SERVER
+              value: "1"
