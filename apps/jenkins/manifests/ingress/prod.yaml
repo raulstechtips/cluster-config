@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`${JENKINS_PROD_DOMAIN}`)
+    - match: Host(`${ARGOCD_ENV_JENKINS_PROD_DOMAIN}`)
       kind: Rule
       middlewares:
         - name: default-headers

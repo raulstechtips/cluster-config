@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`${JENKINS_LIVE_DOMAIN}`)
+    - match: Host(`${ARGOCD_ENV_JENKINS_LIVE_DOMAIN}`)
       kind: Rule
       middlewares:
         - name: github-hooks-ips
