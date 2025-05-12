@@ -98,7 +98,7 @@ controller:
   jenkinsUrlProtocol: https
 
   # -- Set Jenkins URL if you are not using the ingress definitions provided by the chart
-  jenkinsUrl: https://${JENKINS_LIVE_DOMAIN}
+  jenkinsUrl: https://${ARGOCD_ENV_JENKINS_LIVE_DOMAIN}
 
   # If you set this prefix and use ingress controller, then you might want to set the ingress path below
   # I.e., "/jenkins"
@@ -591,7 +591,7 @@ agent:
 
   # For connecting to the Jenkins controller
   # -- Overrides the Kubernetes Jenkins URL
-  jenkinsUrl: https://${JENKINS_LIVE_DOMAIN}
+  jenkinsUrl: https://${ARGOCD_ENV_JENKINS_LIVE_DOMAIN}
 
   # -- Disables the verification of the controller certificate on remote connection. This flag correspond to the "Disable https certificate check" flag in kubernetes plugin UI
   skipTlsVerify: false
