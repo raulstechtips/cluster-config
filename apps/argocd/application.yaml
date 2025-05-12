@@ -9,18 +9,9 @@ spec:
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
     targetRevision: refs/heads/6-feature-automate-cluster-deployments-with-argocd
-    path: apps/argocd
+    path: apps/argocd/manifests
     plugin:
       name: kustomize-envsubst
-      # env:
-      #   - name: ARGOCD_PROD_DOMAIN
-      #     value: $ARGOCD_ENV_ARGOCD_PROD_DOMAIN
-      #   - name: INFISICAL_PROD_HOST_API
-      #     value: $ARGOCD_ENV_INFISICAL_PROD_HOST_API
-      #   - name: INFISICAL_PROJECT_SLUG
-      #     value: $ARGOCD_ENV_INFISICAL_PROJECT_SLUG
-      #   - name: INFISICAL_ENV_SLUG
-      #     value: $ARGOCD_ENV_INFISICAL_ENV_SLUG
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
