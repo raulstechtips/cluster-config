@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`${ARGOCD_ENV_ARGON_PROD_DOMAIN}`)
+    - match: Host(`${ARGOCD_ENV_ARGOCD_PROD_DOMAIN}`)
       kind: Rule
       priority: 10
       middlewares:
@@ -19,7 +19,7 @@ spec:
       services:
         - name: argocd-server
           port: 80
-    - match: Host(`${ARGOCD_ENV_ARGON_PROD_DOMAIN}`) && Header(`Content-Type`, `application/grpc`)
+    - match: Host(`${ARGOCD_ENV_ARGOCD_PROD_DOMAIN}`) && Header(`Content-Type`, `application/grpc`)
       kind: Rule
       priority: 11
       middlewares:
