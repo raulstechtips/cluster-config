@@ -19,9 +19,9 @@ tenant:
   features:
     bucketDNS: false
     domains:
-      console: "https://${S3_AUTHENTIK_PROD_DOMAIN}"
+      console: "https://${ARGOCD_ENV_S3_AUTHENTIK_PROD_DOMAIN}"
       minio:
-        - "https://${S3_AUTHENTIK_PROD_DOMAIN}"
+        - "https://${ARGOCD_ENV_S3_AUTHENTIK_PROD_DOMAIN}"
     enableSFTP: true
   image:
     pullPolicy: IfNotPresent
