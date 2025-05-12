@@ -1,0 +1,10 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cert-manager
+
+resources:
+  - self-signed-issuer/manifests/self-signed-issuer.yaml
+  - letsencrypt-issuer/letsencrypt-staging.yaml
+  - letsencrypt-issuer/letsencrypt-production.yaml
+  - letsencrypt-issuer/manifests/secrets/secret-cloud-flare-api-token.yaml
