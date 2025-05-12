@@ -21,7 +21,7 @@ tenant:
     domains:
       console: "https://${ARGOCD_ENV_S3_AUTHENTIK_PROD_DOMAIN}"
       minio:
-        - "https://${ARGOCD_ENV_S3_AUTHENTIK_PROD_DOMAIN}"
+        - "https://${ARGOCD_ENV_S3_AUTHENTIK_PROD_API_DOMAIN}"
     enableSFTP: true
   image:
     pullPolicy: IfNotPresent
