@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: kustomize-envsubst
-          image: alpine:3.20
+          image: ubuntu:22.04
           command: [/var/run/argocd/argocd-cmp-server]
           volumeMounts:
             - mountPath: /var/run/argocd
@@ -46,11 +46,12 @@ spec:
             postStart:
               exec:
                 command:
-                  - sh
+                  - bash
                   - -c
                   - |
                     # Install dependencies
-                    apk add --no-cache gettext curl jq
+                    apt-get update
+                    apt-get install -y gettext curl jq
 
                     # Install kustomize
                     KUSTOMIZE_VERSION=v5.1.1

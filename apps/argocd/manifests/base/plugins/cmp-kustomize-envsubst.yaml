@@ -12,6 +12,9 @@ data:
       name: kustomize-envsubst
     spec:
       generate:
-        command: ["sh", "-c"]
+        command: ["bash", "-c"]
         args:
-          - "kustomize build --enable-helm --load-restrictor LoadRestrictionsNone . | envsubst"
+          - |
+            set -eo pipefail
+            SHELL_FORMAT=$(printf '${%s} ' ${!ARGOCD_ENV_*})
+            kustomize build --enable-helm --load-restrictor LoadRestrictionsNone . | envsubst "$SHELL_FORMAT"
