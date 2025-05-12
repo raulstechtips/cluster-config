@@ -61,7 +61,6 @@ tenant:
   poolsMetadata:
     annotations:
       secrets.infisical.com/auto-reload: "true"
-    existingSecret: true
     labels: {}
   prometheusOperator: false
   users:
