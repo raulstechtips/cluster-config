@@ -5,7 +5,7 @@ namespace: argocd
 
 resources:
   # Upstream Argo CD HA install (immutable core)
-  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.0.0/manifests/ha/install.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.0.0/manifests/install.yaml
   - base/plugins/cmp-kustomize-envsubst.yaml
   - base/rbac/cmp-rbac.yaml
   - base/ingress/prod.yaml
