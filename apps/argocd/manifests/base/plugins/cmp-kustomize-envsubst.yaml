@@ -13,4 +13,5 @@ data:
     spec:
       generate:
         command: ["sh", "-c"]
-        args: ["kustomize build . | envsubst"]
+        args:
+          - "kustomize build --enable-helm --load-restrictor LoadRestrictionsNone . | envsubst"

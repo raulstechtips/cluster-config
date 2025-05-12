@@ -58,6 +58,12 @@ spec:
                     mv /tmp/kustomize /usr/local/bin/
                     chmod +x /usr/local/bin/kustomize
 
+                    # Install Helm
+                    HELM_VERSION=v3.14.2
+                    curl -sL "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" | tar -xz -C /tmp
+                    mv /tmp/linux-amd64/helm /usr/local/bin/
+                    chmod +x /usr/local/bin/helm
+
                     # Fix socket permissions in the background
                     (
                       # Wait for socket to be created

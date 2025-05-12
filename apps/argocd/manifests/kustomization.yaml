@@ -4,11 +4,8 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-  # Upstream Argo CD HA install (immutable core)
+  # Upstream Argo CD HA install (immutable core)
   - https://raw.githubusercontent.com/argoproj/argo-cd/v3.0.0/manifests/ha/install.yaml
-
-  # Cluster‑wide extras that never vary by env
-  # - base/plugins/cmp-helm-envsubst.yaml
   - base/plugins/cmp-kustomize-envsubst.yaml
   - base/rbac/cmp-rbac.yaml
   - base/ingress/prod.yaml
