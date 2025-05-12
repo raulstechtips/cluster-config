@@ -17,4 +17,3 @@ resources:
   - manifests/ingress/prod.yaml
   - manifests/storage/longhorn-minio-tenant-authentik.yaml
   - manifests/certificates/tls-certificate-minio-tenant-authentik.yaml
-  - manifests/debug-env.yaml
