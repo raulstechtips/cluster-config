@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`${LONGHORN_PROD_DOMAIN}`)
+    - match: Host(`${ARGOCD_ENV_LONGHORN_PROD_DOMAIN}`)
       kind: Rule
       middlewares:
         - name: default-headers
