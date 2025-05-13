@@ -13,3 +13,6 @@ helmCharts:
 
 resources:
   - manifests/ingress/ingress.yaml
+  - manifests/storage/longhorn-default-storage-class.yaml
+  - manifests/storage/longhorn-storage-class-replicas-1.yaml
+  - manifests/storage/longhorn-volume-snapshot-class.yaml
