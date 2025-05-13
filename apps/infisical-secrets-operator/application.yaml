@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
-    targetRevision: refs/heads/6-feature-automate-cluster-deployments-with-argocd
+    targetRevision: HEAD
     path: apps/infisical-secrets-operator
     plugin:
       name: kustomize-envsubst
