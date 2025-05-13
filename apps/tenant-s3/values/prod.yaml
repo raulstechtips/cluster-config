@@ -34,6 +34,7 @@ tenant:
     port: 9000
     protocol: http
   name: tenant-s3
+  podManagementPolicy: OrderedReady
   pools:
     - affinity:
         podAntiAffinity:
@@ -65,4 +66,4 @@ tenant:
     labels: {}
   prometheusOperator: false
   users:
-    - name: tenant-s3-minio-admin-console-user-credentials
+    - name: tenant-s3-minio-users
