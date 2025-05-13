@@ -15,11 +15,5 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
-  syncPolicy:
-    retry:
-      limit: 10
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
+  syncPolicy: {}
   revisionHistoryLimit: 10
