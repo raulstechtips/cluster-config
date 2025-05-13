@@ -8,4 +8,4 @@ podDnsConfig:
     - 1.1.1.1
     - 9.9.9.9
 podDnsPolicy: None
-replicaCount: 3
+replicaCount: 1
