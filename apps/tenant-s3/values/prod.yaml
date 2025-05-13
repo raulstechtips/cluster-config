@@ -34,7 +34,6 @@ tenant:
     port: 9000
     protocol: http
   name: tenant-s3
-  podManagementPolicy: OrderedReady
   pools:
     - affinity:
         podAntiAffinity:
