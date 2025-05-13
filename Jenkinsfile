@@ -1,5 +1,9 @@
 // Define apps configuration with comprehensive information
 def appsConfig = [
+  "argocd": [
+    isHelm: false,
+    namespace: "argocd"
+  ],
   "authentik": [
     isHelm: true,
     namespace: "authentik",
