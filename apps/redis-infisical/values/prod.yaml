@@ -6,13 +6,13 @@ auth:
   usePasswordFileFromSecret: false
   usePasswordFiles: false
 global:
-  defaultStorageClass: longhorn-redis-infisical
+  defaultStorageClass: longhorn-storage-class-replicas-1
 master:
   containerPorts:
     redis: 6379
   count: 1
   persistence:
-    size: 8Gi
+    size: 10Gi
   persistentVolumeClaimRetentionPolicy:
     enabled: false
     whenDeleted: Retain
@@ -28,7 +28,7 @@ replica:
   containerPorts:
     redis: 6379
   persistence:
-    size: 8Gi
+    size: 10Gi
   persistentVolumeClaimRetentionPolicy:
     enabled: false
     whenDeleted: Retain
