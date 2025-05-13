@@ -11,4 +11,3 @@ spec:
   backupOwnerReference: none
   method: volumeSnapshot
   immediate: true
-  reclaimPolicy: Retain
