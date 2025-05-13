@@ -19,9 +19,9 @@ tenant:
   features:
     bucketDNS: false
     domains:
-      console: "https://${S3_AUTENTHIK_DOMAIN}"
+      console: "https://${ARGOCD_ENV_S3_AUTHENTIK_PROD_DOMAIN}"
       minio:
-        - "https://${S3_AUTENTHIK_API_DOMAIN}"
+        - "https://${ARGOCD_ENV_S3_AUTHENTIK_PROD_API_DOMAIN}"
     enableSFTP: true
   image:
     pullPolicy: IfNotPresent
@@ -61,7 +61,6 @@ tenant:
   poolsMetadata:
     annotations:
       secrets.infisical.com/auto-reload: "true"
-    existingSecret: true
     labels: {}
   prometheusOperator: false
   users:

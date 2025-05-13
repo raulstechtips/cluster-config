@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`${INFISICAL_DOMAIN}`)
+    - match: Host(`${ARGOCD_ENV_INFISICAL_PROD_DOMAIN}`)
       kind: Rule
       middlewares:
         - name: default-headers

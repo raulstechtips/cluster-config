@@ -1,0 +1,12 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: authentik
+
+resources:
+  - manifests/cluster.yaml
+  - manifests/scheduled-backup.yaml
+  - manifests/secrets/secret-cnpg-authentik-admin-credentials.yaml
+  - manifests/certificates/tls-certificate-cnpg-authentik.yaml
+  - manifests/storage/longhorn-cnpg-authentik-wal.yaml
+  - manifests/storage/longhorn-cnpg-authentik-main.yaml

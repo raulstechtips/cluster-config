@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`${S3_AUTENTHIK_DOMAIN}`)
+    - match: Host(`${ARGOCD_ENV_S3_AUTHENTIK_PROD_DOMAIN}`)
       kind: Rule
       middlewares:
         - name: default-headers
@@ -18,7 +18,7 @@ spec:
       services:
         - name: tenant-authentik-console
           port: 9443
-    - match: Host(`${S3_AUTENTHIK_API_DOMAIN}`)
+    - match: Host(`${ARGOCD_ENV_S3_AUTHENTIK_PROD_DOMAIN}`)
       kind: Rule
       middlewares:
         - name: default-headers

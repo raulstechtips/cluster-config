@@ -1,0 +1,18 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: argocd
+
+resources:
+  # Upstream Argo CD HA install (immutable core)
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v3.0.0/manifests/install.yaml
+  - base/plugins/cmp-kustomize-envsubst.yaml
+  - base/rbac/cmp-rbac.yaml
+  - base/ingress/prod.yaml
+  - base/secrets/secret-argocd-app-env.yaml
+
+patches:
+  - path: overlays/cmp-kustomize-envsubst-sidecar.yaml
+  - path: overlays/argocd-cmd-params-cm.yaml
+  - path: overlays/argocd-cm.yaml
+  - path: overlays/repo-server-tools.yaml

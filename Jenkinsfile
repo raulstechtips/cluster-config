@@ -138,15 +138,6 @@ pipeline {
         expression { params.MODE == 'coordinator' }
       }
       stages {
-        stage('YAML Lint') {
-          agent { kubernetes { yamlFile 'ci/pods/lint.yaml' } }
-          steps {
-            container('yamllint') {
-              sh 'yamllint -d relaxed .'
-            }
-          }
-        }
-  
         stage('Detect Changes') {
           agent { kubernetes { yamlFile 'ci/pods/ci-test.yaml' } }
           steps {
@@ -173,9 +164,27 @@ pipeline {
                   }
                 }
               } else {
-                // For direct pushes: only do YAML linting, no app validation
-                echo "Direct push detected - will only do YAML linting (skip app validation)"
-                // Leave changedApps empty to skip app-specific validation
+                // For main branch pushes (since Jenkins is configured to only build main)
+                echo "Main branch detected - validating all apps"
+                
+                if (params.FORCE_ALL_APPS) {
+                  // Validate all apps if explicitly requested
+                  changedApps = appsConfig.keySet() as List
+                  echo "Validating all apps as requested"
+                } else {
+                  // Check latest commit for changed apps
+                  sh "git diff-tree --no-commit-id --name-only -r HEAD > changed_files.txt"
+                  def changedFiles = readFile('changed_files.txt').trim()
+                  
+                  echo "Changed files in commit: ${changedFiles}"
+                  
+                  appsConfig.keySet().each { app ->
+                    if (changedFiles.contains("apps/${app}/")) {
+                      changedApps.add(app)
+                      echo "App '${app}' has changes in commit"
+                    }
+                  }
+                }
               }
               
               // Store changed apps for later stages

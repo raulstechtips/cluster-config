@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`${AUTHENTIK_PROD_DOMAIN}`)
+    - match: Host(`${ARGOCD_ENV_AUTHENTIK_PROD_DOMAIN}`)
       kind: Rule
       priority: 10
       middlewares:
@@ -19,14 +19,14 @@ spec:
       services:
         - name: authentik-server
           port: 443
-    - match: Host(`*.${AUTHENTIK_PROD_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)
+    - match: Host(`*.${ARGOCD_ENV_AUTHENTIK_PROD_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)
       kind: Rule
       priority: 15
       middlewares:
         - name: default-headers
           namespace: default
       services:
-        - name: authentik
+        - name: authentik-server
           port: 443
   tls:
     secretName: prod-raulstechtips-tls

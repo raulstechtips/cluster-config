@@ -101,5 +101,5 @@ service:
   loadBalancerSourceRanges: []
   spec:
     externalTrafficPolicy: Local
-    loadBalancerIP: "${TRAEFIK_LOAD_BALANCER_IP}"
+    loadBalancerIP: "${ARGOCD_ENV_TRAEFIK_LOAD_BALANCER_IP}"
   type: LoadBalancer
