@@ -65,4 +65,4 @@ tenant:
     labels: {}
   prometheusOperator: false
   users:
-    - name: tenant-s3-minio-users
+    - name: tenant-s3-minio-admin-console-user-credentials
