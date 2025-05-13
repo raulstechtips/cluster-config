@@ -9,5 +9,3 @@ resources:
   - manifests/scheduled-backup.yaml
   - manifests/secrets/secret-cnpg-infisical-admin-credentials.yaml
   - manifests/certificates/tls-certificate-cnpg-infisical.yaml
-  - manifests/storage/longhorn-cnpg-infisical-wal.yaml
-  - manifests/storage/longhorn-cnpg-infisical-main.yaml
