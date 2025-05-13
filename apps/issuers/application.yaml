@@ -1,0 +1,31 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: issuers
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/raulstechtips/cluster-config.git
+    targetRevision: refs/heads/6-feature-automate-cluster-deployments-with-argocd
+    path: apps/issuers
+    plugin:
+      name: kustomize-envsubst
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: cloudflare-token-secret
+      namespace: cert-manager
+      jsonPointers:
+        - /data/cloudflare-token
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - RespectIgnoreDifferences=true
+  revisionHistoryLimit: 10
