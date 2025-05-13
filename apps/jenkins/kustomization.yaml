@@ -12,7 +12,6 @@ helmCharts:
     valuesFile: values/prod.yaml
 
 resources:
-  - manifests/secrets/secret-jenkins-admin-credentials.yaml
   - manifests/secrets/secret-jenkins-github-app.yaml
   - manifests/secrets/secret-jenkins-kube-config.yaml
   - manifests/storage/longhorn-jenkins.yaml
