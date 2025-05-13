@@ -2,9 +2,10 @@
 tenant:
   buckets:
     - name: authentik-media
+    - name: longhorn-backup
   certificate:
     externalCertSecret:
-      - name: tenant-authentik-minio-tls
+      - name: tenant-s3-minio-tls
         type: kubernetes.io/tls
       - name: prod-raulstechtips-tls
         type: kubernetes.io/tls
@@ -12,16 +13,16 @@ tenant:
   configSecret:
     accessKey: ""
     existingSecret: true
-    name: tenant-authentik-minio-env-configuration
+    name: tenant-s3-minio-env-configuration
     secretKey: ""
   configuration:
-    name: tenant-authentik-minio-env-configuration
+    name: tenant-s3-minio-env-configuration
   features:
     bucketDNS: false
     domains:
-      console: "https://${ARGOCD_ENV_S3_AUTHENTIK_PROD_DOMAIN}"
+      console: "https://${ARGOCD_ENV_S3_PROD_DOMAIN}"
       minio:
-        - "https://${ARGOCD_ENV_S3_AUTHENTIK_PROD_API_DOMAIN}"
+        - "https://${ARGOCD_ENV_S3_PROD_API_DOMAIN}"
     enableSFTP: true
   image:
     pullPolicy: IfNotPresent
@@ -32,7 +33,7 @@ tenant:
     enabled: false
     port: 9000
     protocol: http
-  name: tenant-authentik
+  name: tenant-s3
   pools:
     - affinity:
         podAntiAffinity:
@@ -42,7 +43,7 @@ tenant:
                   - key: app.kubernetes.io/instance
                     operator: In
                     values:
-                      - tenant-authentik
+                      - tenant-s3
               topologyKey: kubernetes.io/hostname
       name: pool-0
       resources:
@@ -55,8 +56,8 @@ tenant:
           ephemeral-storage: 500Mi
           memory: 256Mi
       servers: 4
-      size: 5Gi
-      storageClassName: longhorn-minio-authentik
+      size: 25Gi
+      storageClassName: longhorn-storage-class-replicas-1
       volumesPerServer: 1
   poolsMetadata:
     annotations:
@@ -64,4 +65,4 @@ tenant:
     labels: {}
   prometheusOperator: false
   users:
-    - name: tenant-authentik-minio-users
+    - name: tenant-s3-minio-users

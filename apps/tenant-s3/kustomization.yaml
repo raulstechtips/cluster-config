@@ -1,19 +1,18 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: authentik
+namespace: minio
 
 helmCharts:
   - name: tenant
     repo: https://operator.min.io
     version: 7.1.1
-    releaseName: tenant-authentik
-    namespace: authentik
+    releaseName: tenant-s3
+    namespace: minio
     valuesFile: values/prod.yaml
 
 resources:
-  - manifests/secrets/secret-minio-tenant-authentik-root-credentials.yaml
-  - manifests/secrets/secret-minio-tenant-authentik-user-credentials.yaml
+  - manifests/secrets/secret-minio-tenant-s3-root-credentials.yaml
+  - manifests/secrets/secret-minio-tenant-s3-admin-console-user-credentials.yaml
   - manifests/ingress/prod.yaml
-  - manifests/storage/longhorn-minio-tenant-authentik.yaml
-  - manifests/certificates/tls-certificate-minio-tenant-authentik.yaml
+  - manifests/certificates/tls-certificate-minio-tenant-s3.yaml
