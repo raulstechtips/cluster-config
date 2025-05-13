@@ -21,14 +21,14 @@ spec:
       secret:
         name: infisical-pg-admin-credentials-secret
   backup:
-    retentionPolicy: '60d'
+    retentionPolicy: '30d'
     volumeSnapshot:
-      className: longhorn-pg-main-infisical
-      walClassName: longhorn-pg-wal-infisical
+      className: longhorn-volume-snapshot-class
+      walClassName: longhorn-volume-snapshot-class
       snapshotOwnerReference: none
   storage:
-    storageClass: longhorn-pg-main-infisical
-    size: 2Gi
+    storageClass: longhorn-storage-class-replicas-1
+    size: 10Gi
   walStorage:
-    storageClass: longhorn-pg-wal-infisical
-    size: 2Gi
+    storageClass: longhorn-storage-class-replicas-1
+    size: 5Gi
