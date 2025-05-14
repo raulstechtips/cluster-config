@@ -359,12 +359,6 @@ controller:
                     appID: "${jenkins-github-app-raulstechtips-appId}"
                     owner: "${jenkins-github-app-raulstechtips-owner}"
                     privateKey: "${jenkins-github-app-raulstechtips-privateKey}"
-              - credentials:
-                - string
-                  id: "github-app-pat"
-                  scope: GLOBAL
-                  description: "GitHub App PAT (GitOps bootstrap)"
-                  value: "${jenkins-github-app-raulstechtips-pat}"
     #  welcome-message: |
     #    jenkins:
     #      systemMessage: Welcome to our CI\CD server. This Jenkins is configured and managed 'as code'.
