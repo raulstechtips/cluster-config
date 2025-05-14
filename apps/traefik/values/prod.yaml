@@ -12,6 +12,7 @@ logs:
       general:
         defaultMode: drop
         names:
+          StartUTC: keep
           ClientAddr: keep
           RequestHost: keep
           ServiceName: keep
