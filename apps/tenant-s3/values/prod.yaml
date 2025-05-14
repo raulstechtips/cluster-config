@@ -57,7 +57,7 @@ tenant:
           memory: 256Mi
       servers: 4
       size: 25Gi
-      storageClassName: longhorn-storage-class-replicas-1
+      storageClassName: longhorn-storage-class-local
       volumesPerServer: 1
   poolsMetadata:
     annotations:
