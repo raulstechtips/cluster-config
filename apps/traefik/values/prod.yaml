@@ -12,16 +12,25 @@ logs:
       general:
         defaultMode: drop
         names:
+          StartUTC: keep
           ClientAddr: keep
           RequestHost: keep
-          RouterName: keep
           ServiceName: keep
-          StartUTC: keep
+          RequestPath: keep
+          DownstreamStatus: keep
+          OriginStatus: keep
+          TLSVersion: keep
+          TLSCipher: keep
+          RequestProtocol: keep
+          RetryAttempts: keep
       headers:
         defaultMode: drop
         names:
           X-Forwarded-For: keep
           CF-Connecting-IP: keep
+          User-Agent: keep
+          Host: keep
+
 deployment:
   additionalContainers: []
   annotations: {}
