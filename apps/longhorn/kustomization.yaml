@@ -20,5 +20,4 @@ resources:
   - manifests/secrets/secret-longhorn-minio-secret.yaml
 
 patches:
-  - path: manifests/overlays/patch-longhorn-manager-tlsrsakex-env.yaml
-  - path: manifests/overlays/patch-longhorn-engine-tlsrsakex-env.yaml
+  # - path: manifests/overlays/patch-longhorn-manager-tlsrsakex-env.yaml
