@@ -21,3 +21,4 @@ resources:
 
 patches:
   - path: manifests/overlays/patch-longhorn-manager-tlsrsakex-env.yaml
+  - path: manifests/overlays/patch-longhorn-engine-tlsrsakex-env.yaml
