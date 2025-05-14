@@ -4,9 +4,9 @@ additionalArguments:
   - --entryPoints.redis.address=:6379/tcp
   - --entryPoints.postgres.address=:5432/tcp
 logs:
-  level: DEBUG
+  level: INFO
   access:
-    enabled: true
+    enabled: false
     format: json
     fields:
       general:
@@ -14,20 +14,19 @@ logs:
         names:
           ClientAddr: keep
           RequestHost: keep
-          RouterName: keep
           ServiceName: keep
           RequestPath: keep
           DownstreamStatus: keep
           OriginStatus: keep
           TLSVersion: keep
           TLSCipher: keep
-          OriginDuration: keep
-          Duration: keep
           RequestProtocol: keep
           RetryAttempts: keep
       headers:
         defaultMode: drop
         names:
+          X-Forwarded-For: keep
+          CF-Connecting-IP: keep
           User-Agent: keep
           Host: keep
 
