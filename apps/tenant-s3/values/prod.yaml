@@ -66,4 +66,3 @@ tenant:
   prometheusOperator: false
   users:
     - name: tenant-s3-minio-admin-console-user-credentials
-    - name: tenant-s3-minio-longhorn-user-credentials
