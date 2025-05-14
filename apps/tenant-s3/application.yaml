@@ -2,24 +2,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: tenant-authentik
+  name: tenant-s3
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
-    targetRevision: refs/heads/6-feature-automate-cluster-deployments-with-argocd
-    path: apps/tenant-authentik
+    targetRevision: HEAD
+    path: apps/tenant-s3
     plugin:
       name: kustomize-envsubst
   destination:
     server: https://kubernetes.default.svc
-    namespace: authentik
-  syncPolicy:
-    retry:
-      limit: 10
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
+    namespace: minio
+  syncPolicy: {}
   revisionHistoryLimit: 10
