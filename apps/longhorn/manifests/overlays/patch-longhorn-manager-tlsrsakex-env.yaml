@@ -11,4 +11,4 @@ spec:
         - name: longhorn-manager
           env:
             - name: GODEBUG
-              value: tlsrsakex=1
+              value: "tlsrsakex=1,tls10server=1,tlsunsafeekm=1,tlsmlkem=0,http2debug=2,http1debug=2,tlsdebug=1,x509roots=1"
