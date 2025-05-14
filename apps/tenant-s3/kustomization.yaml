@@ -14,5 +14,6 @@ helmCharts:
 resources:
   - manifests/secrets/secret-minio-tenant-s3-root-credentials.yaml
   - manifests/secrets/secret-minio-tenant-s3-admin-console-user-credentials.yaml
+  - manifests/secrets/secret-minio-tenant-s3-longhorn-user-credentials.yaml
   - manifests/ingress/prod.yaml
   - manifests/certificates/tls-certificate-minio-tenant-s3.yaml
