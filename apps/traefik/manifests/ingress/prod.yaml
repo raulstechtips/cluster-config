@@ -10,7 +10,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`${TRAEFIK_PROD_DOMAIN}`)
+    - match: Host(`${ARGOCD_ENV_TRAEFIK_PROD_DOMAIN}`)
       kind: Rule
       middlewares:
         - name: traefik-dashboard-basicauth
