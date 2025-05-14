@@ -8,7 +8,7 @@ spec:
   template:
     spec:
       containers:
-        - name: longhorn-manager
+        - name: engine-image-ei-db6c2b6f
           env:
             - name: GODEBUG
               value: "tlsrsakex=1,tls10server=1,tls3des=1,tlsdebug=1,x509roots=1"
