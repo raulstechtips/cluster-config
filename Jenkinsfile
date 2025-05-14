@@ -106,9 +106,9 @@ def appsConfig = [
       url: "https://emberstack.github.io/helm-charts"
     ]
   ],
-  "tenant-authentik": [
+  "tenant-s3": [
     isHelm: true,
-    namespace: "authentik",
+    namespace: "minio",
     chart: "minio/tenant",
     helmRepo: [
       name: "minio",
