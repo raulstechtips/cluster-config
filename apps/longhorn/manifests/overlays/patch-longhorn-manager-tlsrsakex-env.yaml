@@ -11,4 +11,4 @@ spec:
         - name: longhorn-manager
           env:
             - name: GODEBUG
-              value: "tlsrsakex=1,tls10server=1,tls3des=1,tlsdebug=1,x509roots=1"
+              value: "tlsrsakex=1,tls10server=1,tls3des=1,tlsdebug=1,x509roots=1" # Apply patch if backup TLS Handshake is not working
