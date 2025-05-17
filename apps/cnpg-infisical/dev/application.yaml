@@ -2,13 +2,13 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cnpg-infisical
+  name: dev-cnpg-infisical
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
-    targetRevision: HEAD
+    targetRevision: refs/heads/8-feature-migrate-infisical-to-argocd
     path: apps/cnpg-infisical/dev
     plugin:
       name: kustomize-envsubst
