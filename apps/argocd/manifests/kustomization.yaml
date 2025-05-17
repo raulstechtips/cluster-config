@@ -10,6 +10,7 @@ resources:
   - base/rbac/cmp-rbac.yaml
   - base/ingress/prod.yaml
   - base/secrets/secret-argocd-app-env.yaml
+  - base/secrets/dev/secret-argocd-app-env.yaml
 
 patches:
   - path: overlays/cmp-kustomize-envsubst-sidecar.yaml
