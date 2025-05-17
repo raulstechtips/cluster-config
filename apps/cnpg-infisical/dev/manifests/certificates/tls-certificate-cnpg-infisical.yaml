@@ -1,0 +1,31 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: dev-pg-infisical-internal-certificate
+  namespace: dev
+  labels:
+    cnpg.io/reload: ""
+spec:
+  secretName: dev-pg-infisical-internal-tls
+  duration: 8760h # 1 year
+  renewBefore: 720h # 30 days
+  subject:
+    organizations:
+      - raulstechtips
+  dnsNames:
+    - dev-pg-infisical-rw
+    - dev-pg-infisical-rw.dev-infisical
+    - dev-pg-infisical-rw.dev-infisical.svc
+    - dev-pg-infisical-rw.dev-infisical.svc.cluster.local
+    - dev-pg-infisical-ro
+    - dev-pg-infisical-ro.dev-infisical
+    - dev-pg-infisical-ro.dev-infisical.svc
+    - dev-pg-infisical-ro.dev-infisical.svc.cluster.local
+    - dev-pg-infisical-r
+    - dev-pg-infisical-r.dev-infisical
+    - dev-pg-infisical-r.dev-infisical.svc
+    - dev-pg-infisical-r.dev-infisical.svc.cluster.local
+  issuerRef:
+    name: raulstechtips-internal-ca-issuer
+    kind: ClusterIssuer

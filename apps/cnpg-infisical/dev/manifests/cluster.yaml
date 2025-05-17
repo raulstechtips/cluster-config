@@ -1,0 +1,34 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: dev-pg-infisical
+  namespace: dev
+  labels:
+    cnpg.io/reload: ""
+spec:
+  description: "Infisical PostgreSQL Cluster"
+  instances: 3
+  primaryUpdateStrategy: unsupervised
+  enableSuperuserAccess: true
+  certificates:
+    serverCASecret: raulstechtips-internal-ca-key-pair
+    serverTLSSecret: dev-pg-infisical-internal-tls
+  bootstrap:
+    initdb:
+      database: dev-infisical
+      owner: dev-infisical-pg-admin
+      secret:
+        name: dev-infisical-pg-admin-credentials-secret
+  backup:
+    retentionPolicy: '30d'
+    volumeSnapshot:
+      className: longhorn-volume-snapshot-class
+      walClassName: longhorn-volume-snapshot-class
+      snapshotOwnerReference: none
+  storage:
+    storageClass: longhorn-storage-class-replicas-1
+    size: 5Gi
+  walStorage:
+    storageClass: longhorn-storage-class-replicas-1
+    size: 2Gi

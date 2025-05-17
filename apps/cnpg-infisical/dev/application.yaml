@@ -1,0 +1,29 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cnpg-infisical
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/raulstechtips/cluster-config.git
+    targetRevision: HEAD
+    path: apps/cnpg-infisical/dev
+    plugin:
+      name: kustomize-envsubst
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: dev-infisical-pg-admin-credentials-secret
+      namespace: dev
+      jsonPointers:
+        - /data/username
+        - /data/password
+  syncPolicy:
+    syncOptions:
+      - RespectIgnoreDifferences=true
+  revisionHistoryLimit: 10
