@@ -15,15 +15,15 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: dev
-  ignoreDifferences:
-    - group: ""
-      kind: Secret
-      name: dev-infisical-pg-admin-credentials-secret
-      namespace: dev
-      jsonPointers:
-        - /data/username
-        - /data/password
-  syncPolicy:
-    syncOptions:
-      - RespectIgnoreDifferences=true
+  # ignoreDifferences:
+  #   - group: ""
+  #     kind: Secret
+  #     name: dev-infisical-pg-admin-credentials-secret
+  #     namespace: dev
+  #     jsonPointers:
+  #       - /data/username
+  #       - /data/password
+  # syncPolicy:
+  #   syncOptions:
+  #     - RespectIgnoreDifferences=true
   revisionHistoryLimit: 10

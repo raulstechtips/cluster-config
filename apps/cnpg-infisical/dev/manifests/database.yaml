@@ -3,7 +3,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
   name: pg-infisical
-  namespace: infisical
+  namespace: dev
 spec:
   name: pg-infisical
   owner: infisical-pg-admin

@@ -2,7 +2,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: dev-pg-infisical
+  name: pg-infisical
   namespace: dev
   labels:
     cnpg.io/reload: ""
@@ -13,13 +13,13 @@ spec:
   enableSuperuserAccess: true
   certificates:
     serverCASecret: raulstechtips-internal-ca-key-pair
-    serverTLSSecret: dev-pg-infisical-internal-tls
+    serverTLSSecret: pg-infisical-internal-tls
   bootstrap:
     initdb:
-      database: dev-infisical
-      owner: dev-infisical-pg-admin
+      database: infisical
+      owner: infisical-pg-admin
       secret:
-        name: dev-infisical-pg-admin-credentials-secret
+        name: infisical-pg-admin-credentials-secret
   backup:
     retentionPolicy: '30d'
     volumeSnapshot:
