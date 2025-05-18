@@ -7,7 +7,7 @@ spec:
   template:
     spec:
       containers:
-        - name: infisical-standalone-infisical
+        - name: infisical-standalone-infisical-dev
           env:
             - name: DB_HOST
               value: pg-infisical-rw.dev.svc.cluster.local
