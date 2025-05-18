@@ -16,6 +16,5 @@ data:
         args:
           - |
             set -eo pipefail
-            ENV=${ARGOCD_ENV_ENV:-prod}
             SHELL_FORMAT=$(printf '${%s} ' ${!ARGOCD_ENV_*})
-            kustomize build --enable-helm --load-restrictor LoadRestrictionsNone -f kustomization-${ENV}.yaml | envsubst "$SHELL_FORMAT"
+            kustomize build --enable-helm --load-restrictor LoadRestrictionsNone . | envsubst "$SHELL_FORMAT"
