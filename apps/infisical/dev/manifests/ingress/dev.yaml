@@ -16,7 +16,7 @@ spec:
         - name: default-headers
           namespace: default
       services:
-        - name: infisical-infisical-standalone-infisical
+        - name: infisical-dev-infisical-standalone-infisical-dev
           port: 8080
   tls:
     secretName: prod-raulstechtips-tls
