@@ -2,7 +2,7 @@
 infisical-standalone:
   infisical:
     enabled: true # -- Enable Infisical chart deployment
-    name: infisical # -- Sets the name of the deployment within this chart
+    name: infisical-dev # -- Sets the name of the deployment within this chart
 
     # -- Automatically migrates new database schema when deploying
     autoDatabaseSchemaMigration: true
