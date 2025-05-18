@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: infisical-dev-infisical-standalone-infisical
+  name: infisical-dev-infisical-standalone-infisical-dev
 spec:
   template:
     spec:
