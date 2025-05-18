@@ -1,65 +1,64 @@
 ---
-infisical-standalone:
-  infisical:
-    enabled: true # -- Enable Infisical chart deployment
-    name: infisical-dev # -- Sets the name of the deployment within this chart
+infisical:
+  enabled: true # -- Enable Infisical chart deployment
+  name: infisical-dev # -- Sets the name of the deployment within this chart
 
-    # -- Automatically migrates new database schema when deploying
-    autoDatabaseSchemaMigration: true
+  # -- Automatically migrates new database schema when deploying
+  autoDatabaseSchemaMigration: true
 
-    databaseSchemaMigrationJob:
-      image:
-        # -- Image repository for migration wait job
-        repository: ghcr.io/groundnuty/k8s-wait-for
-        # -- Image tag version
-        tag: no-root-v2.0
-
-    # -- Custom annotations for Infisical pods
-    podAnnotations: {}
-    # -- Custom annotations for Infisical deployment
-    deploymentAnnotations: {}
-    # -- Number of pod replicas for high availability
-    replicaCount: 3
-
+  databaseSchemaMigrationJob:
     image:
-      repository: infisical/infisical
-      # -- Specific version tag of the Infisical image. View the latest version here https://hub.docker.com/r/infisical/infisical
-      tag: "v0.122.0-postgres"
+      # -- Image repository for migration wait job
+      repository: ghcr.io/groundnuty/k8s-wait-for
+      # -- Image tag version
+      tag: no-root-v2.0
 
-    kubeSecretRef: "infisical-secrets"
+  # -- Custom annotations for Infisical pods
+  podAnnotations: {}
+  # -- Custom annotations for Infisical deployment
+  deploymentAnnotations: {}
+  # -- Number of pod replicas for high availability
+  replicaCount: 3
 
-    service:
-      # -- Custom annotations for Infisical service
-      annotations: {}
-      # -- Service type, can be changed based on exposure needs (e.g., LoadBalancer)
-      type: ClusterIP
-      # -- Optional node port for service when using NodePort type
-      nodePort: ""
+  image:
+    repository: infisical/infisical
+    # -- Specific version tag of the Infisical image. View the latest version here https://hub.docker.com/r/infisical/infisical
+    tag: "v0.122.0-postgres"
 
-    resources:
-      limits:
-        memory: 600Mi
-      requests:
-        cpu: 350m
+  kubeSecretRef: "infisical-secrets"
 
-    extraVolumes:
-      - name: postgres-ca-cert
-        secret:
-          secretName: raulstechtips-internal-ca-key-pair
-          items:
-            - key: ca.crt
-              path: postgres-ca.crt
+  service:
+    # -- Custom annotations for Infisical service
+    annotations: {}
+    # -- Service type, can be changed based on exposure needs (e.g., LoadBalancer)
+    type: ClusterIP
+    # -- Optional node port for service when using NodePort type
+    nodePort: ""
 
-    extraVolumeMounts:
-      - name: postgres-ca-cert
-        mountPath: /etc/custom-certs
-        readOnly: true
+  resources:
+    limits:
+      memory: 600Mi
+    requests:
+      cpu: 350m
 
-  ingress:
+  extraVolumes:
+    - name: postgres-ca-cert
+      secret:
+        secretName: raulstechtips-internal-ca-key-pair
+        items:
+          - key: ca.crt
+            path: postgres-ca.crt
+
+  extraVolumeMounts:
+    - name: postgres-ca-cert
+      mountPath: /etc/custom-certs
+      readOnly: true
+
+ingress:
+  enabled: false
+  nginx:
     enabled: false
-    nginx:
-      enabled: false
-  postgresql:
-    enabled: false
-  redis:
-    enabled: false
+postgresql:
+  enabled: false
+redis:
+  enabled: false
