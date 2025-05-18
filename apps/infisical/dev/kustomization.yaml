@@ -6,7 +6,7 @@ namespace: dev
 helmCharts:
   - name: infisical-db-secure
     repo: https://raulstechtips.github.io/infisical-standalone-db-secure-wrapper/
-    version: 0.1.0
+    version: 0.1.1
     releaseName: infisical-dev
     namespace: dev
     valuesFile: values/dev.yaml
