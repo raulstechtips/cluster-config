@@ -32,4 +32,4 @@ spec:
                   name: infisical-redis-admin-credentials-secret
                   key: redis-password
             - name: REDIS_URL
-              value: redis://:$(REDIS_PASSWORD)@redis-infisical-master.dev.svc.cluster.local:6379
+              value: redis://default:$(REDIS_PASSWORD)@redis-infisical-master.dev.svc.cluster.local:6379
