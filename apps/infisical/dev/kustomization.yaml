@@ -18,7 +18,7 @@ resources:
 patches:
   - target:
       kind: Deployment
-      name: infisical-dev-infisical-standalone-infisical
+      name: infisical-dev-infisical-standalone-infisical-dev
     path: manifests/overlays/deployment-patch.yaml
   - target:
       kind: Job
