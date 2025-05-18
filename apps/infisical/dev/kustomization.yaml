@@ -4,9 +4,9 @@ kind: Kustomization
 namespace: dev
 
 helmCharts:
-  - name: infisical-db-secure
-    repo: https://raulstechtips.github.io/infisical-standalone-db-secure-wrapper/
-    version: 0.1.1
+  - name: infisical-standalone
+    repo: https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/
+    version: 1.5.0
     releaseName: infisical-dev
     namespace: dev
     valuesFile: values/dev.yaml
@@ -14,3 +14,7 @@ helmCharts:
 resources:
   - manifests/ingress/dev.yaml
   - manifests/secrets/infisical-secrets.yaml
+
+patches:
+  - path: manifests/overlays/deployment-patch.yaml
+  - path: manifests/overlays/migration-job-patch.yaml
