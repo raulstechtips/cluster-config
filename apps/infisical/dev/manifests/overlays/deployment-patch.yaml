@@ -12,7 +12,7 @@ spec:
             - name: DB_HOST
               value: pg-infisical-rw.dev.svc.cluster.local
             - name: DB_PORT
-              value: 5432
+              value: "5432"
             - name: DB_NAME
               value: pg-infisical
             - name: DB_USER

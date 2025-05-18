@@ -16,5 +16,11 @@ resources:
   - manifests/secrets/infisical-secrets.yaml
 
 patches:
-  - path: manifests/overlays/deployment-patch.yaml
-  - path: manifests/overlays/migration-job-patch.yaml
+  - target:
+      kind: Deployment
+      name: infisical-dev-infisical-standalone-infisical
+    path: manifests/overlays/deployment-patch.yaml
+  - target:
+      kind: Job
+      name: infisical-dev-schema-migration-1
+    path: manifests/overlays/migration-job-patch.yaml
