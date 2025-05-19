@@ -17,7 +17,7 @@ spec:
         - name: infisical-schema-migration
           env:
             - name: DB_HOST
-              value: pg-infisical-rw.dev.svc.cluster.local
+              value: pg-infisical-rw.infisical.svc.cluster.local
             - name: DB_PORT
               value: "5432"
             - name: DB_NAME
