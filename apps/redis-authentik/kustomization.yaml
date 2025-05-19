@@ -13,4 +13,4 @@ namespace: authentik
 
 resources:
   - manifests/secrets/secret-redis-authentik-credential.yaml
-  # - manifests/certificates/tls-certificate-redis-authentik.yaml
+  - manifests/certificates/tls-certificate-redis-authentik.yaml

@@ -54,9 +54,9 @@ replica:
       redis: 6379
     type: ClusterIP
 tls:
-  authClients: false
-  # certCAFilename: ca.crt
-  # certFilename: tls.crt
-  # certKeyFilename: tls.key
-  # enabled: true
-  # existingSecret: redis-authentik-internal-tls
+  authClients: true
+  certCAFilename: ca.crt
+  certFilename: tls.crt
+  certKeyFilename: tls.key
+  enabled: true
+  existingSecret: redis-authentik-internal-tls
