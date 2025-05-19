@@ -22,5 +22,5 @@ patches:
     path: manifests/overlays/deployment-patch.yaml
   - target:
       kind: Job
-      name: infisical-schema-migration-1
+      name: infisical-schema-migration-2
     path: manifests/overlays/migration-job-patch.yaml
