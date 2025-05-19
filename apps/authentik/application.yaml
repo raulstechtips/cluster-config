@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
-    targetRevision: refs/heads/6-feature-automate-cluster-deployments-with-argocd
+    targetRevision: refs/heads/18-new-app-add-and-migrate-authentik-to-argocd
     path: apps/authentik
     plugin:
       name: kustomize-envsubst
