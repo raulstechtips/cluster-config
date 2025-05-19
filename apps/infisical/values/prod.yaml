@@ -4,7 +4,7 @@ infisical:
   name: infisical # -- Sets the name of the deployment within this chart
 
   # -- Automatically migrates new database schema when deploying
-  autoDatabaseSchemaMigration: true
+  autoDatabaseSchemaMigration: false
 
   databaseSchemaMigrationJob:
     image:

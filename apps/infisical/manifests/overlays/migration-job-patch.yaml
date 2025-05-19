@@ -1,0 +1,39 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: infisical-schema-migration-1
+spec:
+  template:
+    spec:
+      volumes:
+        - name: postgres-ca-cert
+          secret:
+            secretName: raulstechtips-internal-ca-key-pair
+            items:
+              - key: ca.crt
+                path: postgres-ca.crt
+      containers:
+        - name: infisical-schema-migration
+          env:
+            - name: DB_HOST
+              value: pg-infisical-rw.infisical.svc.cluster.local
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: pg-infisical
+            - name: DB_USER
+              value: infisical-pg-admin
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: infisical-pg-admin-credentials-secret
+                  key: password
+            - name: DB_SSL_ROOT_CERT
+              value: /etc/custom-certs/postgres-ca.crt
+            - name: DB_CONNECTION_URI
+              value: postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=verify-ca&sslrootcert=$(DB_SSL_ROOT_CERT)
+          volumeMounts:
+            - name: postgres-ca-cert
+              mountPath: /etc/custom-certs
+              readOnly: true
