@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
-    targetRevision: refs/heads/8-feature-migrate-infisical-to-argocd
+    targetRevision: HEAD
     path: apps/infisical
     plugin:
       name: kustomize-envsubst
