@@ -6,13 +6,13 @@ auth:
   usePasswordFileFromSecret: false
   usePasswordFiles: false
 global:
-  defaultStorageClass: longhorn-redis-authentik
+  defaultStorageClass: longhorn-storage-class-replicas-1
 master:
   containerPorts:
     redis: 6379
   count: 1
   persistence:
-    size: 8Gi
+    size: 10Gi
   persistentVolumeClaimRetentionPolicy:
     enabled: false
     whenDeleted: Retain
@@ -55,8 +55,8 @@ replica:
     type: ClusterIP
 tls:
   authClients: false
-  certCAFilename: ca.crt
-  certFilename: tls.crt
-  certKeyFilename: tls.key
-  enabled: true
-  existingSecret: redis-authentik-internal-tls
+  # certCAFilename: ca.crt
+  # certFilename: tls.crt
+  # certKeyFilename: tls.key
+  # enabled: true
+  # existingSecret: redis-authentik-internal-tls

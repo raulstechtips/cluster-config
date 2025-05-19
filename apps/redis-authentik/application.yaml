@@ -1,0 +1,19 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis-authentik
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/raulstechtips/cluster-config.git
+    targetRevision: refs/heads/18-new-app-add-and-migrate-authentik-to-argocd
+    path: apps/redis-authentik
+    plugin:
+      name: kustomize-envsubst
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: authentik
+  syncPolicy: {}
+  revisionHistoryLimit: 10

@@ -1,0 +1,16 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: authentik
+
+# helmCharts:
+#   - name: redis
+#     repo: https://charts.bitnami.com/bitnami
+#     version: 20.13.4
+#     releaseName: redis-authentik
+#     namespace: authentik
+#     valuesFile: values/prod.yaml
+
+resources:
+  - manifests/secrets/secret-redis-authentik-credential.yaml
+  # - manifests/certificates/tls-certificate-redis-authentik.yaml
