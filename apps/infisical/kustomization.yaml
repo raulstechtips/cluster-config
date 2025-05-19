@@ -20,7 +20,7 @@ patches:
       kind: Deployment
       name: infisical-infisical-standalone-infisical
     path: manifests/overlays/deployment-patch.yaml
-  - target:
-      kind: Job
-      name: infisical-schema-migration-1
-    path: manifests/overlays/migration-job-patch.yaml
+  # - target:
+  #     kind: Job
+  #     name: infisical-schema-migration-1
+  #   path: manifests/overlays/migration-job-patch.yaml

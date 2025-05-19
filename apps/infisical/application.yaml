@@ -17,12 +17,3 @@ spec:
     namespace: infisical
   syncPolicy: {}
   revisionHistoryLimit: 10
-  ignoreDifferences:
-    - group: batch
-      kind: Job
-      name: infisical-schema-migration-1
-      namespace: infisical
-      jqPathExpressions:
-        - .spec
-        - .metadata.annotations
-        - .metadata.labels
