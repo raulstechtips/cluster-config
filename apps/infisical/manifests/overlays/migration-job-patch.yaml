@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: infisical-schema-migration-1
+  name: infisical-schema-migration-2
 spec:
   template:
     spec:
