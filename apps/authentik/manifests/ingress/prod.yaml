@@ -19,7 +19,7 @@ spec:
       services:
         - name: authentik-server
           port: 443
-    - match: Host(`*.${ARGOCD_ENV_AUTHENTIK_PROD_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)
+    - match: Host(`*.${ARGOCD_ENV_INFISICAL_ENV_SLUG}.${ARGOCD_ENV_DOMAIN}`) && PathPrefix(`/outpost.goauthentik.io/`)
       kind: Rule
       priority: 15
       middlewares:
