@@ -1,7 +1,7 @@
 ---
 auth:
   enabled: true
-  existingSecret: authentik-redis-admin-credentials-secret
+  existingSecret: infisical-secret-authentik-redis-admin-credentials
   existingSecretPasswordKey: redis-password
   usePasswordFileFromSecret: false
   usePasswordFiles: false
