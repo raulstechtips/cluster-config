@@ -8,5 +8,3 @@ resources:
   - manifests/scheduled-backup.yaml
   - manifests/secrets/secret-cnpg-authentik-admin-credentials.yaml
   - manifests/certificates/tls-certificate-cnpg-authentik.yaml
-  - manifests/storage/longhorn-cnpg-authentik-wal.yaml
-  - manifests/storage/longhorn-cnpg-authentik-main.yaml

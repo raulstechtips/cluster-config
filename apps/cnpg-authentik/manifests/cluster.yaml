@@ -21,16 +21,16 @@ spec:
       database: authentik
       owner: authentik-pg-admin
       secret:
-        name: authentik-pg-admin-credentials-secret
+        name: infisical-secret-authentik-pg-admin-credentials
   backup:
-    retentionPolicy: '60d'
+    retentionPolicy: '30d'
     volumeSnapshot:
-      className: longhorn-pg-main-authentik
-      walClassName: longhorn-pg-wal-authentik
+      className: longhorn-volume-snapshot-class
+      walClassName: longhorn-volume-snapshot-class
       snapshotOwnerReference: none
   storage:
-    storageClass: longhorn-pg-main-authentik
-    size: 2Gi
+    storageClass: longhorn-storage-class-local
+    size: 20Gi
   walStorage:
-    storageClass: longhorn-pg-wal-authentik
-    size: 2Gi
+    storageClass: longhorn-storage-class-local
+    size: 20Gi
