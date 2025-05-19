@@ -40,17 +40,17 @@ global:
       valueFrom:
         secretKeyRef:
           key: username
-          name: authentik-pg-admin-credentials-secret
+          name: infisical-secret-authentik-pg-admin-credentials
     - name: AUTHENTIK_POSTGRESQL__PASSWORD
       valueFrom:
         secretKeyRef:
           key: password
-          name: authentik-pg-admin-credentials-secret
+          name: infisical-secret-authentik-pg-admin-credentials
     - name: AUTHENTIK_REDIS__PASSWORD
       valueFrom:
         secretKeyRef:
           key: redis-password
-          name: authentik-redis-admin-credentials-secret
+          name: infisical-secret-authentik-redis-admin-credentials
   envFrom:
     - secretRef:
         name: authentik-env
