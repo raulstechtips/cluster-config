@@ -29,8 +29,8 @@ spec:
       walClassName: longhorn-volume-snapshot-class
       snapshotOwnerReference: none
   storage:
-    storageClass: longhorn-storage-class-local
+    storageClass: longhorn-storage-class-replicas-1
     size: 10Gi
   walStorage:
-    storageClass: longhorn-storage-class-local
+    storageClass: longhorn-storage-class-replicas-1
     size: 10Gi
