@@ -17,3 +17,11 @@ spec:
     namespace: infisical
   syncPolicy: {}
   revisionHistoryLimit: 10
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      name: infisical-infisical-standalone-infisical
+      namespace: infisical
+      jqPathExpressions:
+        - .metadata.annotations.updatedAt
+        - .spec.template.metadata.annotations.updatedAt
