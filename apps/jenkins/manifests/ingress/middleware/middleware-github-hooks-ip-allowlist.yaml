@@ -9,7 +9,6 @@ spec:
     sourceRange:
       # GitHub Meta API as of 4 May 2025 – refresh monthly!
       - ${ARGOCD_ENV_GITHUB_HOOKS_IP}
-      - ${ARGOCD_ENV_VPN_IP}
       - 192.30.252.0/22
       - 185.199.108.0/22
       - 140.82.112.0/20
