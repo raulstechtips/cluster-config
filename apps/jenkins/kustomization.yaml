@@ -14,7 +14,7 @@ helmCharts:
 resources:
   - manifests/secrets/secret-jenkins-github-app.yaml
   - manifests/secrets/secret-jenkins-kube-config.yaml
-  - manifests/secrets/secret-jenkins-admin-credentials.yaml
+  - manifests/secrets/infisical-secret-jenkins-admin-credentials.yaml
   - manifests/storage/longhorn-jenkins.yaml
   - manifests/ingress/live.yaml
   - manifests/ingress/prod.yaml
