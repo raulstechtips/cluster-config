@@ -8,3 +8,4 @@ spec:
   ipAllowList:
     sourceRange:
       - ${ARGOCD_ENV_VPN_IP}
+      - 10.0.0.0/8 # Allow all internal K3s IPs
