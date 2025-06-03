@@ -18,7 +18,7 @@ spec:
       - 2606:50c0::/32
     ipStrategy:
       depth: 1
-      excludeIPs:
+      excludedIPs:
         - 173.245.48.0/20
         - 103.21.244.0/22
         - 103.22.200.0/22
