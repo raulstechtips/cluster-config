@@ -13,6 +13,8 @@ spec:
     - match: Host(`${ARGOCD_ENV_LONGHORN_PROD_DOMAIN}`)
       kind: Rule
       middlewares:
+        - name: vpn-ip-acl
+          namespace: default
         - name: default-headers
           namespace: default
       services:

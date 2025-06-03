@@ -12,7 +12,7 @@ helmCharts:
     valuesFile: values/prod.yaml
 
 resources:
-  - manifests/ingress/ingress.yaml
+  - manifests/ingress/prod.yaml
   - manifests/storage/longhorn-default-storage-class.yaml
   - manifests/storage/longhorn-storage-class-replicas-1.yaml
   - manifests/storage/longhorn-storage-class-local.yaml
