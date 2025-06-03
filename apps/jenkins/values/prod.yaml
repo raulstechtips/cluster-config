@@ -44,7 +44,7 @@ controller:
     createSecret: false
 
     # -- The name of an existing secret containing the admin credentials
-    existingSecret: jenkins-admin
+    existingSecret: jenkins-admin-credentials
   # -- Email address for the administrator of the Jenkins instance
   jenkinsAdminEmail:
 
@@ -302,10 +302,6 @@ controller:
 
   # -- List of additional existing secrets to mount
   additionalExistingSecrets:
-    - name: jenkins-admin
-      keyName: user
-    - name: jenkins-admin
-      keyName: password
     - name: jenkins-github-app-raulstechtips
       keyName: appId
     - name: jenkins-github-app-raulstechtips
