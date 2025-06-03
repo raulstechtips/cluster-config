@@ -15,8 +15,6 @@ spec:
       middlewares:
         - name: github-hooks-ips
           namespace: jenkins
-        - name: vpn-ip-acl
-          namespace: default
         - name: default-headers
           namespace: default
       services:
