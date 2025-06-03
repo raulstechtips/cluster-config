@@ -302,6 +302,10 @@ controller:
 
   # -- List of additional existing secrets to mount
   additionalExistingSecrets:
+    - name: jenkins-admin-credentials
+      keyName: jenkins-admin-user
+    - name: jenkins-admin-credentials
+      keyName: jenkins-admin-password
     - name: jenkins-github-app-raulstechtips
       keyName: appId
     - name: jenkins-github-app-raulstechtips
