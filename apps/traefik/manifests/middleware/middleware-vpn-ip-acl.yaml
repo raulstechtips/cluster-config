@@ -8,5 +8,3 @@ spec:
   ipAllowList:
     sourceRange:
       - ${ARGOCD_ENV_VPN_IP}
-    ipStrategy:
-      depth: 0
