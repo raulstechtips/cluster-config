@@ -14,7 +14,7 @@ spec:
       kind: Rule
       middlewares:
         - name: vpn-ip-acl
-          namespace: default
+          namespace: traefik
         - name: default-headers
           namespace: default
       services:
