@@ -1,0 +1,10 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: serenemind
+
+resources:
+  - manifests/cluster.yaml
+  - manifests/scheduled-backup.yaml
+  - manifests/secrets/secret-cnpg-admin-credentials.yaml
+  - manifests/certificates/tls-certificate-cnpg.yaml

@@ -1,0 +1,36 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-serenemind
+  namespace: serenemind
+  labels:
+    cnpg.io/reload: ""
+  annotations:
+    secrets.infisical.com/auto-reload: "true"
+spec:
+  description: "serenemind PostgreSQL Cluster"
+  instances: 3
+  primaryUpdateStrategy: unsupervised
+  enableSuperuserAccess: true
+  certificates:
+    serverCASecret: raulstechtips-internal-ca-key-pair
+    serverTLSSecret: pg-serenemind-internal-tls
+  bootstrap:
+    initdb:
+      database: serenemind
+      owner: serenemind-pg-admin
+      secret:
+        name: serenemind-pg-admin-credentials-secret
+  backup:
+    retentionPolicy: '30d'
+    volumeSnapshot:
+      className: longhorn-volume-snapshot-class
+      walClassName: longhorn-volume-snapshot-class
+      snapshotOwnerReference: none
+  storage:
+    storageClass: longhorn-storage-class-replicas-1
+    size: 10Gi
+  walStorage:
+    storageClass: longhorn-storage-class-replicas-1
+    size: 10Gi

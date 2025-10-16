@@ -1,0 +1,31 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pg-serenemind-internal-certificate
+  namespace: serenemind
+  labels:
+    cnpg.io/reload: ""
+spec:
+  secretName: pg-serenemind-internal-tls
+  duration: 8760h # 1 year
+  renewBefore: 720h # 30 days
+  subject:
+    organizations:
+      - raulstechtips
+  dnsNames:
+    - pg-serenemind-rw
+    - pg-serenemind-rw.serenemind
+    - pg-serenemind-rw.serenemind.svc
+    - pg-serenemind-rw.serenemind.svc.cluster.local
+    - pg-serenemind-ro
+    - pg-serenemind-ro.serenemind
+    - pg-serenemind-ro.serenemind.svc
+    - pg-serenemind-ro.serenemind.svc.cluster.local
+    - pg-serenemind-r
+    - pg-serenemind-r.serenemind
+    - pg-serenemind-r.serenemind.svc
+    - pg-serenemind-r.serenemind.svc.cluster.local
+  issuerRef:
+    name: raulstechtips-internal-ca-issuer
+    kind: ClusterIssuer
