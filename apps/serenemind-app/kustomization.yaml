@@ -5,7 +5,6 @@ namespace: serenemind
 
 resources:
   - manifests/ingress/prod.yaml
-  - manifests/secrets/github-registry-secret.yaml
   - manifests/secrets/app-secret.yaml
   - manifests/secrets/s3-secret.yaml
   - manifests/app.yaml
