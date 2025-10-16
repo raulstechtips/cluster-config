@@ -1,0 +1,19 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: serenemind-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/raulstechtips/cluster-config.git
+    targetRevision: feature/serenemind
+    path: apps/serenemind-app
+    plugin:
+      name: kustomize-envsubst
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: serenemind
+  syncPolicy: {}
+  revisionHistoryLimit: 10
