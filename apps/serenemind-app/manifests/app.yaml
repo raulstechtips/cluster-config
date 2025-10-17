@@ -20,7 +20,7 @@ spec:
         - name: github-registry-secret
       containers:
         - name: serenemind-app
-          image: ghcr.io/raulstechtips/serenemind-io:v0.0.3
+          image: ghcr.io/raulstechtips/serenemind-io:v0.0.4
           ports:
             - containerPort: 8000
               name: http
