@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: serenemind
 
 resources:
+  - manifests/ingress/middleware/middleware-strict-referrer.yaml
   - manifests/ingress/prod.yaml
   - manifests/secrets/app-secret.yaml
   - manifests/secrets/s3-secret.yaml
