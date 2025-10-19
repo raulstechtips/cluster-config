@@ -8,4 +8,5 @@ resources:
   - manifests/ingress/prod.yaml
   - manifests/secrets/app-secret.yaml
   - manifests/secrets/s3-secret.yaml
+  - manifests/secrets/smtp-secret.yaml
   - manifests/app.yaml
