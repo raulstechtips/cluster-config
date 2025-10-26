@@ -13,6 +13,10 @@ spec:
   instances: 3
   primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: true
+  postgresql:
+    parameters:
+      max_wal_size: "6GB"
+      max_slot_wal_keep_size: "6GB"
   certificates:
     serverCASecret: raulstechtips-internal-ca-key-pair
     serverTLSSecret: pg-serenemind-internal-tls
@@ -23,7 +27,7 @@ spec:
       secret:
         name: serenemind-pg-admin-credentials-secret
   backup:
-    retentionPolicy: '30d'
+    retentionPolicy: '15d'
     volumeSnapshot:
       className: longhorn-volume-snapshot-class
       walClassName: longhorn-volume-snapshot-class
