@@ -8,7 +8,7 @@ metadata:
     cnpg.io/reload: ""
 spec:
   description: "Infisical PostgreSQL Cluster"
-  instances: 1
+  instances: 3
   primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: true
   postgresql:
