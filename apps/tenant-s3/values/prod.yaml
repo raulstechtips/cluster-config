@@ -35,9 +35,11 @@ tenant:
   name: tenant-s3
   pools:
     - affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
                 matchExpressions:
                   - key: app.kubernetes.io/instance
                     operator: In
