@@ -34,7 +34,17 @@ tenant:
     protocol: http
   name: tenant-s3
   pools:
-    - name: pool-0
+    - affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/instance
+                    operator: In
+                    values:
+                      - tenant-s3
+              topologyKey: kubernetes.io/hostname
+      name: pool-0
       resources:
         limits:
           cpu: 500m
