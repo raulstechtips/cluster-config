@@ -4,8 +4,8 @@ kind: Kustomization
 namespace: infisical
 
 resources:
-  # - manifests/cluster.yaml
-  # - manifests/database.yaml
+  - manifests/cluster.yaml
+  - manifests/database.yaml
   # - manifests/scheduled-backup.yaml
   - manifests/secrets/secret-cnpg-infisical-admin-credentials.yaml
   - manifests/certificates/tls-certificate-cnpg-infisical.yaml
