@@ -12,5 +12,4 @@ helmCharts:
     valuesFile: values/prod.yaml
 
 resources:
-  - manifests/storage/longhorn-redis-infisical.yaml
   - manifests/secrets/secret-redis-infisical-credential.yaml
