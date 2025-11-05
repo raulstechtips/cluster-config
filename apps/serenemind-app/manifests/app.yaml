@@ -28,7 +28,7 @@ spec:
             - secretRef:
                 name: serenemind-app-secret
             - secretRef:
-                name: serenemind-pg-admin-credentials-secret
+                name: pg-serenemind-admin-credentials-secret
             - secretRef:
                 name: s3-secret
             - secretRef:
