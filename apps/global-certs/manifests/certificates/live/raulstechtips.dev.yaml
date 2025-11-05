@@ -3,7 +3,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: live-raulstechtips
-  namespace: default
+  namespace: cert-manager
 spec:
   secretName: live-raulstechtips-tls
   issuerRef:
@@ -16,5 +16,4 @@ spec:
   secretTemplate:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
-      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "jenkins,minio"
       reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
