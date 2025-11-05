@@ -1,4 +1,8 @@
 ---
+image:
+  registry: docker.io
+  repository: bitnamilegacy/redis
+  tag: 8.2.1-debian-12-r0
 auth:
   enabled: true
   existingSecret: infisical-redis-admin-credentials-secret
@@ -6,7 +10,7 @@ auth:
   usePasswordFileFromSecret: false
   usePasswordFiles: false
 global:
-  defaultStorageClass: longhorn-storage-class-replicas-1
+  defaultStorageClass: longhorn-storage-class-local
 master:
   containerPorts:
     redis: 6379
