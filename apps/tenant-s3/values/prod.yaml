@@ -1,7 +1,6 @@
 ---
 tenant:
   buckets:
-    - name: authentik-media
     - name: longhorn-backup
   certificate:
     externalCertSecret:
@@ -55,10 +54,10 @@ tenant:
           cpu: 200m
           ephemeral-storage: 500Mi
           memory: 256Mi
-      servers: 4
+      servers: 3
       size: 25Gi
       storageClassName: longhorn-storage-class-local
-      volumesPerServer: 1
+      volumesPerServer: 2
   poolsMetadata:
     annotations:
       secrets.infisical.com/auto-reload: "true"
