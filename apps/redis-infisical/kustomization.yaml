@@ -6,11 +6,10 @@ namespace: infisical
 helmCharts:
   - name: redis
     repo: https://charts.bitnami.com/bitnami
-    version: 20.11.5
+    version: 22.0.5
     releaseName: redis-infisical
     namespace: infisical
     valuesFile: values/prod.yaml
 
 resources:
-  - manifests/storage/longhorn-redis-infisical.yaml
   - manifests/secrets/secret-redis-infisical-credential.yaml

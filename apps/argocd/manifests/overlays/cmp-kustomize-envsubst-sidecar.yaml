@@ -34,8 +34,8 @@ spec:
           envFrom:
             - secretRef:
                 name: argocd-app-env
-            - secretRef:
-                name: argocd-app-env-dev
+            # - secretRef:
+                # name: argocd-app-env-dev
           resources:
             requests:
               memory: 256Mi
