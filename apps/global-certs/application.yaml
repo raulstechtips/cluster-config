@@ -1,0 +1,22 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: global-certs
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/raulstechtips/cluster-config.git
+    targetRevision: HEAD
+    path: apps/global-certs
+    plugin:
+      name: kustomize-envsubst
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+  revisionHistoryLimit: 10
