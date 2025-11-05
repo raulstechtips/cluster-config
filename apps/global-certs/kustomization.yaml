@@ -1,0 +1,11 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cert-manager
+
+resources:
+  - manifests/certificates/internal/raulstechtips-internal-ca.yaml
+  - manifests/certificates/live/raulstechtips.dev.yaml
+  - manifests/certificates/prod/prod.raulstechtips.dev.yaml
+  - manifests/certificates/stage/stage.raulstechtips.dev.yaml
+  - manifests/secrets/infisical-push-secret-raulstechtips-internal-ca.yaml

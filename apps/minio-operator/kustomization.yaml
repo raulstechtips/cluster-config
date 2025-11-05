@@ -14,4 +14,3 @@ helmCharts:
 resources:
   - manifests/certificates/tls-certificate-sts.yaml
   - manifests/secrets/secret-minio-operator-ca-tls-tenant-s3.yaml
-  - manifests/secrets/infisical-push-secret-tenant-s3-minio-tls.yaml
