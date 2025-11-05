@@ -9,7 +9,7 @@ metadata:
   annotations:
     secrets.infisical.com/auto-reload: "true"
 spec:
-  description: "serenemind PostgreSQL Cluster"
+  description: "Serenemind PostgreSQL Cluster"
   instances: 3
   primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: true
@@ -22,19 +22,19 @@ spec:
     serverTLSSecret: pg-serenemind-internal-tls
   bootstrap:
     initdb:
-      database: serenemind
-      owner: serenemind-pg-admin
+      database: pg-serenemind
+      owner: pg-serenemind-admin
       secret:
-        name: serenemind-pg-admin-credentials-secret
+        name: pg-serenemind-admin-credentials-secret
   backup:
-    retentionPolicy: '15d'
+    retentionPolicy: '7d'
     volumeSnapshot:
       className: longhorn-volume-snapshot-class
       walClassName: longhorn-volume-snapshot-class
       snapshotOwnerReference: none
   storage:
-    storageClass: longhorn-storage-class-replicas-1
+    storageClass: longhorn-storage-class-local
     size: 10Gi
   walStorage:
-    storageClass: longhorn-storage-class-replicas-1
+    storageClass: longhorn-storage-class-local
     size: 10Gi
