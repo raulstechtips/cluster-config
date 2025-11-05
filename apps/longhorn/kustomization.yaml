@@ -6,13 +6,14 @@ namespace: longhorn-system
 helmCharts:
   - name: longhorn
     repo: https://charts.longhorn.io
-    version: 1.8.1
+    version: 1.8.2
     releaseName: longhorn
     namespace: longhorn-system
     valuesFile: values/prod.yaml
 
 resources:
   - manifests/ingress/prod.yaml
+  - manifests/jobs/cleanup-snapshots.yaml
   - manifests/storage/longhorn-default-storage-class.yaml
   - manifests/storage/longhorn-storage-class-replicas-1.yaml
   - manifests/storage/longhorn-storage-class-local.yaml
