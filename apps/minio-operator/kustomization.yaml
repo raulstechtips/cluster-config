@@ -6,7 +6,7 @@ namespace: minio-operator
 helmCharts:
   - name: operator
     repo: https://operator.min.io
-    version: 7.1.1
+    version: 7.0.1
     releaseName: minio-operator
     namespace: minio-operator
     valuesFile: values/prod.yaml
