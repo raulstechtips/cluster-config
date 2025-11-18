@@ -1,5 +1,31 @@
 ---
 tenant:
+  env:
+    - name: MINIO_IDENTITY_OPENID_CONFIG_URL
+      valueFrom:
+        secretKeyRef:
+          name: tenant-s3-openid-secrets
+          key: MINIO_IDENTITY_OPENID_CONFIG_URL
+    - name: MINIO_IDENTITY_OPENID_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: tenant-s3-openid-secrets
+          key: MINIO_IDENTITY_OPENID_CLIENT_ID
+    - name: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: tenant-s3-openid-secrets
+          key: MINIO_IDENTITY_OPENID_CLIENT_SECRET
+    - name: MINIO_IDENTITY_OPENID_SCOPES
+      valueFrom:
+        secretKeyRef:
+          name: tenant-s3-openid-secrets
+          key: MINIO_IDENTITY_OPENID_SCOPES
+    - name: MINIO_IDENTITY_OPENID_REDIRECT_URI
+      valueFrom:
+        secretKeyRef:
+          name: tenant-s3-openid-secrets
+          key: MINIO_IDENTITY_OPENID_REDIRECT_URI
   buckets:
     - name: longhorn-backup
   certificate:
