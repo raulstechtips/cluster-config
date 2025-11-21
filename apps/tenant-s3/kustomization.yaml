@@ -5,7 +5,7 @@ namespace: minio
 
 helmCharts:
   - name: tenant
-    repo: oci://${ARGOCD_ENV_CONTAINER_REGISTRY_DOMAIN}/raulstechtips/minio
+    repo: oci://${ARGOCD_ENV_CONTAINER_REGISTRY_DOMAIN}/raulstechtips
     version: 7.1.1
     releaseName: tenant-s3
     namespace: minio
