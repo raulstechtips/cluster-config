@@ -5,7 +5,7 @@ namespace: oauth2-proxy
 
 helmCharts:
   - name: oauth2-proxy
-    repo: https://oauth2-proxy.github.io/charts
+    repo: https://oauth2-proxy.github.io/manifests
     version: 8.5.0
     releaseName: oauth2-proxy
     namespace: oauth2-proxy
