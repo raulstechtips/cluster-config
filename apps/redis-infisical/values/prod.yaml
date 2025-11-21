@@ -1,6 +1,6 @@
 ---
 image:
-  registry: harbor.prod.raulstechtips.dev
+  registry: ${ARGOCD_ENV_CONTAINER_REGISTRY_DOMAIN}
   repository: raulstechtips/redis
   tag: 8.2.1-debian-12-r0
 auth:
