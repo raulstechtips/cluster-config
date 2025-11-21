@@ -1,0 +1,31 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pg-keycloak-internal-certificate
+  namespace: keycloak
+  labels:
+    cnpg.io/reload: ""
+spec:
+  secretName: pg-keycloak-internal-tls
+  duration: 8760h # 1 year
+  renewBefore: 720h # 30 days
+  subject:
+    organizations:
+      - raulstechtips
+  dnsNames:
+    - pg-keycloak-rw
+    - pg-keycloak-rw.keycloak
+    - pg-keycloak-rw.keycloak.svc
+    - pg-keycloak-rw.keycloak.svc.cluster.local
+    - pg-keycloak-ro
+    - pg-keycloak-ro.keycloak
+    - pg-keycloak-ro.keycloak.svc
+    - pg-keycloak-ro.keycloak.svc.cluster.local
+    - pg-keycloak-r
+    - pg-keycloak-r.keycloak
+    - pg-keycloak-r.keycloak.svc
+    - pg-keycloak-r.keycloak.svc.cluster.local
+  issuerRef:
+    name: raulstechtips-internal-ca-issuer
+    kind: ClusterIssuer
