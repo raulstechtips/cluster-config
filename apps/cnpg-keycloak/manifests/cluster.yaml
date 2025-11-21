@@ -1,0 +1,38 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-keycloak
+  namespace: keycloak
+  labels:
+    cnpg.io/reload: ""
+spec:
+  description: "Keycloak PostgreSQL Cluster"
+  instances: 3
+  primaryUpdateStrategy: unsupervised
+  enableSuperuserAccess: true
+  postgresql:
+    parameters:
+      max_wal_size: "6GB"
+      max_slot_wal_keep_size: "6GB"
+  certificates:
+    serverCASecret: raulstechtips-internal-ca-key-pair
+    serverTLSSecret: pg-keycloak-internal-tls
+  bootstrap:
+    initdb:
+      database: keycloak
+      owner: pg-keycloak-admin
+      secret:
+        name: pg-keycloak-admin-credentials-secret
+  backup:
+    retentionPolicy: '7d'
+    volumeSnapshot:
+      className: longhorn-volume-snapshot-class
+      walClassName: longhorn-volume-snapshot-class
+      snapshotOwnerReference: none
+  storage:
+    storageClass: longhorn-storage-class-local
+    size: 10Gi
+  walStorage:
+    storageClass: longhorn-storage-class-local
+    size: 10Gi

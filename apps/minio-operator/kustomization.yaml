@@ -5,7 +5,7 @@ namespace: minio-operator
 
 helmCharts:
   - name: operator
-    repo: https://operator.min.io
+    repo: oci://${ARGOCD_ENV_CONTAINER_REGISTRY_DOMAIN}/raulstechtips
     version: 7.0.1
     releaseName: minio-operator
     namespace: minio-operator

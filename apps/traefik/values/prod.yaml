@@ -3,6 +3,14 @@ additionalArguments:
   - --serversTransport.insecureSkipVerify=true
   - --entryPoints.redis.address=:6379/tcp
   - --entryPoints.postgres.address=:5432/tcp
+  # Timeout configurations for large file uploads (e.g., container images)
+  - --entryPoints.websecure.transport.respondingTimeouts.readTimeout=0
+  - --entryPoints.websecure.transport.respondingTimeouts.writeTimeout=0
+  - --entryPoints.websecure.transport.respondingTimeouts.idleTimeout=300s
+  # Backend forwarding timeouts
+  - --serversTransport.forwardingTimeouts.dialTimeout=30s
+  - --serversTransport.forwardingTimeouts.responseHeaderTimeout=300s
+  - --serversTransport.forwardingTimeouts.idleConnTimeout=300s
 logs:
   level: DEBUG
   access:

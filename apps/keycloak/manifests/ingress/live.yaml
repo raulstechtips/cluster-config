@@ -1,0 +1,24 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: keycloak-ingress-live
+  namespace: keycloak
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`${ARGOCD_ENV_KEYCLOAK_LIVE_DOMAIN}`)
+      kind: Rule
+      middlewares:
+        - name: strict-referrer
+          namespace: default
+        - name: default-headers
+          namespace: default
+      services:
+        - name: keycloak
+          port: 80
+  tls:
+    secretName: live-raulstechtips-tls

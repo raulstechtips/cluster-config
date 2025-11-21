@@ -13,8 +13,8 @@ spec:
     - match: Host(`${ARGOCD_ENV_TRAEFIK_PROD_DOMAIN}`)
       kind: Rule
       middlewares:
-        - name: traefik-dashboard-basicauth
-          namespace: traefik
+        - name: oauth-chain
+          namespace: default
       services:
         - name: api@internal
           kind: TraefikService

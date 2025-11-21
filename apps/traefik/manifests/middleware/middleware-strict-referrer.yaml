@@ -1,0 +1,10 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: strict-referrer
+  namespace: default
+spec:
+  headers:
+    # Allow full Referer on same-origin; send only origin on cross-origin
+    referrerPolicy: strict-origin-when-cross-origin

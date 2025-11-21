@@ -11,6 +11,8 @@ spec:
           envFrom:
             - secretRef:
                 name: argocd-app-env
+            - secretRef:
+                name: argocd-harbor-secrets
           env:
             - name: ARGOCD_CMP_SERVER
               value: "1"

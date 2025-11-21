@@ -1,0 +1,19 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: keycloak
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/raulstechtips/cluster-config.git
+    targetRevision: HEAD
+    path: apps/keycloak
+    plugin:
+      name: kustomize-envsubst
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: keycloak
+  syncPolicy: {}
+  revisionHistoryLimit: 10
