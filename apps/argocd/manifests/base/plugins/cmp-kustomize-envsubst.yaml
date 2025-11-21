@@ -17,9 +17,13 @@ data:
           - |
             set -eo pipefail
             SHELL_FORMAT=$(printf '${%s} ' ${!ARGOCD_ENV_*})
-            if [ -f kustomization.tpl.yaml ]; then
-              envsubst "$SHELL_FORMAT" < kustomization.tpl.yaml > kustomization.yaml
+            # 1) Pre-template kustomization file so helmCharts.repo has a real URL
+            if [ -f kustomization.yaml ] || [ -f Kustomization ]; then
+              K_FILE=$( [ -f kustomization.yaml ] && echo kustomization.yaml || echo Kustomization )
+              TMP=$(mktemp)
+              envsubst "$SHELL_FORMAT" < "$K_FILE" > "$TMP"
+              mv "$TMP" "$K_FILE"
             fi
             kustomize build --enable-helm --load-restrictor LoadRestrictionsNone . | envsubst "$SHELL_FORMAT"
       discover:
-        fileName: kustomization.tpl.yaml
+        fileName: kustomization.yaml
