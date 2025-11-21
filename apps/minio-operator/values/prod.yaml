@@ -28,7 +28,7 @@ operator:
       value: "off"
   image:
     pullPolicy: IfNotPresent
-    repository: quay.io/minio/operator
+    repository: ${ARGOCD_ENV_CONTAINER_REGISTRY_DOMAIN}/raulstechtips/operator
     tag: v7.1.0
   imagePullSecrets: []
   initContainers: []
