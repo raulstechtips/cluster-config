@@ -17,4 +17,9 @@ data:
           - |
             set -eo pipefail
             SHELL_FORMAT=$(printf '${%s} ' ${!ARGOCD_ENV_*})
+            if [ -f kustomization.tpl.yaml ]; then
+              envsubst "$SHELL_FORMAT" < kustomization.tpl.yaml > kustomization.yaml
+            fi
             kustomize build --enable-helm --load-restrictor LoadRestrictionsNone . | envsubst "$SHELL_FORMAT"
+      discover:
+        fileName: kustomization.tpl.yaml
