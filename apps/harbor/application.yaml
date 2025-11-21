@@ -15,5 +15,44 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: harbor
-  syncPolicy: {}
+  syncPolicy:
+    syncOptions:
+      - RespectIgnoreDifferences=true
   revisionHistoryLimit: 10
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: harbor-core
+      jsonPointers:
+        - /data
+    - group: ""
+      kind: Secret
+      name: harbor-jobservice
+      jsonPointers:
+        - /data
+    - group: ""
+      kind: Secret
+      name: harbor-registry
+      jsonPointers:
+        - /data
+    - group: ""
+      kind: Secret
+      name: harbor-registryctl
+      jsonPointers:
+        - /data
+    # Ignore checksum annotations on deployments (they change with config changes)
+    - group: apps
+      kind: Deployment
+      name: harbor-core
+      jsonPointers:
+        - /spec/template/metadata/annotations
+    - group: apps
+      kind: Deployment
+      name: harbor-jobservice
+      jsonPointers:
+        - /spec/template/metadata/annotations
+    - group: apps
+      kind: Deployment
+      name: harbor-registry
+      jsonPointers:
+        - /spec/template/metadata/annotations
