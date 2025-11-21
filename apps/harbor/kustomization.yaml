@@ -5,8 +5,8 @@ namespace: harbor
 
 helmCharts:
   - name: harbor
-    repo: https://helm.goharbor.io/
-    version: 1.4.0-dev
+    repo: https://helm.goharbor.io
+    version: 1.18.0
     releaseName: harbor
     namespace: harbor
     valuesFile: values/prod.yaml
