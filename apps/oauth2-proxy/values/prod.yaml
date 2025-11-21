@@ -1,0 +1,155 @@
+---
+# Oauth client configuration specifics
+config:
+  existingSecret: oauth2-proxy-client-secret
+  configFile: |-
+    upstreams = ["static://200"]
+
+image:
+  repository: "quay.io/oauth2-proxy/oauth2-proxy"
+  tag: "v7.13.0"
+
+extraArgs:
+  reverse-proxy: "true"
+  skip-provider-button: "true"
+  silence-ping-logging: "true"
+  pass-authorization-header: "true"
+  cookie-csrf-per-request: "true"
+  code-challenge-method: "S256"
+  cookie-refresh: "2m"
+  cookie-expire: "24h"
+
+envFrom:
+  - secretRef:
+      name: oauth2-proxy-config-secret
+
+service:
+  type: ClusterIP
+  portNumber: 80
+  appProtocol: http
+
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 512Mi
+  requests:
+    cpu: 20m
+    memory: 256Mi
+
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - oauth2-proxy
+          topologyKey: kubernetes.io/hostname
+
+replicaCount: 3
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+  annotations: {}
+  # Configure HPA behavior policies for scaling if needed
+  # Ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#configuring-scaling-behavior
+  behavior: {}
+    # scaleDown:
+    #   stabilizationWindowSeconds: 300
+    #   policies:
+    #   - type: Percent
+    #     value: 100
+    #     periodSeconds: 15
+    #   selectPolicy: Min
+    # scaleUp:
+    #   stabilizationWindowSeconds: 0
+    #   policies:
+    #   - type: Percent
+    #     value: 100
+    #     periodSeconds: 15
+    #   - type: Pods
+    #     value: 4
+    #     periodSeconds: 15
+    #   selectPolicy: Max
+
+# whether to use http or https
+httpScheme: http
+
+# Configure the session storage type, between cookie and redis
+sessionStorage:
+  # Can be one of the supported session storage cookie|redis
+  type: cookie
+
+# Enables apiVersion deprecation checks
+checkDeprecation: true
+
+# Allows graceful shutdown
+# terminationGracePeriodSeconds: 65
+# lifecycle:
+#   preStop:
+#     exec:
+#       command: [ "sh", "-c", "sleep 60" ]
+
+metrics:
+  # Enable Prometheus metrics endpoint
+  enabled: true
+  # Serve Prometheus metrics on this port
+  port: 44180
+  # when service.type is NodePort ...
+  # nodePort: 44180
+  # Protocol set on the service for the metrics port
+  service:
+    appProtocol: http
+  serviceMonitor:
+    # Enable Prometheus Operator ServiceMonitor
+    enabled: false
+    # Define the namespace where to deploy the ServiceMonitor resource
+    namespace: ""
+    # Prometheus Instance definition
+    prometheusInstance: default
+    # Prometheus scrape interval
+    interval: 60s
+    # Prometheus scrape timeout
+    scrapeTimeout: 30s
+    # Add custom labels to the ServiceMonitor resource
+    labels: {}
+
+    ## scheme: HTTP scheme to use for scraping. Can be used with `tlsConfig` for example if using istio mTLS.
+    scheme: ""
+
+    ## tlsConfig: TLS configuration to use when scraping the endpoint. For example if using istio mTLS.
+    ## Of type: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#tlsconfig
+    tlsConfig: {}
+
+    ## bearerTokenFile: Path to bearer token file.
+    bearerTokenFile: ""
+
+    ## Used to pass annotations that are used by the Prometheus installed in your cluster to select Service Monitors to work with
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#prometheusspec
+    annotations: {}
+
+    ## Metric relabel configs to apply to samples before ingestion.
+    ## [Metric Relabeling](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs)
+    metricRelabelings: []
+    # - action: keep
+    #   regex: 'kube_(daemonset|deployment|pod|namespace|node|statefulset).+'
+    #   sourceLabels: [__name__]
+
+    ## Relabel configs to apply to samples before ingestion.
+    ## [Relabeling](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config)
+    relabelings: []
+    # - sourceLabels: [__meta_kubernetes_pod_node_name]
+    #   separator: ;
+    #   regex: ^(.*)$
+    #   targetLabel: nodename
+    #   replacement: $1
+    #   action: replace
