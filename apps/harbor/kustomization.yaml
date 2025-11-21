@@ -5,7 +5,7 @@ namespace: harbor
 
 helmCharts:
   - name: harbor
-    repo: https://helm.goharbor.io/harbor
+    repo: https://helm.goharbor.io/
     version: 1.4.0-dev
     releaseName: harbor
     namespace: harbor
