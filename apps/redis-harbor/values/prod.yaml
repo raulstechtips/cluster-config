@@ -1,0 +1,56 @@
+---
+image:
+  registry: ghcr.io
+  repository: raulstechtips/redis
+  tag: 8.2.1-debian-12-r0
+auth:
+  enabled: true
+  existingSecret: harbor-redis-secret
+  existingSecretPasswordKey: REDIS_PASSWORD
+  usePasswordFileFromSecret: false
+  usePasswordFiles: false
+global:
+  security:
+    allowInsecureImages: true
+  defaultStorageClass: longhorn-storage-class-local
+master:
+  # kind: Deployment
+  containerPorts:
+    redis: 6379
+  count: 1
+  persistence:
+    size: 20Gi
+  persistentVolumeClaimRetentionPolicy:
+    enabled: false
+    whenDeleted: Retain
+    whenScaled: Retain
+  revisionHistoryLimit: 10
+  service:
+    portNames:
+      redis: tcp-redis
+    ports:
+      redis: 6379
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 10m
+      memory: 100Mi
+    limits:
+      cpu: 100m
+      memory: 500Mi
+replica:
+  # kind: Deployment
+  containerPorts:
+    redis: 6379
+  persistence:
+    size: 20Gi
+  persistentVolumeClaimRetentionPolicy:
+    enabled: false
+    whenDeleted: Retain
+    whenScaled: Retain
+  replicaCount: 1
+  revisionHistoryLimit: 10
+  service:
+    ports:
+      redis: 6379
+    type: ClusterIP
