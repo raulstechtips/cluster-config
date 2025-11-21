@@ -357,6 +357,8 @@ database:
     port: "5432"
     username: "pg-harbor-admin"
     coreDatabase: "registry"
+    # Placeholder value for template rendering (existingSecret takes precedence at runtime)
+    password: "placeholder"
     # if using existing secret, the key must be "password"
     existingSecret: "pg-harbor-admin-credentials-secret"
     # "disable" - No SSL
@@ -393,6 +395,9 @@ redis:
     trivyAdapterIndex: "5"
     # harborDatabaseIndex: "6"
     # cacheLayerDatabaseIndex: "7"
+    # Placeholder values for template rendering (existingSecret takes precedence at runtime)
+    username: ""
+    password: "placeholder"
     # If using existingSecret, the key must be REDIS_PASSWORD, if ACL mode enabled, also inlcudes data of username, the keys must be REDIS_USERNAME
     existingSecret: "harbor-redis-secret"
 
