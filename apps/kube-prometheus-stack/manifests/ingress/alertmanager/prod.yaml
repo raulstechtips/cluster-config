@@ -1,0 +1,26 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: alertmanager-ingress-prod
+  namespace: monitoring
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`${ARGOCD_ENV_ALERTMANAGER_PROD_DOMAIN}`)
+      kind: Rule
+      middlewares:
+        - name: strict-referrer
+          namespace: default
+        - name: default-headers
+          namespace: default
+        - name: oauth-chain
+          namespace: traefik
+      services:
+        - name: monitoring-kube-prometheus-alertmanager
+          port: 9093
+  tls:
+    secretName: prod-raulstechtips-tls
