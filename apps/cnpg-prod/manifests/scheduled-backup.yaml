@@ -1,0 +1,13 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: prod-postgresql-scheduled-backup
+  namespace: prod
+spec:
+  cluster:
+    name: pg-prod
+  schedule: "0 0 0 * * *"
+  backupOwnerReference: none
+  method: volumeSnapshot
+  immediate: true

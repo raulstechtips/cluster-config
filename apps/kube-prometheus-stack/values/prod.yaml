@@ -1,0 +1,290 @@
+---
+
+alertmanager:
+
+  ## Deploy alertmanager
+  ##
+  enabled: true
+
+
+  ## Alertmanager configuration directives
+  ## ref: https://prometheus.io/docs/alerting/configuration/#configuration-file
+  ##      https://prometheus.io/webtools/alerting/routing-tree-editor/
+  config:
+    global:
+      resolve_timeout: 5m
+    inhibit_rules:
+      - source_matchers:
+          - 'severity = critical'
+        target_matchers:
+          - 'severity =~ warning|info'
+        equal:
+          - 'namespace'
+          - 'alertname'
+      - source_matchers:
+          - 'severity = warning'
+        target_matchers:
+          - 'severity = info'
+        equal:
+          - 'namespace'
+          - 'alertname'
+      - source_matchers:
+          - 'alertname = InfoInhibitor'
+        target_matchers:
+          - 'severity = info'
+        equal:
+          - 'namespace'
+      - target_matchers:
+          - 'alertname = InfoInhibitor'
+    route:
+      group_by: ['namespace']
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 12h
+      receiver: 'null'
+      routes:
+        - receiver: 'null'
+          matchers:
+            - alertname = "Watchdog"
+    receivers:
+      - name: 'null'
+    templates:
+      - '/etc/alertmanager/config/*.tmpl'
+
+  alertmanagerSpec:
+    persistentVolumeClaimRetentionPolicy:
+      whenDeleted: Retain
+      whenScaled: Retain
+
+    ## Image of Alertmanager
+    image:
+      registry: quay.io
+      repository: prometheus/alertmanager
+      tag: v0.29.0
+      sha: ""
+      pullPolicy: IfNotPresent
+
+    replicas: 3
+
+    retention: 120h
+
+    storage:
+      volumeClaimTemplate:
+        metadata:
+          name: alertmanager-pvc
+        spec:
+          storageClassName: longhorn-storage-class-local
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 10Gi
+
+    externalUrl: "https://${ARGOCD_ENV_ALERTMANAGER_PROD_DOMAIN}"
+
+    resources:
+      limits:
+        cpu: 500m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+
+    podAntiAffinity: "soft"
+    podAntiAffinityTopologyKey: kubernetes.io/hostname
+
+grafana:
+  enabled: true
+  replicas: 3
+  image:
+    registry: docker.io
+    repository: grafana/grafana
+    tag: "12.3.0"
+    pullPolicy: IfNotPresent
+
+  envFromSecret: "grafana-app-secrets"
+
+  grafana.ini:
+    server:
+      root_url: "https://${ARGOCD_ENV_GRAFANA_PROD_DOMAIN}"
+    database:
+      type: postgres
+      host: "$__env{GF_DATABASE_HOST}:$__env{GF_DATABASE_PORT}"
+      name: "$__env{GF_DATABASE_NAME}"
+      user: "$__env{GF_DATABASE_USER}"
+      password: "$__env{GF_DATABASE_PASSWORD}"
+      ssl_mode: "$__env{GF_DATABASE_SSL_MODE}"
+      ca_cert_path: "$__env{GF_DATABASE_CA_CERT_PATH}"
+    remote_cache:
+      type: redis
+      connstr: "$__env{GF_REMOTE_CACHE_REDIS}"
+    auth.generic_oauth:
+      enabled: true
+      name: Keycloak-OAuth
+      allow_sign_up: true
+      client_id: "$__env{GF_GENERIC_OAUTH_CLIENT_ID}"
+      client_secret: "$__env{GF_GENERIC_OAUTH_CLIENT_SECRET}"
+      scopes: "openid email profile offline_access roles"
+      email_attribute_path: "email"
+      login_attribute_path: "username"
+      name_attribute_path: "full_name"
+      auth_url: "$__env{GF_GENERIC_OAUTH_AUTH_URL}"
+      token_url: "$__env{GF_GENERIC_OAUTH_TOKEN_URL}"
+      api_url: "$__env{GF_GENERIC_OAUTH_API_URL}"
+      role_attribute_path: grafana_role || None
+      allow_assign_grafana_admin: true
+
+  extraSecretMounts:
+    - name: postgres-ca-cert
+      secretName: raulstechtips-internal-ca-key-pair
+      defaultMode: 0440
+      mountPath: /etc/custom-certs/postgres-ca.crt
+      subPath: ca.crt
+      readOnly: true
+
+  # Use an existing secret for the admin user.
+  admin:
+    ## Name of the secret. Can be templated.
+    existingSecret: "grafana-dashboard-admin-credentials"
+    userKey: GRAFANA_DASHBOARD_ADMIN_USER
+    passwordKey: GRAFANA_DASHBOARD_ADMIN_PASSWORD
+
+  persistence:
+    enabled: false
+
+prometheusOperator:
+  enabled: true
+
+  admissionWebhooks:
+    enabled: true
+
+    patch:
+      enabled: true
+      image:
+        registry: registry.k8s.io
+        repository: ingress-nginx/kube-webhook-certgen
+        tag: v1.6.5
+        pullPolicy: IfNotPresent
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1000Mi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - prometheus-operator
+          topologyKey: kubernetes.io/hostname
+
+  image:
+    registry: quay.io
+    repository: prometheus-operator/prometheus-operator
+    tag: "v0.87.0"
+    pullPolicy: IfNotPresent
+
+
+  prometheusConfigReloader:
+    image:
+      registry: quay.io
+      repository: prometheus-operator/prometheus-config-reloader
+      tag: "v0.87.0"
+    enableProbe: false
+    resources:
+      limits:
+        cpu: 100m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+
+  thanosImage:
+    registry: quay.io
+    repository: thanos/thanos
+    tag: v0.40.1
+
+prometheus:
+  enabled: true
+
+  thanosService:
+    enabled: true
+
+  thanosServiceMonitor:
+    enabled: true
+
+  prometheusSpec:
+    persistentVolumeClaimRetentionPolicy:
+      whenDeleted: Retain
+      whenScaled: Retain
+
+    replicaExternalLabelName: "replica"
+    prometheusExternalLabelName: "prometheus"
+    disableCompaction: true
+
+    scrapeInterval: 30s
+    scrapeTimeout: 30s
+    evaluationInterval: 30s
+
+    image:
+      registry: quay.io
+      repository: prometheus/prometheus
+      tag: v3.7.3
+      pullPolicy: IfNotPresent
+
+
+    externalUrl: "https://${ARGOCD_ENV_PROMETHEUS_PROD_DOMAIN}"
+    retention: 10h
+    retentionSize: "20GiB"
+
+    replicas: 3
+
+    podAntiAffinity: "soft"
+    podAntiAffinityTopologyKey: kubernetes.io/hostname
+
+    resources:
+      limits:
+        cpu: 750m
+        memory: 3Gi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+
+    storageSpec:
+      volumeClaimTemplate:
+        metadata:
+          name: prometheus-pvc
+        spec:
+          storageClassName: longhorn-storage-class-local
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 25Gi
+
+    thanos:
+      image: quay.io/thanos/thanos:v0.40.1
+      version: v0.40.1
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      objectStorageConfig:
+        existingSecret:
+          key: objstore.yml
+          name: thanos-storage-config

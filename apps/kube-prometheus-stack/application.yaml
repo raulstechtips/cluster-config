@@ -1,0 +1,28 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/raulstechtips/cluster-config.git
+    targetRevision: HEAD
+    path: apps/kube-prometheus-stack
+    plugin:
+      name: kustomize-envsubst
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    syncOptions:
+      - RespectIgnoreDifferences=true
+  revisionHistoryLimit: 10
+  ignoreDifferences:
+    # Ignore checksum annotations on deployments (they change with config changes)
+    - group: apps
+      kind: Deployment
+      name: monitoring-grafana
+      jsonPointers:
+        - /spec/template/metadata/annotations
