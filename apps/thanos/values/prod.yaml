@@ -1,0 +1,86 @@
+---
+global:
+  security:
+    allowInsecureImages: true
+
+image:
+  registry: quay.io
+  repository: thanos/thanos
+  tag: v0.40.1
+  pullPolicy: IfNotPresent
+
+existingObjstoreSecret: thanos-storage-config
+
+query:
+  enabled: true
+
+  replicaLabel: [replica]
+
+  dnsDiscovery:
+    enabled: true
+
+  stores:
+    - "dnssrv+_grpc._tcp.monitoring-kube-prometheus-thanos-discovery.monitoring.svc.cluster.local:10901"
+
+  replicaCount: 3
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 200Mi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+## @section Thanos Query Frontend parameters
+queryFrontend:
+  enabled: true
+
+  replicaCount: 3
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 200Mi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+## @section Thanos Compactor parameters
+compactor:
+  ## @param compactor.enabled Enable/disable Thanos Compactor component
+  ##
+  enabled: true
+
+  retentionResolutionRaw: 2d
+  retentionResolution5m: 0d
+  retentionResolution1h: 0y
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 500Mi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+  persistence:
+    enabled: false
+
+## @section Thanos Store Gateway parameters
+storegateway:
+  enabled: true
+
+  replicaCount: 3
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+  podAntiAffinityPreset: soft
+
+  persistence:
+    enabled: false
