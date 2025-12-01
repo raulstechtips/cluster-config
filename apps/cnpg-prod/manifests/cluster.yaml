@@ -1,0 +1,48 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-prod
+  namespace: prod
+  labels:
+    cnpg.io/reload: ""
+spec:
+  description: "Prod PostgreSQL Cluster"
+  instances: 3
+  primaryUpdateStrategy: unsupervised
+  enableSuperuserAccess: true
+  postgresql:
+    parameters:
+      max_wal_size: "16GB"
+      max_slot_wal_keep_size: "16GB"
+  certificates:
+    serverCASecret: raulstechtips-internal-ca-key-pair
+    serverTLSSecret: pg-prod-internal-tls
+  bootstrap:
+    initdb:
+      database: prod
+      owner: pg-prod-admin
+      secret:
+        name: pg-prod-admin-credentials-secret
+  backup:
+    retentionPolicy: '7d'
+    volumeSnapshot:
+      className: longhorn-volume-snapshot-class
+      walClassName: longhorn-volume-snapshot-class
+      snapshotOwnerReference: none
+  storage:
+    storageClass: longhorn-storage-class-local
+    size: 20Gi
+  walStorage:
+    storageClass: longhorn-storage-class-local
+    size: 20Gi
+  managed:
+    roles:
+      - name: pg-grafana
+        comment: "Grafana Database"
+        ensure: present
+        passwordSecret:
+          name: pg-grafana-database-credentials-secret
+        createdb: true
+        login: true
+        superuser: false

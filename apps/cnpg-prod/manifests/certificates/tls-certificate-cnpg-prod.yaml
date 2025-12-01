@@ -1,0 +1,31 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pg-prod-internal-certificate
+  namespace: prod
+  labels:
+    cnpg.io/reload: ""
+spec:
+  secretName: pg-prod-internal-tls
+  duration: 8760h # 1 year
+  renewBefore: 720h # 30 days
+  subject:
+    organizations:
+      - raulstechtips
+  dnsNames:
+    - pg-prod-rw
+    - pg-prod-rw.prod
+    - pg-prod-rw.prod.svc
+    - pg-prod-rw.prod.svc.cluster.local
+    - pg-prod-ro
+    - pg-prod-ro.prod
+    - pg-prod-ro.prod.svc
+    - pg-prod-ro.prod.svc.cluster.local
+    - pg-prod-r
+    - pg-prod-r.prod
+    - pg-prod-r.prod.svc
+    - pg-prod-r.prod.svc.cluster.local
+  issuerRef:
+    name: raulstechtips-internal-ca-issuer
+    kind: ClusterIssuer

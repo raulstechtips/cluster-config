@@ -1,0 +1,13 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: pg-grafana
+  namespace: prod
+spec:
+  databaseReclaimPolicy: delete
+  name: pg-grafana
+  owner: pg-grafana
+  allowConnections: true
+  cluster:
+    name: pg-prod

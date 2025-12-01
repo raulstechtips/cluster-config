@@ -14,6 +14,6 @@ helmCharts:
 resources:
   - manifests/ingress/prod.yaml
   - manifests/middleware/middleware-default-headers.yaml
-  - manifests/middleware/middleware-secret-traefik-dashboard-auth-credentials.yaml
+  - manifests/middleware/middleware-forwardauth.yaml
+  - manifests/middleware/middleware-strict-referrer.yaml
   - manifests/middleware/middleware-vpn-ip-acl.yaml
-  - manifests/secrets/secret-traefik-dashboard-auth-credentials.yaml

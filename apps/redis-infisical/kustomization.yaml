@@ -5,7 +5,7 @@ namespace: infisical
 
 helmCharts:
   - name: redis
-    repo: https://charts.bitnami.com/bitnami
+    repo: oci://${ARGOCD_ENV_CONTAINER_REGISTRY_DOMAIN}/raulstechtips/redis
     version: 22.0.5
     releaseName: redis-infisical
     namespace: infisical

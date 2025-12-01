@@ -1,0 +1,32 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-dev
+  namespace: dev
+  labels:
+    cnpg.io/reload: ""
+spec:
+  description: "Dev PostgreSQL Cluster"
+  instances: 3
+  primaryUpdateStrategy: unsupervised
+  enableSuperuserAccess: true
+  bootstrap:
+    initdb:
+      database: dev
+      owner: pg-dev-admin
+      secret:
+        name: pg-dev-admin-credentials-secret
+  storage:
+    storageClass: longhorn-storage-class-local
+    size: 10Gi
+  managed:
+    roles:
+      - name: pg-huginn-admin
+        comment: "Huginn Database"
+        ensure: present
+        passwordSecret:
+          name: pg-huginn-database-credentials-secret
+        createdb: true
+        login: true
+        superuser: false
