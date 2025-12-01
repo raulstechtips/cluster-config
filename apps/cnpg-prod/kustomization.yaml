@@ -1,0 +1,11 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: prod
+
+resources:
+  - manifests/certificates/tls-certificate-cnpg-prod.yaml
+  - manifests/cluster.yaml
+  - manifests/secrets/pg-prod-admin-credentials.yaml
+  - manifests/secrets/pg-grafana-database-credential-secret.yaml
+  - manifests/databases/pg-grafana.yaml
