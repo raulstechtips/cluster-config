@@ -15,5 +15,14 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
-  syncPolicy: {}
+  syncPolicy:
+    syncOptions:
+      - RespectIgnoreDifferences=true
   revisionHistoryLimit: 10
+  ignoreDifferences:
+    # Ignore checksum annotations on deployments (they change with config changes)
+    - group: apps
+      kind: Deployment
+      name: monitoring-grafana
+      jsonPointers:
+        - /spec/template/metadata/annotations

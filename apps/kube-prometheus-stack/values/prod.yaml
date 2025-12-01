@@ -79,7 +79,7 @@ alertmanager:
             requests:
               storage: 10Gi
 
-    externalUrl: "${ARGOCD_ENV_ALERTMANAGER_PROD_DOMAIN}"
+    externalUrl: "https://${ARGOCD_ENV_ALERTMANAGER_PROD_DOMAIN}"
 
     resources:
       limits:
@@ -105,7 +105,7 @@ grafana:
 
   grafana.ini:
     server:
-      root_url: "${ARGOCD_ENV_GRAFANA_PROD_DOMAIN}"
+      root_url: "https://${ARGOCD_ENV_GRAFANA_PROD_DOMAIN}"
     database:
       type: postgres
       host: "$__env{GF_DATABASE_HOST}:$__env{GF_DATABASE_PORT}"
@@ -246,7 +246,7 @@ prometheus:
       pullPolicy: IfNotPresent
 
 
-    externalUrl: "${ARGOCD_ENV_PROMETHEUS_PROD_DOMAIN}"
+    externalUrl: "https://${ARGOCD_ENV_PROMETHEUS_PROD_DOMAIN}"
     retention: 10h
     retentionSize: "20GiB"
 
