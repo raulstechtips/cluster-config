@@ -55,7 +55,7 @@ tenant:
           ephemeral-storage: 500Mi
           memory: 256Mi
       servers: 3
-      size: 25Gi
+      size: 75Gi
       storageClassName: longhorn-storage-class-local
       volumesPerServer: 2
   poolsMetadata:
