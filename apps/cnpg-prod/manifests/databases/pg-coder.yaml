@@ -1,0 +1,13 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: pg-coder
+  namespace: prod
+spec:
+  databaseReclaimPolicy: delete
+  name: pg-coder
+  owner: pg-coder
+  allowConnections: true
+  cluster:
+    name: pg-prod

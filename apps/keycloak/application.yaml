@@ -15,5 +15,13 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: keycloak
-  syncPolicy: {}
+  syncPolicy:
+    syncOptions:
+      - respectIgnoreDifferences=true
   revisionHistoryLimit: 10
+  ignoreDifferences:
+    - group: apps
+      kind: StatefulSet
+      name: keycloak
+      jsonPointers:
+        - /spec/template/metadata/annotations

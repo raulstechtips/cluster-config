@@ -46,3 +46,35 @@ spec:
         createdb: true
         login: true
         superuser: false
+      - name: pg-coder
+        comment: "Coder Database"
+        ensure: present
+        passwordSecret:
+          name: pg-coder-database-credentials-secret
+        createdb: true
+        login: true
+        superuser: false
+      - name: pg-harbor-admin
+        comment: "Harbor Database"
+        ensure: present
+        passwordSecret:
+          name: pg-harbor-database-credentials-secret
+        createdb: true
+        login: true
+        superuser: false
+      - name: infisical-pg-admin
+        comment: "Infisical Database"
+        ensure: present
+        passwordSecret:
+          name: pg-infisical-database-credentials-secret
+        createdb: true
+        login: true
+        superuser: false
+      - name: pg-keycloak-admin
+        comment: "Keycloak Database"
+        ensure: present
+        passwordSecret:
+          name: pg-keycloak-database-credentials-secret
+        createdb: true
+        login: true
+        superuser: false
