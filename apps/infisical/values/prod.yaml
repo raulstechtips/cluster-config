@@ -37,9 +37,11 @@ infisical:
 
   resources:
     limits:
-      memory: 600Mi
+      memory: 768Mi
+      cpu: 200m
     requests:
-      cpu: 350m
+      cpu: 10m
+      memory: 100Mi
 
   extraVolumes:
     - name: postgres-ca-cert
