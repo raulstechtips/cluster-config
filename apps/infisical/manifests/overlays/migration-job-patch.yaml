@@ -17,7 +17,7 @@ spec:
         - name: infisical-schema-migration
           env:
             - name: DB_HOST
-              value: pg-infisical-rw.infisical.svc.cluster.local
+              value: pg-prod-rw.prod.svc.cluster.local
             - name: DB_PORT
               value: "5432"
             - name: DB_NAME
@@ -27,7 +27,7 @@ spec:
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: infisical-pg-admin-credentials-secret
+                  name: pg-infisical-database-credentials-secret
                   key: password
             - name: DB_SSL_ROOT_CERT
               value: /etc/custom-certs/postgres-ca.crt

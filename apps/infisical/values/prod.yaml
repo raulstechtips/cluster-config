@@ -65,12 +65,12 @@ postgresql:
 
   customURIParameters:
     enabled: true
-    host: "pg-infisical-rw.infisical.svc.cluster.local"
+    host: "pg-prod-rw.prod.svc.cluster.local"
     port: 5432
     database: "pg-infisical"
     username: "infisical-pg-admin"
     passwordSecret:
-      name: "infisical-pg-admin-credentials-secret"
+      name: "pg-infisical-database-credentials-secret"
       key: "password"
     ssl:
       enabled: true
