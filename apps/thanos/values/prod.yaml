@@ -26,8 +26,8 @@ query:
 
   resources:
     limits:
-      cpu: 200m
-      memory: 200Mi
+      cpu: 500m
+      memory: 1Gi
     requests:
       cpu: 10m
       memory: 100Mi
@@ -40,8 +40,8 @@ queryFrontend:
 
   resources:
     limits:
-      cpu: 200m
-      memory: 200Mi
+      cpu: 500m
+      memory: 1Gi
     requests:
       cpu: 10m
       memory: 100Mi
@@ -58,8 +58,8 @@ compactor:
 
   resources:
     limits:
-      cpu: 200m
-      memory: 500Mi
+      cpu: 500m
+      memory: 1Gi
     requests:
       cpu: 10m
       memory: 100Mi
@@ -74,8 +74,8 @@ storegateway:
 
   resources:
     limits:
-      cpu: 100m
-      memory: 100Mi
+      cpu: 500m
+      memory: 1Gi
     requests:
       cpu: 10m
       memory: 100Mi
