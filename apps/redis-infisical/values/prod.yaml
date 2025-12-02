@@ -18,7 +18,7 @@ master:
     redis: 6379
   count: 1
   persistence:
-    size: 10Gi
+    size: 2Gi
   persistentVolumeClaimRetentionPolicy:
     enabled: false
     whenDeleted: Retain
@@ -34,7 +34,7 @@ replica:
   containerPorts:
     redis: 6379
   persistence:
-    size: 10Gi
+    size: 2Gi
   persistentVolumeClaimRetentionPolicy:
     enabled: false
     whenDeleted: Retain
