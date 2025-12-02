@@ -30,3 +30,11 @@ spec:
         createdb: true
         login: true
         superuser: false
+      - name: pg-serenemind-admin
+        comment: "Serenemind Database"
+        ensure: present
+        passwordSecret:
+          name: pg-serenemind-database-credentials-secret
+        createdb: true
+        login: true
+        superuser: false

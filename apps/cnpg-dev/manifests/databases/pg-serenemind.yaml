@@ -1,0 +1,13 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: pg-serenemind
+  namespace: dev
+spec:
+  databaseReclaimPolicy: delete
+  name: pg-serenemind
+  owner: pg-serenemind-admin
+  allowConnections: true
+  cluster:
+    name: pg-dev
