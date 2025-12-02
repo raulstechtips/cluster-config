@@ -6,6 +6,16 @@ metadata:
 spec:
   template:
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - infisical-standalone
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: infisical-standalone-infisical
           env:
