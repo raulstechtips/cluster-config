@@ -758,13 +758,13 @@ postgresql:
   enabled: false
 
 externalDatabase:
-  host: "pg-keycloak-rw.keycloak.svc.cluster.local"
+  host: "pg-prod-rw.prod.svc.cluster.local"
   port: 5432
   user: pg-keycloak-admin
   database: keycloak
   schema: public
   password: ""
-  existingSecret: "pg-keycloak-admin-credentials-secret"
+  existingSecret: "pg-keycloak-database-credentials-secret"
   existingSecretUserKey: "username"
   existingSecretPasswordKey: "password"
   annotations: {}
