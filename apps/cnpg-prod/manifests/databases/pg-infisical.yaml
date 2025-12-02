@@ -1,0 +1,13 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: pg-infisical
+  namespace: prod
+spec:
+  databaseReclaimPolicy: delete
+  name: pg-infisical
+  owner: infisical-pg-admin
+  allowConnections: true
+  cluster:
+    name: pg-prod

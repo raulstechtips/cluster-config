@@ -1,0 +1,13 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: registry
+  namespace: prod
+spec:
+  databaseReclaimPolicy: delete
+  name: registry
+  owner: pg-harbor-admin
+  allowConnections: true
+  cluster:
+    name: pg-prod

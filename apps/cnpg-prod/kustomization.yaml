@@ -7,6 +7,13 @@ resources:
   - manifests/certificates/tls-certificate-cnpg-prod.yaml
   - manifests/cluster.yaml
   - manifests/secrets/pg-prod-admin-credentials.yaml
+  - manifests/secrets/pg-coder-database-credential-secret.yaml
   - manifests/secrets/pg-grafana-database-credential-secret.yaml
+  - manifests/secrets/pg-harbor-database-credential-secret.yaml
   - manifests/secrets/pg-infisical-database-credential-secret.yaml
+  - manifests/secrets/pg-keycloak-database-credential-secret.yaml
+  - manifests/databases/keycloak.yaml
+  - manifests/databases/pg-coder.yaml
   - manifests/databases/pg-grafana.yaml
+  - manifests/databases/pg-infisical.yaml
+  - manifests/databases/registry.yaml
