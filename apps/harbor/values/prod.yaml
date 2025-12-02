@@ -353,7 +353,7 @@ database:
   type: external
 
   external:
-    host: "pg-harbor-rw.harbor.svc.cluster.local"
+    host: "pg-prod-rw.prod.svc.cluster.local"
     port: "5432"
     username: "pg-harbor-admin"
     coreDatabase: "registry"
