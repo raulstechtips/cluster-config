@@ -46,3 +46,11 @@ spec:
         createdb: true
         login: true
         superuser: false
+      - name: pg-coder
+        comment: "Coder Database"
+        ensure: present
+        passwordSecret:
+          name: pg-coder-database-credentials-secret
+        createdb: true
+        login: true
+        superuser: false
