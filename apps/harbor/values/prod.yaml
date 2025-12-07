@@ -360,7 +360,7 @@ database:
     # Placeholder value for template rendering (existingSecret takes precedence at runtime)
     password: "${ARGOCD_ENV_PG_HARBOR_ADMIN_PASSWORD}"
     # if using existing secret, the key must be "password"
-    # existingSecret: "pg-harbor-admin-credentials-secret"
+    existingSecret: "pg-harbor-database-credentials-secret"
     # "disable" - No SSL
     # "require" - Always SSL (skip verification)
     # "verify-ca" - Always SSL (verify that the certificate presented by the
