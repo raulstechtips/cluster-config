@@ -1,0 +1,500 @@
+---
+# Max number of old replicasets to retain. Can be overridden by each deployment's revisionHistoryLimit
+revisionHistoryLimit: 10
+
+useStandardNaming: true
+
+uid: 50000
+gid: 0
+
+# Detailed default security context for airflow deployments
+securityContexts:
+  pod:
+    fsGroupChangePolicy: Always
+    sysctls: []
+    supplementalGroups: []
+    fsGroup: 0
+  containers:
+    seLinuxOptions: {}
+    runAsUser: 50000
+    runAsGroup: 0
+    runAsNonRoot: true
+    privileged: false
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop: ["ALL"]
+    seccompProfile:
+      type: "RuntimeDefault"
+
+airflowHome: /opt/airflow
+
+defaultAirflowRepository: raulstechtips/airflow
+
+defaultAirflowTag: "3.1.3-raulstechtips-0.0.1-rc2"
+
+airflowVersion: "3.1.3"
+
+images:
+  useDefaultImageForMigration: true
+  migrationsWaitTimeout: 60
+  statsd:
+    repository: quay.io/prometheus/statsd-exporter
+    tag: v0.28.0
+    pullPolicy: IfNotPresent
+  gitSync:
+    repository: registry.k8s.io/git-sync/git-sync
+    tag: v4.4.2
+    # - If the tag is "v4.x.x" or "latest" - use GITSYNC_* env variables
+    pullPolicy: IfNotPresent
+
+
+# Network policy configuration
+networkPolicies:
+  # Enabled network policies
+  enabled: false
+
+executor: "CeleryExecutor"
+
+allowPodLaunching: true
+allowJobLaunching: false
+
+data:
+  metadataSecretName: airflow-database-secrets
+  brokerUrlSecretName: airflow-app-secrets
+
+# Environment variables for all airflow containers
+env:
+  - name: AIRFLOW__CORE__AUTH_MANAGER
+    value: "airflow.providers.keycloak.auth_manager.keycloak_auth_manager.KeycloakAuthManager"
+  - name: AIRFLOW__CORE__LOAD_EXAMPLES
+    value: "False"
+
+# Volumes for all airflow containers
+volumes:
+  - name: postgres-ca-cert
+    secret:
+      secretName: raulstechtips-internal-ca-key-pair
+      items:
+        - key: ca.crt
+          path: postgres-ca.crt
+  - name: tmp-dir
+    emptyDir: {}
+
+# VolumeMounts for all airflow containers
+volumeMounts:
+  - name: postgres-ca-cert
+    mountPath: /etc/custom-certs
+    readOnly: true
+  - name: tmp-dir
+    mountPath: /tmp
+
+extraEnvFrom: |
+  - secretRef:
+      name: airflow-sso-secrets
+
+fernetKeySecretName: airflow-app-secrets
+
+apiSecretKeySecretName: airflow-app-secrets
+
+jwtSecretName: airflow-app-secrets
+
+workers:
+  replicas: 1
+
+  revisionHistoryLimit: 10
+
+  safeToEvict: true
+
+  livenessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 60
+    timeoutSeconds: 60
+    failureThreshold: 5
+
+  persistence:
+    enabled: false
+
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 3Gi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                    - scheduler
+                    - dag-processor
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+
+
+  logGroomerSidecar:
+    enabled: false
+    retentionDays: 2
+    frequencyMinutes: 15
+    resources:
+      limits:
+        cpu: 100m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+
+  waitForMigrations:
+    enabled: true
+
+scheduler:
+  enabled: true
+
+  replicas: 1
+  revisionHistoryLimit: 10
+
+  resources:
+    limits:
+      # cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+  # CRITICAL FIX: Increase startup probe tolerance
+  startupProbe:
+    initialDelaySeconds: 60      # Wait 10s before first check
+    periodSeconds: 30            # Check every 10s
+    timeoutSeconds: 60           # ← INCREASE: Wait up to 60s per check (was 20s)
+    failureThreshold: 30         # ← INCREASE: Allow 30 failures = 5 minutes total (was 6 = 1 minute)
+
+  # Also adjust liveness to be less aggressive
+  livenessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 60
+    timeoutSeconds: 60           # ← INCREASE: Match startup probe
+    failureThreshold: 10
+
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                component: dag-processor
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+
+  logGroomerSidecar:
+    enabled: false
+    retentionDays: 2
+    frequencyMinutes: 15
+    resources:
+      limits:
+        cpu: 100m
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+
+  waitForMigrations:
+    enabled: true
+
+createUserJob:
+  useHelmHooks: false
+  applyCustomEnv: false
+
+migrateDatabaseJob:
+  enabled: true
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+  # In case you need to disable the helm hooks that create the jobs after install.
+  # Disable this if you are using ArgoCD for example
+  useHelmHooks: true
+  applyCustomEnv: true
+
+apiServer:
+  # enabled: true
+  replicas: 1
+  revisionHistoryLimit: 10
+
+  args: ["bash", "-c", "exec airflow api-server --proxy-headers"]
+  waitForMigrations:
+    enabled: true
+
+  # CRITICAL FIX: Increase startup probe tolerance
+  startupProbe:
+    initialDelaySeconds: 60      # Wait 10s before first check
+    periodSeconds: 10            # Check every 10s
+    timeoutSeconds: 60           # Wait up to 60s per check (was 20s)
+    failureThreshold: 30         # Allow 30 failures = 5 minutes total (was 6 = 1 minute)
+    scheme: HTTP
+
+  # Also adjust liveness to be less aggressive
+  livenessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 60
+    timeoutSeconds: 60
+    failureThreshold: 5
+    scheme: HTTP
+
+  # Readiness probe
+  readinessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 60
+    failureThreshold: 5
+    scheme: HTTP
+
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                component: apiServer
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+webserver:
+  defaultUser:
+    enabled: false
+
+triggerer:
+  enabled: false
+
+dagProcessor:
+  enabled: true
+  replicas: 1
+  revisionHistoryLimit: 10
+
+  livenessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 60
+    timeoutSeconds: 60
+    failureThreshold: 5
+
+  resources:
+    limits:
+      # cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                component: scheduler
+            topologyKey: kubernetes.io/hostname
+          weight: 100
+
+  logGroomerSidecar:
+    enabled: false
+    retentionDays: 2
+    frequencyMinutes: 15
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+  waitForMigrations:
+    enabled: true
+
+flower:
+  enabled: true
+
+  revisionHistoryLimit: 10
+
+  # CRITICAL FIX: Increase startup probe tolerance
+  startupProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 60           # Wait up to 60s per check
+    failureThreshold: 30         # Allow 30 failures = 5 minutes total
+
+  # Liveness probe
+  livenessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 60
+    timeoutSeconds: 60
+    failureThreshold: 10
+
+  # Readiness probe
+  readinessProbe:
+    initialDelaySeconds: 60
+    periodSeconds: 10
+    timeoutSeconds: 60
+    failureThreshold: 10
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+  # secretName: airflow-flower-auth
+
+statsd:
+  enabled: false
+  revisionHistoryLimit: 10
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 10m
+      memory: 100Mi
+
+redis:
+  enabled: false
+
+ports:
+  flowerUI: 5555
+  workerLogs: 8793
+  triggererLogs: 8794
+  statsdIngest: 9125
+  statsdScrape: 9102
+  apiServer: 8080
+
+postgresql:
+  enabled: false
+
+config:
+  core:
+    auth_manager: "airflow.providers.keycloak.auth_manager.keycloak_auth_manager.KeycloakAuthManager"
+  api:
+    workers: 1
+  dag_processor:
+    min_file_process_interval: 600
+    refresh_interval: 1800
+  celery:
+    worker_concurrency: 4
+  # scheduler:
+    # scheduler_heartbeat_sec: 300
+# yamllint enable rule:line-length
+
+# Git sync
+dags:
+  gitSync:
+    enabled: false
+
+    # git repo clone url
+    # ssh example: git@github.com:apache/airflow.git
+    # https example: https://github.com/apache/airflow.git
+    repo: https://github.com/apache/airflow.git
+    branch: v2-2-stable
+    rev: HEAD
+    # The git revision (branch, tag, or hash) to check out, v4 only
+    ref: v2-2-stable
+    depth: 1
+    # the number of consecutive failures allowed before aborting
+    maxFailures: 0
+    # subpath within the repo where dags are located
+    # should be "" if dags are at repo root
+    subPath: "tests/dags"
+    # if your repo needs a user name password
+    # you can load them to a k8s secret like the one below
+    #   ---
+    #   apiVersion: v1
+    #   kind: Secret
+    #   metadata:
+    #     name: git-credentials
+    #   data:
+    #     # For git-sync v3
+    #     GIT_SYNC_USERNAME: <base64_encoded_git_username>
+    #     GIT_SYNC_PASSWORD: <base64_encoded_git_password>
+    #     # For git-sync v4
+    #     GITSYNC_USERNAME: <base64_encoded_git_username>
+    #     GITSYNC_PASSWORD: <base64_encoded_git_password>
+    # and specify the name of the secret below
+    #
+    # credentialsSecret: git-credentials
+    #
+    #
+    # If you are using an ssh clone url, you can load
+    # the ssh private key to a k8s secret like the one below
+    #   ---
+    #   apiVersion: v1
+    #   kind: Secret
+    #   metadata:
+    #     name: airflow-ssh-secret
+    #   data:
+    #     # key needs to be gitSshKey
+    #     gitSshKey: <base64_encoded_data>
+    # and specify the name of the secret below
+    # sshKeySecret: airflow-ssh-secret
+    #
+    # Or set sshKeySecret with your key
+    # sshKey: |
+    #   -----BEGIN {OPENSSH PRIVATE KEY}-----
+    #   ...
+    #   -----END {OPENSSH PRIVATE KEY}-----
+    #
+    # If you are using an ssh private key, you can additionally
+    # specify the content of your known_hosts file, example:
+    #
+    # knownHosts: |
+    #    <host1>,<ip1> <key1>
+    #    <host2>,<ip2> <key2>
+
+    # interval between git sync attempts in seconds
+    # high values are more likely to cause DAGs to become out of sync between different components
+    # low values cause more traffic to the remote git repository
+    # Go-style duration string (e.g. "100ms" or "0.1s" = 100ms).
+    # For backwards compatibility, wait will be used if it is specified.
+    period: 5s
+    wait: ~
+    # add variables from secret into gitSync containers, such proxy-config
+    envFrom: ~
+    # envFrom: |
+    #   - secretRef:
+    #       name: 'proxy-config'
+
+    containerName: git-sync
+    uid: 1001
+
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 10m
+        memory: 100Mi
+
+logs:
+  emptyDirConfig:
+    sizeLimit: 1Gi
+  persistence:
+    enabled: false

@@ -1,0 +1,22 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: airflow-flower-ingress-prod
+  namespace: airflow
+  annotations:
+    kubernetes.io/ingress.class: traefik-external
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(``)
+      kind: Rule
+      middlewares:
+        - name: default-headers
+          namespace: default
+      services:
+        - name: airflow-flower
+          port: 5555
+  tls:
+    secretName: prod-raulstechtips-tls
