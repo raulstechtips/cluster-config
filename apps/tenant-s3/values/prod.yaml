@@ -28,10 +28,6 @@ tenant:
     repository: ghcr.io/raulstechtips/minio
     tag: RELEASE.2025-04-08T15-41-24Z
   logging: {}
-  metrics:
-    enabled: false
-    port: 9000
-    protocol: http
   name: tenant-s3
   pools:
     - affinity:
@@ -62,6 +58,8 @@ tenant:
     annotations:
       secrets.infisical.com/auto-reload: "true"
     labels: {}
-  prometheusOperator: false
   users:
     - name: tenant-s3-minio-admin-console-user-credentials
+  metrics:
+    enabled: true
+  prometheusOperator: true
