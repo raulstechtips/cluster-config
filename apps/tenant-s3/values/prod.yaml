@@ -61,5 +61,5 @@ tenant:
   users:
     - name: tenant-s3-minio-admin-console-user-credentials
   metrics:
-    enabled: true
-  prometheusOperator: true
+    enabled: false
+  prometheusOperator: false
