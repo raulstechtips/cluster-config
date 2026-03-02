@@ -7,7 +7,7 @@ metadata:
   namespace: default
 spec:
   forwardAuth:
-    address: "http://oauth2-proxy.oauth2-proxy.svc.cluster.local/oauth2/auth"
+    address: "http://oauth2-proxy.oauth2-proxy.svc.cluster.local"
     trustForwardHeader: true
 ---
 # OAuth2 Proxy Sign-In Redirect Middleware
