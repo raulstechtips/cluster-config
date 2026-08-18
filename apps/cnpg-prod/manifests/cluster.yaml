@@ -9,12 +9,19 @@ metadata:
 spec:
   description: "Prod PostgreSQL Cluster"
   instances: 3
+  affinity:
+    podAntiAffinityType: required
   primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: true
   postgresql:
     parameters:
       max_wal_size: "16GB"
       max_slot_wal_keep_size: "16GB"
+      # connection settings
+      max_connections: "500"  # Should be > (max_db_connections × pooler_instances + buffer)
+      # Other important settings
+      shared_buffers: "256MB"  # Adjust based on your resources
+      work_mem: "4MB"  # Per-connection work memory
   certificates:
     serverCASecret: raulstechtips-internal-ca-key-pair
     serverTLSSecret: pg-prod-internal-tls
@@ -75,6 +82,14 @@ spec:
         ensure: present
         passwordSecret:
           name: pg-keycloak-database-credentials-secret
+        createdb: true
+        login: true
+        superuser: false
+      - name: pg-sdpm-admin
+        comment: "SDPM Database"
+        ensure: present
+        passwordSecret:
+          name: pg-sdpm-database-credentials-secret
         createdb: true
         login: true
         superuser: false

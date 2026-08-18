@@ -1,0 +1,72 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: pg-prod-sdpm-pooler-rw
+  namespace: prod
+  labels:
+    cnpg.io/reload: ""
+spec:
+  cluster:
+    name: pg-prod
+
+  instances: 2
+  type: rw
+
+  pgbouncer:
+    # CRITICAL: Use transaction mode for better connection reuse
+    # Session mode holds connections for entire Django session (too long)
+    # Transaction mode returns connections after each transaction (better for high concurrency)
+    poolMode: transaction
+
+    parameters:
+      # Maximum client connections to PgBouncer (per instance)
+      # 3 instances × 2000 = 6000 total client connections possible
+      max_client_conn: "2000"
+
+      # Connections per user/database pair (INCREASED for your workload)
+      # With transaction pooling, connections are returned quickly, so you can pool more
+      # This should be >= (concurrent workers + web replicas + buffer)
+      # 9 workers + 3 web replicas + buffer = ~20-30 minimum, but set higher for safety
+      default_pool_size: "50"
+
+      # Maximum connections from PgBouncer to PostgreSQL (per instance)
+      # 3 instances × 150 = 450 total connections to PostgreSQL
+      # This should be less than PostgreSQL max_connections (leave room for admin connections)
+      max_db_connections: "150"
+
+      # Reserve pool for admin operations (keep this)
+      reserve_pool_size: "5"
+      reserve_pool_timeout: "3"
+
+      # Additional optimizations for high-throughput workloads
+      min_pool_size: "5"  # Keep minimum connections warm
+      # tcp_keepcnt: "3"
+      # tcp_keepidle: "600"
+      # tcp_keepintvl: "30"
+
+  template:
+    metadata:
+      labels:
+        app: pg-prod-sdpm-pooler-rw
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - pg-prod-sdpm-pooler-rw
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: pgbouncer
+          image: ghcr.io/cloudnative-pg/pgbouncer:1.25.1
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 10m
+            limits:
+              memory: 1Gi
+              cpu: 500m

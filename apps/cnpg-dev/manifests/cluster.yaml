@@ -9,6 +9,8 @@ metadata:
 spec:
   description: "Dev PostgreSQL Cluster"
   instances: 3
+  affinity:
+    podAntiAffinityType: required
   primaryUpdateStrategy: unsupervised
   enableSuperuserAccess: true
   bootstrap:
