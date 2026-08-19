@@ -18,12 +18,12 @@ infisical:
   # -- Custom annotations for Infisical deployment
   deploymentAnnotations: {}
   # -- Number of pod replicas for high availability
-  replicaCount: 3
+  replicaCount: 1
 
   image:
     repository: infisical/infisical
     # -- Specific version tag of the Infisical image. View the latest version here https://hub.docker.com/r/infisical/infisical
-    tag: "v0.122.0-postgres"
+    tag: "v0.129.0-postgres"
 
   kubeSecretRef: "infisical-secrets"
 
@@ -50,8 +50,8 @@ infisical:
 
   resources:
     limits:
-      memory: 768Mi
-      cpu: 200m
+      memory: 1000Mi
+      cpu: 500m
     requests:
       cpu: 10m
       memory: 100Mi
