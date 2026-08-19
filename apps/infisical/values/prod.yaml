@@ -4,14 +4,14 @@ infisical:
   name: infisical # -- Sets the name of the deployment within this chart
 
   # -- Automatically migrates new database schema when deploying
-  autoDatabaseSchemaMigration: false
+  # autoDatabaseSchemaMigration: false
 
-  databaseSchemaMigrationJob:
-    image:
-      # -- Image repository for migration wait job
-      repository: ghcr.io/groundnuty/k8s-wait-for
-      # -- Image tag version
-      tag: no-root-v2.0
+  # databaseSchemaMigrationJob:
+  #   image:
+  #     # -- Image repository for migration wait job
+  #     repository: ghcr.io/groundnuty/k8s-wait-for
+  #     # -- Image tag version
+  #     tag: no-root-v2.0
 
   # -- Custom annotations for Infisical pods
   podAnnotations: {}
@@ -23,7 +23,7 @@ infisical:
   image:
     repository: infisical/infisical
     # -- Specific version tag of the Infisical image. View the latest version here https://hub.docker.com/r/infisical/infisical
-    tag: "v0.157.0"
+    tag: "v0.158.0"
 
   kubeSecretRef: "infisical-secrets"
 

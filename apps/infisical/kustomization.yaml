@@ -6,7 +6,7 @@ namespace: infisical
 helmCharts:
   - name: infisical-standalone
     repo: https://dl.cloudsmith.io/public/infisical/helm-charts/helm/charts/
-    version: 1.5.0
+    version: 1.8.0
     releaseName: infisical
     namespace: infisical
     valuesFile: values/prod.yaml
@@ -20,6 +20,10 @@ patches:
       kind: Deployment
       name: infisical-infisical-standalone-infisical
     path: manifests/overlays/deployment-patch.yaml
+  # NOTE: the schema-migration Job is NOT used. Infisical runs its knex
+  # migrations automatically on boot since v0.111.0-postgres, and chart 1.7.5
+  # removed the Job template entirely. Keep `autoDatabaseSchemaMigration: false`
+  # and leave this patch unreferenced.
   # - target:
   #     kind: Job
   #     name: infisical-schema-migration-1
