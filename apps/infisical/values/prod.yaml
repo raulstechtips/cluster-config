@@ -3,22 +3,12 @@ infisical:
   enabled: true # -- Enable Infisical chart deployment
   name: infisical # -- Sets the name of the deployment within this chart
 
-  # -- Automatically migrates new database schema when deploying
-  # autoDatabaseSchemaMigration: false
-
-  # databaseSchemaMigrationJob:
-  #   image:
-  #     # -- Image repository for migration wait job
-  #     repository: ghcr.io/groundnuty/k8s-wait-for
-  #     # -- Image tag version
-  #     tag: no-root-v2.0
-
   # -- Custom annotations for Infisical pods
   podAnnotations: {}
   # -- Custom annotations for Infisical deployment
   deploymentAnnotations: {}
   # -- Number of pod replicas for high availability
-  replicaCount: 1
+  replicaCount: 3
 
   image:
     repository: infisical/infisical
@@ -50,8 +40,8 @@ infisical:
 
   resources:
     limits:
-      memory: 1000Mi
-      cpu: 500m
+      memory: 500Mi
+      cpu: 200m
     requests:
       cpu: 10m
       memory: 100Mi
