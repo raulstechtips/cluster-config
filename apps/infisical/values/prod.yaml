@@ -23,7 +23,7 @@ infisical:
   image:
     repository: infisical/infisical
     # -- Specific version tag of the Infisical image. View the latest version here https://hub.docker.com/r/infisical/infisical
-    tag: "v0.148.1"
+    tag: "v0.150.0"
 
   kubeSecretRef: "infisical-secrets"
 
