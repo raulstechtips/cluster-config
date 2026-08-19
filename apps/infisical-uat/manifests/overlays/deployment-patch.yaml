@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: infisical-infisical-standalone-infisical
+spec:
+  template:
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - infisical-standalone
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: infisical-standalone-infisical
+          env:
+            - name: DB_HOST
+              value: pg-prod-rw.prod.svc.cluster.local
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: pg-infisical-uat
+            - name: DB_USER
+              value: infisical-pg-admin
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-infisical-database-credentials-secret
+                  key: password
+            - name: DB_SSL_ROOT_CERT
+              value: /etc/custom-certs/postgres-ca.crt
+            - name: DB_CONNECTION_URI
+              value: postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=verify-ca&sslrootcert=$(DB_SSL_ROOT_CERT)
+            - name: REDIS_HOST
+              value: redis-infisical-master.infisical.svc.cluster.local
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: infisical-redis-admin-credentials-secret
+                  key: redis-password
+            # /2 = logical Redis DB 2. Prod uses DB 0. Dev uses DB 1. Uat uses DB 2.
+            # This keeps the DB BullMQ queues, caches and rate-limit keys separate
+            # while still reusing the same Redis server.
+            - name: REDIS_URL
+              value: redis://default:$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)/2
