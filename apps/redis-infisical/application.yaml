@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
-    targetRevision: feature/true-ha-implementation
+    targetRevision: HEAD
     path: apps/redis-infisical
     plugin:
       name: kustomize-envsubst
