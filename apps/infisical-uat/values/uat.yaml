@@ -11,9 +11,13 @@ infisical:
   replicaCount: 1
 
   image:
-    repository: infisical/infisical
-    # -- Specific version tag of the Infisical image. View the latest version here https://hub.docker.com/r/infisical/infisical
-    tag: "v0.162.21"
+    # -- Private build carrying the enterprise options
+    repository: ghcr.io/raulstechtips/secrets-manager
+    tag: "v0.162.21-dev.1"
+    # -- The dev tag is re-pushed, so a cached layer must never win
+    # pullPolicy: Always
+    imagePullSecrets:
+      - name: github-registry-secret
 
   kubeSecretRef: "infisical-secrets"
 

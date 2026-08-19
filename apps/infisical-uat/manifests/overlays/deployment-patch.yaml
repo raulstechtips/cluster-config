@@ -19,6 +19,9 @@ spec:
       containers:
         - name: infisical-standalone-infisical
           env:
+            # The private build reports usage upstream by default.
+            - name: TELEMETRY_ENABLED
+              value: "false"
             - name: DB_HOST
               value: pg-prod-rw.prod.svc.cluster.local
             - name: DB_PORT
