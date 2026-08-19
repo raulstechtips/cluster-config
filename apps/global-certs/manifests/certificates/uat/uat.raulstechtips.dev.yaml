@@ -7,7 +7,7 @@ metadata:
 spec:
   secretName: uat-raulstechtips-tls
   issuerRef:
-    name: letsencrypt-staging
+    name: letsencrypt-production
     kind: ClusterIssuer
   commonName: "*.uat.${ARGOCD_ENV_DOMAIN}"
   dnsNames:
