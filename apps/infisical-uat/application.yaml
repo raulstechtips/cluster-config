@@ -9,7 +9,7 @@ spec:
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
     targetRevision: feature/infisical-enterprise
-    path: apps/infisical
+    path: apps/infisical-uat
     plugin:
       name: kustomize-envsubst
   destination:
