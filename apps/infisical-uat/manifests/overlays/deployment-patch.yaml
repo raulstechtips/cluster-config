@@ -19,18 +19,15 @@ spec:
       containers:
         - name: infisical-standalone-infisical
           env:
-          # The private build reports usage upstream by default.
+            # The private build reports usage upstream by default.
             - name: TELEMETRY_ENABLED
               value: "false"
-            # Private IP Address not allowed for relay, have to set this variable
-            - name: ALLOW_INTERNAL_IP_CONNECTIONS
-              value: "true"
             - name: DB_HOST
               value: pg-prod-rw.prod.svc.cluster.local
             - name: DB_PORT
               value: "5432"
             - name: DB_NAME
-              value: pg-infisical
+              value: pg-infisical-uat
             - name: DB_USER
               value: infisical-pg-admin
             - name: DB_PASSWORD
@@ -51,5 +48,8 @@ spec:
                 secretKeyRef:
                   name: infisical-redis-admin-credentials-secret
                   key: redis-password
+            # /2 = logical Redis DB 2. Prod uses DB 0. Dev uses DB 1. Uat uses DB 2.
+            # This keeps the DB BullMQ queues, caches and rate-limit keys separate
+            # while still reusing the same Redis server.
             - name: REDIS_URL
-              value: redis://default:$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)
+              value: redis://default:$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)/2

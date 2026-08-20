@@ -8,4 +8,5 @@ resources:
   - manifests/certificates/live/raulstechtips.dev.yaml
   - manifests/certificates/prod/prod.raulstechtips.dev.yaml
   - manifests/certificates/stage/stage.raulstechtips.dev.yaml
+  - manifests/certificates/uat/uat.raulstechtips.dev.yaml
   - manifests/secrets/infisical-push-secret-raulstechtips-internal-ca.yaml

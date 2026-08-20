@@ -1,0 +1,19 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: uat-raulstechtips
+  namespace: cert-manager
+spec:
+  secretName: uat-raulstechtips-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  commonName: "*.uat.${ARGOCD_ENV_DOMAIN}"
+  dnsNames:
+    - "uat.${ARGOCD_ENV_DOMAIN}"
+    - "*.uat.${ARGOCD_ENV_DOMAIN}"
+  secretTemplate:
+    annotations:
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+      reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
