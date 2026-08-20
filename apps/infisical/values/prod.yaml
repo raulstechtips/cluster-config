@@ -11,9 +11,11 @@ infisical:
   replicaCount: 3
 
   image:
-    repository: infisical/infisical
-    # -- Specific version tag of the Infisical image. View the latest version here https://hub.docker.com/r/infisical/infisical
-    tag: "v0.162.21"
+    # -- Private build carrying the enterprise options
+    repository: ghcr.io/raulstechtips/secrets-manager
+    tag: "v0.162.21-prod.1"
+    imagePullSecrets:
+      - name: github-registry-secret
 
   kubeSecretRef: "infisical-secrets"
 
