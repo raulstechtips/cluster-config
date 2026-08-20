@@ -22,6 +22,9 @@ spec:
           # The private build reports usage upstream by default.
             - name: TELEMETRY_ENABLED
               value: "false"
+            # Private IP Address not allowed for relay, have to set this variable
+            - name: ALLOW_INTERNAL_IP_CONNECTIONS
+              value: "true"
             - name: DB_HOST
               value: pg-prod-rw.prod.svc.cluster.local
             - name: DB_PORT

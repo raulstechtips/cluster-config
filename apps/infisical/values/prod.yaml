@@ -8,7 +8,7 @@ infisical:
   # -- Custom annotations for Infisical deployment
   deploymentAnnotations: {}
   # -- Number of pod replicas for high availability
-  replicaCount: 3
+  replicaCount: 2
 
   image:
     # -- Private build carrying the enterprise options
