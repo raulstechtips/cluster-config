@@ -13,7 +13,7 @@ infisical:
   image:
     # -- Private build carrying the enterprise options
     repository: ghcr.io/raulstechtips/secrets-manager
-    tag: "v0.162.21-dev.1"
+    tag: "v0.162.21-prod.1"
     # -- The dev tag is re-pushed, so a cached layer must never win
     # pullPolicy: Always
     imagePullSecrets:
