@@ -40,7 +40,7 @@ gateway:
     credentialsSecretRef: ""
 
   # Specific relay to connect to. Leave empty for automatic selection.
-  relayName: "${ARGOCD_ENV_INFISICAL_DEV_GATEWAY_NAME}"
+  relayName: "${ARGOCD_ENV_INFISICAL_DEV_RELAY_NAME}"
 
   pamSessionRecordingsDirectory: /var/lib/infisical/session_recordings
 
