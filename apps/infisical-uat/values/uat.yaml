@@ -12,12 +12,10 @@ infisical:
 
   image:
     # -- Private build carrying the enterprise options
-    repository: ghcr.io/raulstechtips/secrets-manager
-    tag: "v0.162.21-prod.1"
-    # -- The dev tag is re-pushed, so a cached layer must never win
-    # pullPolicy: Always
-    imagePullSecrets:
-      - name: github-registry-secret
+    repository: infisical/infisical
+    tag: "v0.162.21"
+    # imagePullSecrets:
+      # - name: github-registry-secret
 
   kubeSecretRef: "infisical-secrets"
 
