@@ -12,4 +12,4 @@ helmCharts:
     valuesFile: values/prod.yaml
 
 resources:
-  - manifests/secrets/infisical-gateway-environment.yaml
+  - manifests/secrets/infisical-gateway-enrollment-token.yaml
