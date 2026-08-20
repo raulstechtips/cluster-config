@@ -22,7 +22,7 @@ spec:
             - secretRef:
                 name: infisical-secrets
             - secretRef:
-              name: infisical-smtp-secret
+                name: infisical-smtp-secret
           env:
           # The private build reports usage upstream by default.
             - name: TELEMETRY_ENABLED
