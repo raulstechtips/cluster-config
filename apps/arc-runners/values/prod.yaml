@@ -374,6 +374,10 @@ template:
   ##         - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
   ##           value: "true"
   spec:
+    ## The Longhorn volume mounts at /home/runner/_work owned by root.
+    ## The runner image runs as uid 1001, thus it needs group ownership of the volume.
+    securityContext:
+      fsGroup: 1001
     containers:
       - name: runner
         image: ghcr.io/actions/actions-runner:latest
