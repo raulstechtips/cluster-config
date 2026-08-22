@@ -13,5 +13,4 @@ helmCharts:
     # includeCRDs: true
 
 resources:
-  - manifests/configmaps/runner-hook-extension.yaml
   - manifests/secrets/arc-github-app-secrets.yaml

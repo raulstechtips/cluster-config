@@ -46,7 +46,8 @@ minRunners: 0
 runnerGroup: "default"
 
 ## name of the runner scale set to create.  Defaults to the helm release name
-# runnerScaleSetName: ""
+## This is the value used in `runs-on:` in a workflow.
+# runnerScaleSetName: "self-hosted-k3s"
 
 ## A self-signed CA certificate for communication with the GitHub server can be
 ## provided using a config map key selector. If `runnerMountPath` is set, for
@@ -76,18 +77,11 @@ runnerGroup: "default"
 ##
 ## If any customization is required for dind or kubernetes mode, containerMode should remain
 ## empty, and configuration should be applied to the template.
-containerMode:
-  type: "kubernetes"  ## type can be set to "dind", "kubernetes", or "kubernetes-novolume"
-#   ## the following is required when containerMode.type=kubernetes
-  kubernetesModeWorkVolumeClaim:
-    accessModes: ["ReadWriteOnce"]
-    # For local testing, use https://github.com/openebs/dynamic-localpv-provisioner/blob/develop/docs/quickstart.md to provide dynamic provision volume with storageClassName: openebs-hostpath
-    storageClassName: "longhorn-storage-class-replicas-1-delete"
-    resources:
-      requests:
-        storage: 10Gi
-  kubernetesModeAdditionalRoleRules: []
-#
+## Left empty on purpose. With no container mode the workflow steps run in the
+## runner pod itself, thus a workflow does not need a `container:` block.
+## Set type to "dind", "kubernetes", or "kubernetes-novolume" only if a job must
+## run its steps in a separate container.
+containerMode: {}
 
 ## listenerTemplate is the PodSpec for each listener Pod
 ## For reference: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#PodSpec
@@ -374,33 +368,18 @@ template:
   ##         - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
   ##           value: "true"
   spec:
-    ## The Longhorn volume mounts at /home/runner/_work owned by root.
-    ## The runner image runs as uid 1001, thus it needs group ownership of the volume.
-    securityContext:
-      fsGroup: 1001
     containers:
       - name: runner
         image: ghcr.io/actions/actions-runner:latest
         command: ["/home/runner/run.sh"]
+        ## The steps of a job run in this container, thus it gets the full budget.
         resources:
           requests:
             cpu: 10m
             memory: 256Mi
           limits:
-            cpu: 200m
-            memory: 500Mi
-        env:
-          ## Pod template applied to the job pod and the container-step pods.
-          - name: ACTIONS_RUNNER_CONTAINER_HOOK_TEMPLATE
-            value: /home/runner/pod-templates/default.yaml
-        volumeMounts:
-          - name: pod-templates
-            mountPath: /home/runner/pod-templates
-            readOnly: true
-    volumes:
-      - name: pod-templates
-        configMap:
-          name: runner-hook-extension
+            cpu: 1000m
+            memory: 7Gi
 ## Optional controller service account that needs to have required Role and RoleBinding
 ## to operate this gha-runner-scale-set installation.
 ## The helm chart will try to find the controller deployment and its service account at installation time.
