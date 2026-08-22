@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
-    targetRevision: feature/infisical-pam
+    targetRevision: HEAD
     path: apps/infisical-gateway
     plugin:
       name: kustomize-envsubst
