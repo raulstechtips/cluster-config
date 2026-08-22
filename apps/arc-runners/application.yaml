@@ -15,7 +15,7 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: arc-runners
-  syncPolicy:
-    syncOptions:
-      - ServerSideApply=true
+  syncPolicy: {}
+    # syncOptions:
+    #   - ServerSideApply=true
   revisionHistoryLimit: 10

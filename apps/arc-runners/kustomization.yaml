@@ -10,7 +10,7 @@ helmCharts:
     releaseName: gha-runner-scale-set
     namespace: arc-runners
     valuesFile: values/prod.yaml
-    includeCRDs: true
+    # includeCRDs: true
 
 resources:
   - manifests/secrets/arc-github-app-secrets.yaml
