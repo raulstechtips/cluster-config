@@ -77,11 +77,13 @@ runnerScaleSetName: "self-hosted-k3s"
 ##
 ## If any customization is required for dind or kubernetes mode, containerMode should remain
 ## empty, and configuration should be applied to the template.
-## Left empty on purpose. With no container mode the workflow steps run in the
-## runner pod itself, thus a workflow does not need a `container:` block.
-## Set type to "dind", "kubernetes", or "kubernetes-novolume" only if a job must
-## run its steps in a separate container.
-containerMode: {}
+## dind adds a privileged "docker:dind" sidecar to the runner pod and points the
+## runner at its socket. The steps still run in the runner container, thus a
+## workflow does not need a `container:` block.
+## "kubernetes" and "kubernetes-novolume" would make a `container:` block
+## necessary in every job, because they run the steps in a separate pod.
+containerMode:
+  type: "dind"
 
 ## listenerTemplate is the PodSpec for each listener Pod
 ## For reference: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#PodSpec
@@ -367,19 +369,35 @@ template:
   ##           value: ghcr.io/actions/actions-runner:latest # should match the runnerimage
   ##         - name: ACTIONS_RUNNER_REQUIRE_JOB_CONTAINER
   ##           value: "true"
+  metadata:
+    labels:
+      ## Used by the anti-affinity rule below.
+      runner-scale-set: self-hosted-k3s
   spec:
+    ## One runner for each node. A runner pod holds the dind sidecar, thus two
+    ## builds on one node would share 2 CPU and one disk.
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                runner-scale-set: self-hosted-k3s
+            topologyKey: kubernetes.io/hostname
     containers:
       - name: runner
         image: ghcr.io/actions/actions-runner:latest
         command: ["/home/runner/run.sh"]
-        ## The steps of a job run in this container, thus it gets the full budget.
+        ## The shell steps, the docker CLI and the JS actions run here.
+        ## The build itself runs in the dind sidecar, which the LimitRange in
+        ## manifests/limits/runner-defaults.yaml covers.
+        ## runner 1Gi + dind 6Gi = a 7Gi ceiling for one runner pod.
         resources:
           requests:
             cpu: 10m
             memory: 256Mi
           limits:
-            cpu: 1000m
-            memory: 7Gi
+            cpu: 500m
+            memory: 1Gi
 ## Optional controller service account that needs to have required Role and RoleBinding
 ## to operate this gha-runner-scale-set installation.
 ## The helm chart will try to find the controller deployment and its service account at installation time.

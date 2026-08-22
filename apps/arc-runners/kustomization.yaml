@@ -13,4 +13,5 @@ helmCharts:
     # includeCRDs: true
 
 resources:
+  - manifests/limits/runner-defaults.yaml
   - manifests/secrets/arc-github-app-secrets.yaml

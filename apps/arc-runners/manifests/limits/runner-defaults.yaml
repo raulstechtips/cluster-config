@@ -1,0 +1,20 @@
+---
+## The dind sidecar is built by the chart and has no resource fields, and the
+## values file has no key for it. This LimitRange gives default limits to any
+## container in the namespace that declares none.
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: runner-defaults
+  namespace: arc-runners
+spec:
+  limits:
+    - type: Container
+      ## Applied to the dind sidecar, which the chart builds without resources.
+      ## Keep this plus the runner container limit inside one node budget.
+      default:
+        cpu: 1000m
+        memory: 7Gi
+      defaultRequest:
+        cpu: 10m
+        memory: 256Mi
