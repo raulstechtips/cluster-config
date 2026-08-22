@@ -1,0 +1,15 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: arc-systems
+
+helmCharts:
+  - name: gha-runner-scale-set-controller
+    repo: https://github.com/actions/actions-runner-controller
+    version: 0.14.2
+    releaseName: gha-runner-scale-set-controller
+    namespace: arc-systems
+    valuesFile: values/prod.yaml
+
+resources:
+  - manifests/secrets/infisical-gateway-enrollment-token.yaml

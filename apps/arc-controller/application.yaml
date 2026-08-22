@@ -1,0 +1,19 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gha-runner-scale-set-controller
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/raulstechtips/cluster-config.git
+    targetRevision: feature/github-action-runners
+    path: apps/arc-controller
+    plugin:
+      name: kustomize-envsubst
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: arc-systems
+  syncPolicy: {}
+  revisionHistoryLimit: 10
