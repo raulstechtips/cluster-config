@@ -15,5 +15,7 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: arc-systems
-  syncPolicy: {}
+  syncPolicy:
+    syncOptions:
+      - ServerSideApply=true
   revisionHistoryLimit: 10

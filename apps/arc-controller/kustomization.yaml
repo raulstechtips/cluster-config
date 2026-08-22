@@ -10,5 +10,6 @@ helmCharts:
     releaseName: gha-runner-scale-set-controller
     namespace: arc-systems
     valuesFile: values/prod.yaml
+    includeCRDs: true
 
 # resources:
