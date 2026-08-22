@@ -11,5 +11,4 @@ helmCharts:
     namespace: arc-systems
     valuesFile: values/prod.yaml
 
-resources:
-  - manifests/secrets/infisical-gateway-enrollment-token.yaml
+# resources:
