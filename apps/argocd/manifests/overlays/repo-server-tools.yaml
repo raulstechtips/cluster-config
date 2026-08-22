@@ -8,6 +8,13 @@ spec:
     spec:
       containers:
         - name: argocd-repo-server
+          resources:
+            requests:
+              cpu: 10m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
           envFrom:
             - secretRef:
                 name: argocd-app-env
