@@ -10,11 +10,13 @@ metadata:
 spec:
   limits:
     - type: Container
-      ## Applied to the dind sidecar, which the chart builds without resources.
-      ## Keep this plus the runner container limit inside one node budget.
+      ## The dind sidecar holds only dockerd and containerd, measured at about
+      ## 130Mi during a build. Build containers that dockerd starts run outside
+      ## this cgroup, thus a larger value here would protect nothing. Limit the
+      ## build with driver-opts on docker/setup-buildx-action in the workflow.
       default:
-        cpu: 1000m
-        memory: 7Gi
+        cpu: 500m
+        memory: 1Gi
       defaultRequest:
         cpu: 10m
         memory: 256Mi
