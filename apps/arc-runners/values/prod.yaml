@@ -378,6 +378,25 @@ template:
       - name: runner
         image: ghcr.io/actions/actions-runner:latest
         command: ["/home/runner/run.sh"]
+        resources:
+          requests:
+            cpu: 10m
+            memory: 256Mi
+          limits:
+            cpu: 200m
+            memory: 500Mi
+        env:
+          ## Pod template applied to the job pod and the container-step pods.
+          - name: ACTIONS_RUNNER_CONTAINER_HOOK_TEMPLATE
+            value: /home/runner/pod-templates/default.yaml
+        volumeMounts:
+          - name: pod-templates
+            mountPath: /home/runner/pod-templates
+            readOnly: true
+    volumes:
+      - name: pod-templates
+        configMap:
+          name: runner-hook-extension
 ## Optional controller service account that needs to have required Role and RoleBinding
 ## to operate this gha-runner-scale-set installation.
 ## The helm chart will try to find the controller deployment and its service account at installation time.

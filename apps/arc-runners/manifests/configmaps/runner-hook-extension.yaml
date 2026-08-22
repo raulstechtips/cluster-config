@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: runner-hook-extension
+  namespace: arc-runners
+data:
+  ## Pod template that the container hook merges into every job pod and
+  ## container-step pod. The container name must be "$job".
+  ## The hook ignores name and image; all other keys are applied.
+  default.yaml: |
+    metadata: {}
+    spec:
+      containers:
+        - name: "$job"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 7Gi
