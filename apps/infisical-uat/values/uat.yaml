@@ -12,10 +12,10 @@ infisical:
 
   image:
     # -- Private build carrying the enterprise options
-    repository: infisical/infisical
-    tag: "v0.162.21"
-    # imagePullSecrets:
-      # - name: github-registry-secret
+    repository: ghcr.io/raulstechtips/secrets-manager
+    tag: "v0.166.2-dev.2"
+    imagePullSecrets:
+      - name: github-registry-secret
 
   kubeSecretRef: "infisical-secrets"
 
