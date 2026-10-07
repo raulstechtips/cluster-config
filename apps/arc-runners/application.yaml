@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
-    targetRevision: feature/github-action-runners
+    targetRevision: main
     path: apps/arc-runners
     plugin:
       name: kustomize-envsubst
