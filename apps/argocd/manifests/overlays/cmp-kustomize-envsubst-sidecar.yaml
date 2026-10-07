@@ -41,7 +41,7 @@ spec:
               memory: 256Mi
               cpu: 100m
             limits:
-              cpu: 200m
+              cpu: 500m
           # Install necessary tools in the sidecar
           lifecycle:
             postStart:
