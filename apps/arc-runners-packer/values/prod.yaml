@@ -4,12 +4,14 @@ githubConfigSecret: arc-github-app
 
 maxRunners: 1
 
+minRunners: 0
+
 runnerGroup: "default"
 
 runnerScaleSetName: "self-hosted-packer"
 
-containerMode:
-  type: "dind"
+# containerMode:
+#   type: "dind"
 
 template:
   metadata:
