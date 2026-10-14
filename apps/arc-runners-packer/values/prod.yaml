@@ -1,0 +1,47 @@
+githubConfigUrl: "https://github.com/raulstechtips"
+
+githubConfigSecret: arc-github-app
+
+maxRunners: 1
+
+runnerGroup: "default"
+
+runnerScaleSetName: "self-hosted-packer"
+
+containerMode:
+  type: "dind"
+
+template:
+  metadata:
+    labels:
+      ## Used by the anti-affinity rule below.
+      runner-scale-set: self-hosted-k3s
+  spec:
+    ## One runner for each node. A runner pod holds the dind sidecar, thus two
+    ## builds on one node would share 2 CPU and one disk.
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                runner-scale-set: self-hosted-k3s
+            topologyKey: kubernetes.io/hostname
+    containers:
+      - name: runner
+        image: ghcr.io/actions/actions-runner:latest
+        command: ["/home/runner/run.sh"]
+        ## The shell steps, the docker CLI and the JS actions run here.
+        ## The build itself runs in the dind sidecar, which the LimitRange in
+        ## manifests/limits/runner-defaults.yaml covers.
+        ## runner 1Gi + dind 6Gi = a 7Gi ceiling for one runner pod.
+        resources:
+          requests:
+            cpu: 10m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 3Gi
+
+controllerServiceAccount:
+  namespace: arc-systems
+  name: gha-runner-scale-set-controller-gha-rs-controller
