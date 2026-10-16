@@ -20,7 +20,7 @@ template:
       runner-scale-set: self-hosted-k3s
   spec:
     nodeSelector:
-      kubernetes.io/hostname: dev-k3s-node-3
+      kubernetes.io/hostname: dev-k3s-node-2
     ## One runner for each node. A runner pod holds the dind sidecar, thus two
     ## builds on one node would share 2 CPU and one disk.
     affinity:
@@ -44,7 +44,7 @@ template:
             memory: 256Mi
           limits:
             cpu: 1000m
-            memory: 3Gi
+            memory: 1Gi
 
 controllerServiceAccount:
   namespace: arc-systems
