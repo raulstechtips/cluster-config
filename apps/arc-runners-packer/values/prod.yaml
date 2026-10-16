@@ -19,6 +19,8 @@ template:
       ## Used by the anti-affinity rule below.
       runner-scale-set: self-hosted-k3s
   spec:
+    nodeSelector:
+      kubernetes.io/hostname: dev-k3s-node-3
     ## One runner for each node. A runner pod holds the dind sidecar, thus two
     ## builds on one node would share 2 CPU and one disk.
     affinity:
