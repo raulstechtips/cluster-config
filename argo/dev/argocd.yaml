@@ -18,7 +18,7 @@ spec:
         valueFiles:
           - $values/apps/dev/argocd.yaml
     - repoURL: https://github.com/raulstechtips/cluster-config.git
-      targetRevision: feature/DEVSECOPS-64-cluster-config-bootstrap-root-and-Argo-CD-switch
+      targetRevision: main
       ref: values
   destination:
     server: https://kubernetes.default.svc

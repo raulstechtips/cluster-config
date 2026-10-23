@@ -15,7 +15,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
-    targetRevision: feature/DEVSECOPS-64-cluster-config-bootstrap-root-and-Argo-CD-switch
+    targetRevision: main
     path: argo/dev
     directory:
       recurse: false
