@@ -9,8 +9,7 @@ spec:
   sources:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: jenkins
-      # Part B pins the real chart version.
-      targetRevision: REPLACE_WITH_TODO8_VERSION
+      targetRevision: 1.0.0-feature-devsecops-32-40c1fb9-1
       helm:
         releaseName: jenkins
         valueFiles:
