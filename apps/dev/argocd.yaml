@@ -8,8 +8,8 @@ envsubst:
     envSlug: prod
 ingressRoute:
   enabled: true
-  host: argocd.prod.raulstechtips.dev
-  tlsSecretName: prod-raulstechtips-tls
+  host: argocd.dev.raulstechtips.dev
+  tlsSecretName: dev-raulstechtips-tls
 argo-cd:
   repoServer:
     # Source: overlays/cmp-kustomize-envsubst-sidecar.yaml.
