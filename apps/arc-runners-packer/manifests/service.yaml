@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: packer-http
+  namespace: arc-runners
+  annotations:
+    metallb.io/loadBalancerIPs: "10.29.30.181"
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  selector:
+    actions.github.com/scale-set-name: self-hosted-packer
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8802
+      targetPort: 8802
