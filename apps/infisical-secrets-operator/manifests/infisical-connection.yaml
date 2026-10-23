@@ -1,0 +1,8 @@
+---
+apiVersion: secrets.infisical.com/v1beta1
+kind: InfisicalConnection
+metadata:
+  name: infisical-prod
+  namespace: default
+spec:
+  address: "${ARGOCD_ENV_INFISICAL_PROD_HOST_API}"
