@@ -4,7 +4,5 @@ kind: InfisicalConnection
 metadata:
   name: infisical-prod
   namespace: default
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   address: "${ARGOCD_ENV_INFISICAL_PROD_HOST_API}"

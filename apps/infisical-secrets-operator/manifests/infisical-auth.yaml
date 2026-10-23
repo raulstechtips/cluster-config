@@ -4,8 +4,6 @@ kind: InfisicalAuth
 metadata:
   name: infisical-prod-universal-auth
   namespace: default
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
 spec:
   method: universal
   infisicalConnectionRef:
