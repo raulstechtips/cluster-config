@@ -49,6 +49,16 @@ organizationFolders:
 jenkins:
   controller:
     jenkinsUrl: https://jenkins.dev.raulstechtips.dev
+    # Run the controller only on dev-k3s-node-3 (node-4 is temporary).
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - dev-k3s-node-3
     # Upstream values cannot follow the wrapper toggles, so the mounted Secrets are listed here.
     additionalExistingSecrets:
       - name: jenkins-oidc
@@ -61,6 +71,17 @@ jenkins:
         keyName: privateKey
       - name: jenkins-github
         keyName: webhookSecret
+  # Run build agents only on dev-k3s-node-2 or dev-k3s-node-3 (node-4 is temporary).
+  agentAffinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - dev-k3s-node-2
+                  - dev-k3s-node-3
   persistence:
     storageClass: longhorn-default-storage-class
     size: 20Gi
