@@ -12,7 +12,7 @@ spec:
   sources:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: argocd
-      targetRevision: 1.0.0-feature-devsecops-64-c87602d-4
+      targetRevision: 1.0.0-main-f27d0cd-7
       helm:
         releaseName: argocd
         valueFiles:
