@@ -8,7 +8,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
-    targetRevision: DEVSECOPS-26-Packer-CI-foundation-repos-runner-and-identity
+    targetRevision: main
     path: apps/arc-runners-packer
     plugin:
       name: kustomize-envsubst
