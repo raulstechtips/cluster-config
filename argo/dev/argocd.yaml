@@ -1,0 +1,33 @@
+# Argo CD itself. Same name as the live Application, so root-dev adopts it.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  annotations:
+    # root-dev must never delete this Application.
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: argocd
+      targetRevision: 1.0.0-main-f27d0cd-7
+      helm:
+        releaseName: argocd
+        valueFiles:
+          - $values/apps/dev/argocd.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  revisionHistoryLimit: 10
+  # Auto-sync with selfHeal. Prune stays off: a removed object is shown, not deleted.
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
