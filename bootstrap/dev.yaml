@@ -1,0 +1,37 @@
+# Bootstrap for the dev cluster. Apply once by hand:
+#   kubectl apply -f bootstrap/dev.yaml
+# This file is outside argo/dev/, so root-dev never manages itself.
+---
+# Lets Argo CD pull OCI Helm charts from GHCR (the package is public, no credentials).
+apiVersion: v1
+kind: Secret
+metadata:
+  name: repo-ghcr-raulstechtips-charts
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  name: ghcr-raulstechtips-charts
+  type: helm
+  url: ghcr.io/raulstechtips/charts
+  enableOCI: "true"
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-dev
+  namespace: argocd
+  # No resources-finalizer: deleting root-dev must never delete child Applications.
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/raulstechtips/cluster-config.git
+    targetRevision: feature/DEVSECOPS-64-cluster-config-bootstrap-root-and-Argo-CD-switch
+    path: argo/dev
+    directory:
+      recurse: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  # Manual sync only. Prune stays off until the final cleanup ticket.
+  syncPolicy: {}
