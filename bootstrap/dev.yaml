@@ -22,5 +22,9 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
-  # Manual sync only. Prune stays off until the final cleanup ticket.
-  syncPolicy: {}
+  # Auto-sync with selfHeal. Prune stays off: deleting a file in argo/dev/
+  # does not delete the Application. Remove it by hand after a check.
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true

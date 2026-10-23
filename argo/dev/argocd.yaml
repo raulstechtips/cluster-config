@@ -24,7 +24,10 @@ spec:
     server: https://kubernetes.default.svc
     namespace: argocd
   revisionHistoryLimit: 10
-  # Manual sync only. No prune: old Kustomize objects stay until cleanup.
+  # Auto-sync with selfHeal. Prune stays off: a removed object is shown, not deleted.
   syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
     syncOptions:
       - ServerSideApply=true
