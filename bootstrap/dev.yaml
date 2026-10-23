@@ -1,20 +1,9 @@
 # Bootstrap for the dev cluster. Apply once by hand:
 #   kubectl apply -f bootstrap/dev.yaml
 # This file is outside argo/dev/, so root-dev never manages itself.
----
-# Lets Argo CD pull OCI Helm charts from GHCR (the package is public, no credentials).
-apiVersion: v1
-kind: Secret
-metadata:
-  name: repo-ghcr-raulstechtips-charts
-  namespace: argocd
-  labels:
-    argocd.argoproj.io/secret-type: repository
-stringData:
-  name: ghcr-raulstechtips-charts
-  type: helm
-  url: ghcr.io/raulstechtips/charts
-  enableOCI: "true"
+# GHCR repository credentials come from the argocd chart (apps/dev/argocd.yaml,
+# externalRegistrySecrets). The argocd chart package must stay public, so a new
+# cluster can pull it before that Secret exists.
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application

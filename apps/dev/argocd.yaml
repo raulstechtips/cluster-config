@@ -6,6 +6,23 @@ envsubst:
     hostAPI: https://infisical.prod.raulstechtips.dev/api
     projectSlug: k3s-ntpo
     envSlug: prod
+# Infisical connection for externalRegistrySecrets (shared auth from DEVSECOPS-153).
+infisical:
+  authRef:
+    name: infisical-prod-universal-auth
+    namespace: default
+  projectSlug: k3s-ntpo
+# Argo CD repository credentials, synced from Infisical.
+# One entry per repo URL. ghcr.io/raulstechtips/charts covers every chart we publish (public and private).
+externalRegistrySecrets:
+  - name: ghcr-raulstechtips-charts-auth
+    type: helm
+    enableOCI: true
+    url: ghcr.io/raulstechtips/charts
+    environmentSlug: prod
+    secretPath: /registries/ghcr
+    usernameKey: GHCR_USERNAME
+    passwordKey: GHCR_TOKEN
 ingressRoute:
   enabled: true
   host: argocd.dev.raulstechtips.dev
