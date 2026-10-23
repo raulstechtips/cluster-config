@@ -1,4 +1,6 @@
 /bootstrap/ @chakraborty29
+/argo/ @chakraborty29
+/apps/dev/ @chakraborty29
 /apps/**/helm-release.yaml @chakraborty29
 /apps/**/raw/ @chakraborty29
 /apps/**/raw/secrets/ @chakraborty29
