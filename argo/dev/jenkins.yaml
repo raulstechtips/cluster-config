@@ -1,0 +1,39 @@
+# Jenkins controller, from the jenkins wrapper chart in GHCR.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jenkins
+  namespace: argocd
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: jenkins
+      targetRevision: 1.0.0-main-0067101-13
+      helm:
+        releaseName: jenkins
+        valueFiles:
+          - $values/apps/dev/jenkins.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: jenkins
+  revisionHistoryLimit: 10
+  # The chart makes the escape-hatch password once and pushes it to Infisical.
+  # Argo CD must not reset the generated Secret data.
+  ignoreDifferences:
+    - kind: Secret
+      name: jenkins
+      namespace: jenkins
+      jsonPointers:
+        - /data
+  # Auto-sync with selfHeal. Prune stays off: a removed object is shown, not deleted.
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true

@@ -1,0 +1,87 @@
+# Dev overrides for the jenkins wrapper chart (ghcr.io/raulstechtips/charts/jenkins).
+# No secret values here: secrets are pulled from Infisical by the chart.
+# Infisical connection (shared auth from DEVSECOPS-153).
+infisical:
+  authRef:
+    name: infisical-prod-universal-auth
+    namespace: default
+  projectSlug: k3s-ntpo
+  environmentSlug: prod
+  # InfisicalPushSecret has no authRef, so it needs its own credentials Secret.
+  push:
+    hostAPI: https://infisical.prod.raulstechtips.dev/api
+    credentialsRef:
+      name: universal-auth-credentials
+      namespace: infisical
+# Login through Keycloak.
+oidc:
+  enabled: true
+  issuer: https://keycloak.prod.raulstechtips.dev/realms/raulstechtips
+# GitHub App credentials, synced from Infisical.
+github:
+  enabled: true
+# Push the generated admin password to Infisical (/jenkins/admin).
+escapeHatch:
+  pushToInfisical: true
+# UI route is internal (private DNS only). No source allowlist.
+uiRoute:
+  enabled: true
+  host: jenkins.dev.raulstechtips.dev
+  tlsSecretName: dev-raulstechtips-tls
+  middlewares:
+    - name: default-headers
+      namespace: default
+# Webhook route is public and limited to GitHub by the chart allowlist.
+webhookRoute:
+  enabled: true
+  host: jenkins.raulstechtips.dev
+  tlsSecretName: live-raulstechtips-tls
+  middlewares:
+    - name: default-headers
+      namespace: default
+  # One trusted proxy (Cloudflare) in front of Traefik.
+  ipStrategyDepth: 1
+deployNamespaces: []
+sharedLibraries: []
+organizationFolders:
+  - name: raulstechtips
+    owner: raulstechtips
+jenkins:
+  controller:
+    jenkinsUrl: https://jenkins.dev.raulstechtips.dev
+    # Run the controller only on dev-k3s-node-3 (node-4 is temporary).
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: kubernetes.io/hostname
+                  operator: In
+                  values:
+                    - dev-k3s-node-3
+    # Upstream values cannot follow the wrapper toggles, so the mounted Secrets are listed here.
+    additionalExistingSecrets:
+      - name: jenkins-oidc
+        keyName: clientId
+      - name: jenkins-oidc
+        keyName: clientSecret
+      - name: jenkins-github
+        keyName: appId
+      - name: jenkins-github
+        keyName: privateKey
+      - name: jenkins-github
+        keyName: webhookSecret
+  # Run build agents only on dev-k3s-node-2 or dev-k3s-node-3 (node-4 is temporary).
+  agentAffinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - dev-k3s-node-2
+                  - dev-k3s-node-3
+  persistence:
+    storageClass: longhorn-default-storage-class
+    size: 20Gi
