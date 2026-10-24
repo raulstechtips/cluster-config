@@ -68,6 +68,9 @@ organizationFolders:
 jenkins:
   controller:
     jenkinsUrl: https://jenkins.dev.raulstechtips.dev
+    # Pull the controller from Harbor; the chart supplies the repository and the <version>@<digest> tag.
+    image:
+      registry: harbor.prod.raulstechtips.dev
     # Run the controller only on dev-k3s-node-3 (node-4 is temporary).
     affinity:
       nodeAffinity:
