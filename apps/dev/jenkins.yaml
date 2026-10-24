@@ -42,7 +42,26 @@ webhookRoute:
   # One trusted proxy (Cloudflare) in front of Traefik.
   ipStrategyDepth: 1
 deployNamespaces: []
-sharedLibraries: []
+sharedLibraries:
+  - name: jenkins-shared-library
+    repo: https://github.com/raulstechtips/jenkins-shared-library.git
+additionalSecrets:
+  - name: ghcr-push
+    secretPath: /jenkins/registries/ghcr
+    keys:
+      username: Username
+      password: Password
+    jenkinsCredential:
+      type: usernamePassword
+      description: "GHCR push and cleanup"
+  - name: harbor-push
+    secretPath: /jenkins/registries/harbor
+    keys:
+      username: Username
+      password: Password
+    jenkinsCredential:
+      type: usernamePassword
+      description: "Harbor push and cleanup"
 organizationFolders:
   - name: raulstechtips
     owner: raulstechtips
