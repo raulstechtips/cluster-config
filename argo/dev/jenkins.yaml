@@ -1,4 +1,4 @@
-# Jenkins controller, from the jenkins wrapper chart in GHCR.
+# Jenkins controller, from the jenkins wrapper chart in Harbor.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -7,7 +7,7 @@ metadata:
 spec:
   project: platform
   sources:
-    - repoURL: ghcr.io/raulstechtips/charts
+    - repoURL: harbor.prod.raulstechtips.dev/raulstechtips/charts
       chart: jenkins
       targetRevision: 1.0.1-main-e74c695-1
       helm:

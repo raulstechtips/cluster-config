@@ -1,4 +1,4 @@
-# Dev overrides for the jenkins wrapper chart (ghcr.io/raulstechtips/charts/jenkins).
+# Dev overrides for the jenkins wrapper chart (harbor.prod.raulstechtips.dev/raulstechtips/charts/jenkins).
 # No secret values here: secrets are pulled from Infisical by the chart.
 # Infisical connection (shared auth from DEVSECOPS-153).
 infisical:
