@@ -9,7 +9,7 @@ spec:
   sources:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: jenkins
-      targetRevision: 1.0.2-feature-devsecops-34-83368c7-15
+      targetRevision: 1.0.1-main-e74c695-1
       helm:
         releaseName: jenkins
         valueFiles:
