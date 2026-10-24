@@ -10,7 +10,7 @@ metadata:
 spec:
   project: platform
   sources:
-    - repoURL: ghcr.io/raulstechtips/charts
+    - repoURL: harbor.prod.raulstechtips.dev/raulstechtips/charts
       chart: argocd
       targetRevision: 1.0.1-main-4d2a1bb-1
       helm:
