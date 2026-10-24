@@ -12,6 +12,7 @@ spec:
   sourceRepos:
     - https://github.com/raulstechtips/cluster-config.git
     - ghcr.io/raulstechtips/charts
+    - harbor.prod.raulstechtips.dev/raulstechtips/charts
   destinations:
     - server: https://kubernetes.default.svc
       namespace: '*'
