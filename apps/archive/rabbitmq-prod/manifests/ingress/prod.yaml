@@ -2,21 +2,23 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: airflow-flower-ingress-prod
-  namespace: airflow
+  name: rabbitmq-prod-ingress-prod
+  namespace: prod
   annotations:
     kubernetes.io/ingress.class: traefik-external
 spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(``)
+    - match: Host(`mq.prod.raulstechtips.dev`)
       kind: Rule
       middlewares:
         - name: default-headers
           namespace: default
+        # - name: strict-referrer
+        #   namespace: default
       services:
-        - name: airflow-flower
-          port: 5555
+        - name: rabbitmq-prod
+          port: 15672
   tls:
     secretName: prod-raulstechtips-tls

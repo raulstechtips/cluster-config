@@ -2,15 +2,15 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: airflow-api-ingress-prod
-  namespace: airflow
+  name: huginn-ingress-prod
+  namespace: huginn
   annotations:
     kubernetes.io/ingress.class: traefik-external
 spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(``)
+    - match: Host(`huginn.prod.raulstechtips.dev`)
       kind: Rule
       middlewares:
         - name: strict-referrer
@@ -18,7 +18,7 @@ spec:
         - name: default-headers
           namespace: default
       services:
-        - name: airflow-api-server
-          port: 8080
+        - name: webapp
+          port: 80
   tls:
     secretName: prod-raulstechtips-tls

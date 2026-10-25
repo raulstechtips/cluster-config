@@ -1,7 +1,8 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: cert-manager
+namespace: dev
 
 resources:
-  - manifests/internal-raulstechtips-ca-issuer.yaml
+  - manifests/cluster.yaml
+  - manifests/ingress/prod.yaml

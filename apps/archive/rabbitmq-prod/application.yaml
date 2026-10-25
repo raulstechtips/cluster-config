@@ -2,21 +2,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: internal-issuer
+  name: rabbitmq
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/raulstechtips/cluster-config.git
     targetRevision: HEAD
-    path: apps/internal-issuer
+    path: apps/rabbitmq
     plugin:
       name: kustomize-envsubst
   destination:
     server: https://kubernetes.default.svc
-    namespace: cert-manager
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    namespace: dev
+  syncPolicy: {}
   revisionHistoryLimit: 10
