@@ -1,4 +1,4 @@
-# Infisical from the public wrapper chart in GHCR.
+# Infisical from the wrapper chart in GHCR.
 # Manual sync keeps restarts deliberate; values come from apps/dev/infisical.yaml.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -19,7 +19,7 @@ spec:
         valueFiles:
           - $values/apps/dev/infisical.yaml
     - repoURL: https://github.com/raulstechtips/cluster-config.git
-      targetRevision: feature/DEVSECOPS-44-Move-Infisical-to-its-own-repo
+      targetRevision: main
       ref: values
   destination:
     server: https://kubernetes.default.svc
