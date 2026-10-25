@@ -1,0 +1,16 @@
+---
+image:
+  registry: quay.io
+  repository: prometheus/blackbox-exporter
+  tag: v0.27.0
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 10m
+    memory: 100Mi
+
+replicas: 1

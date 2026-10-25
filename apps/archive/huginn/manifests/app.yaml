@@ -1,0 +1,193 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: huginn
+  namespace: huginn
+  labels:
+    app: huginn
+automountServiceAccountToken: false
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: huginn-web
+  namespace: huginn
+  labels:
+    app: huginn-web
+    component: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: huginn-web
+  template:
+    metadata:
+      labels:
+        app: huginn-web
+        component: web
+    spec:
+      serviceAccountName: huginn
+      volumes:
+        - name: postgres-ca-cert
+          secret:
+            secretName: raulstechtips-internal-ca-key-pair
+            items:
+              - key: ca.crt
+                path: postgres-ca.crt
+      containers:
+        - name: huginn-web
+          image: ghcr.io/huginn/huginn-single-process:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          volumeMounts:
+            - name: postgres-ca-cert
+              mountPath: /etc/custom-certs
+              readOnly: true
+          env:
+            - name: DATABASE_ADAPTER
+              value: "postgresql"
+            - name: DATABASE_HOST
+              value: "pg-dev-rw.dev.svc.cluster.local"
+            - name: DATABASE_PORT
+              value: "5432"
+            - name: RAILS_ENV
+              value: "production"
+            - name: TIMEZONE
+              value: "Eastern Time (US & Canada)"
+            - name: SMTP_DOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: huginn-app-secret
+                  key: DOMAIN
+            - name: DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: huginn-database-secret
+                  key: POSTGRES_DB
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: huginn-database-secret
+                  key: POSTGRES_USER
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: huginn-database-secret
+                  key: POSTGRES_PASSWORD
+          envFrom:
+            - secretRef:
+                name: huginn-app-secret
+            - secretRef:
+                name: huginn-smtp-secret
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 10m
+            limits:
+              memory: 512Mi
+              cpu: 500m
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 3
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: huginn-worker
+  namespace: huginn
+  labels:
+    app: huginn-worker
+    component: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: huginn-worker
+  template:
+    metadata:
+      labels:
+        app: huginn-worker
+        component: worker
+    spec:
+      serviceAccountName: huginn
+      volumes:
+        - name: postgres-ca-cert
+          secret:
+            secretName: raulstechtips-internal-ca-key-pair
+            items:
+              - key: ca.crt
+                path: postgres-ca.crt
+      containers:
+        - name: huginn-worker
+          image: ghcr.io/huginn/huginn-single-process:latest
+          command: ["/scripts/init", "bin/threaded.rb"]
+          volumeMounts:
+            - name: postgres-ca-cert
+              mountPath: /etc/custom-certs
+              readOnly: true
+          env:
+            - name: DATABASE_ADAPTER
+              value: "postgresql"
+            - name: DATABASE_HOST
+              value: "pg-dev-rw.dev.svc.cluster.local"
+            - name: DATABASE_PORT
+              value: "5432"
+            - name: RAILS_ENV
+              value: "production"
+            - name: TIMEZONE
+              value: "Eastern Time (US & Canada)"
+            - name: DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: huginn-database-secret
+                  key: POSTGRES_DB
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: huginn-database-secret
+                  key: POSTGRES_USER
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: huginn-database-secret
+                  key: POSTGRES_PASSWORD
+          envFrom:
+            - secretRef:
+                name: huginn-app-secret
+            - secretRef:
+                name: huginn-smtp-secret
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 10m
+            limits:
+              memory: 512Mi
+              cpu: 500m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp
+  namespace: huginn
+  labels:
+    app: huginn-web
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 3000
+      protocol: TCP
+      name: http
+  selector:
+    app: huginn-web

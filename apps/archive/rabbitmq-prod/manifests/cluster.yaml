@@ -1,0 +1,56 @@
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: rabbitmq-prod
+  namespace: prod
+spec:
+  replicas: 3
+  image: rabbitmq:4.2-management
+  tls:
+    secretName: rabbitmq-prod-internal-tls
+    # disableNonTLSListeners: true
+
+  # Resource limits and requests
+  resources:
+    requests:
+      cpu: 10m
+      memory: 500Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
+  # Persistent storage configuration
+  persistence:
+    storageClassName: longhorn-storage-class-local
+    storage: 10Gi
+
+  # Soft pod anti-affinity to prefer different nodes
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - rabbitmq-prod
+          topologyKey: kubernetes.io/hostname
+
+  # Additional RabbitMQ configuration
+  # 80% of 2000Mi = 1600Mi = 1,677,721,600 bytes
+  rabbitmq:
+    additionalConfig: |
+      total_memory_available_override_value = 1677721600
+      cluster_partition_handling = pause_minority
+      collect_statistics_interval = 10000
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: rabbitmq-prod
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: rabbitmq-prod
