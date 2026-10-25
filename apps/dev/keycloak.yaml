@@ -1,0 +1,25 @@
+# Dev values for the keycloak wrapper chart (harbor.prod.raulstechtips.dev/raulstechtips/charts/keycloak).
+# No secret values here. Database and CA wiring are chart defaults.
+# Infisical connection for the admin password sync (shared auth from DEVSECOPS-153).
+infisical:
+  authRef:
+    name: infisical-prod-universal-auth
+    namespace: default
+  projectSlug: k3s-ntpo
+  environmentSlug: prod
+adminSecret:
+  enabled: true
+ingressRoute:
+  enabled: true
+  middlewares:
+    - name: strict-referrer
+      namespace: default
+    - name: default-headers
+      namespace: default
+  hosts:
+    - name: prod
+      host: keycloak.prod.raulstechtips.dev
+      tlsSecretName: prod-raulstechtips-tls
+    - name: live
+      host: keycloak.raulstechtips.dev
+      tlsSecretName: live-raulstechtips-tls
