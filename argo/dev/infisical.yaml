@@ -1,6 +1,5 @@
-# Infisical, from the infisical wrapper chart in GHCR (public package).
-# Manual sync on purpose: a sync is a deliberate restart of the vault.
-# Values come from apps/dev/infisical.yaml.
+# Infisical from the public wrapper chart in GHCR.
+# Manual sync keeps restarts deliberate; values come from apps/dev/infisical.yaml.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -14,7 +13,6 @@ spec:
   sources:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: infisical
-      # Placeholder; todo 11 replaces it with the published chart version.
       targetRevision: 1.0.1-feature-devsecops-44-84f27c7-ab069f5-1
       helm:
         releaseName: infisical
@@ -36,8 +34,3 @@ spec:
       jqPathExpressions:
         - .metadata.annotations.updatedAt
         - .spec.template.metadata.annotations.updatedAt
-  # No automated sync: Infisical rolls only when someone syncs it on purpose.
-  syncPolicy:
-    syncOptions:
-      - RespectIgnoreDifferences=true
-      - CreateNamespace=true
