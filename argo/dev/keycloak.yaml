@@ -13,7 +13,7 @@ spec:
   sources:
     - repoURL: harbor.prod.raulstechtips.dev/raulstechtips/charts
       chart: keycloak
-      targetRevision: 1.0.1-feature-devsecops-43-6797b89-385ec9a-3
+      targetRevision: 1.0.1-main-0c1f6b9-1
       helm:
         releaseName: keycloak
         valueFiles:
