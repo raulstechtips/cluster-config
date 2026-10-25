@@ -15,7 +15,7 @@ spec:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: infisical
       # Placeholder; todo 11 replaces it with the published chart version.
-      targetRevision: 0.0.0-pending-todo-11
+      targetRevision: 1.0.1-feature-devsecops-44-84f27c7-ab069f5-1
       helm:
         releaseName: infisical
         valueFiles:
