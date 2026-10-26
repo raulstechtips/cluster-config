@@ -1,10 +1,4 @@
 /bootstrap/ @chakraborty29
 /argo/ @chakraborty29
-/apps/dev/ @chakraborty29
-/apps/**/helm-release.yaml @chakraborty29
-/apps/**/raw/ @chakraborty29
-/apps/**/raw/secrets/ @chakraborty29
-/apps/**/raw/certificates/ @chakraborty29
-/apps/**/raw/storage/ @chakraborty29
-/apps/**/raw/ingress/ @chakraborty29
-/apps/**/raw/middleware/ @chakraborty29
+/argo/dev/ @raulstechtips-jenkins[bot]
+/apps/ @chakraborty29
