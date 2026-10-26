@@ -6,7 +6,7 @@
 # dump into it, and verifies that both sides agree.
 #
 # The target database must already exist. This script never creates or drops it;
-# provisioning is owned by the CNPG Database manifest in apps/cnpg-prod.
+# provisioning is owned by the CNPG Database list in apps/dev/cnpg-prod.yaml.
 
 set -euo pipefail
 

@@ -1,0 +1,90 @@
+# Values for pg-prod (cnpg-cluster chart, ghcr.io/raulstechtips/charts/cnpg-cluster).
+# No secret values here. Tuning, HA, TLS, backups and the Infisical connection are chart defaults.
+description: Prod PostgreSQL Cluster
+enableSuperuserAccess: true
+storage:
+  size: 20Gi
+walStorage:
+  size: 20Gi
+bootstrap:
+  database: prod
+  passwordSecret:
+    name: pg-prod-admin-credentials-secret
+    secretPath: /cnpg/prod/users/admin
+    passwordKey: PG_PROD_ADMIN_PASSWORD
+roles:
+  - name: pg-grafana
+    comment: Grafana Database
+    createdb: true
+    passwordSecret:
+      name: pg-grafana-database-credentials-secret
+      secretPath: /prometheus/grafana/app
+      passwordKey: GF_DATABASE_PASSWORD
+      reflectTo: [grafana]
+  - name: pg-coder
+    comment: Coder Database
+    createdb: true
+    passwordSecret:
+      name: pg-coder-database-credentials-secret
+      secretPath: /cnpg/staging/users/coder
+      passwordKey: PG_CODER_PASSWORD
+      environmentSlug: staging
+      reflectTo: [coder]
+  - name: pg-harbor-admin
+    comment: Harbor Database
+    createdb: true
+    # Harbor's own pool allows 900 connections; this keeps it from using every slot.
+    connectionLimit: 30
+    passwordSecret:
+      name: pg-harbor-database-credentials-secret
+      secretPath: /harbor/postgres
+      passwordKey: PG_HARBOR_ADMIN_PASSWORD
+      reflectTo: [harbor]
+  - name: infisical-pg-admin
+    comment: Infisical Database
+    createdb: true
+    passwordSecret:
+      name: pg-infisical-database-credentials-secret
+      secretPath: /argocd/apps/env
+      passwordKey: INFISICAL_PG_ADMIN_PASSWORD
+      reflectTo: [infisical, infisical-dev, infisical-uat]
+  - name: pg-keycloak-admin
+    comment: Keycloak Database
+    createdb: true
+    passwordSecret:
+      name: pg-keycloak-database-credentials-secret
+      secretPath: /keycloak/postgres
+      passwordKey: PG_KEYCLOAK_ADMIN_PASSWORD
+      reflectTo: [keycloak]
+  - name: pg-sdpm-admin
+    comment: SDPM Database
+    createdb: true
+    passwordSecret:
+      name: pg-sdpm-database-credentials-secret
+      secretPath: /sdpm/database
+      passwordKey: PG_SDPM_PASSWORD
+      reflectTo: [sdpm]
+  - name: pg-membership-platform
+    comment: Membership Platform Database
+    createdb: true
+    passwordSecret:
+      name: pg-membership-platform-credentials-secret
+      secretPath: /cnpg/staging/users/membershipplatform
+      passwordKey: PG_MEMBERSHIP_PLATFORM_PASSWORD
+      environmentSlug: staging
+      reflectTo: [membership-platform]
+databases:
+  - name: keycloak
+    owner: pg-keycloak-admin
+  - name: pg-coder
+    owner: pg-coder
+  - name: pg-infisical
+    owner: infisical-pg-admin
+  - name: pg-infisical-uat
+    owner: infisical-pg-admin
+  - name: pg-membership-platform
+    owner: pg-membership-platform
+  - name: pg-sdpm
+    owner: pg-sdpm-admin
+  - name: registry
+    owner: pg-harbor-admin
