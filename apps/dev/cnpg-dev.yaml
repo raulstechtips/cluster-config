@@ -1,0 +1,30 @@
+# Values for pg-dev (cnpg-cluster chart, ghcr.io/raulstechtips/charts/cnpg-cluster).
+# New cluster: pg-dev does not run today. No secret values here.
+description: Dev PostgreSQL Cluster
+bootstrap:
+  database: dev
+  passwordSecret:
+    name: pg-dev-admin-credentials-secret
+    secretPath: /cnpg/dev/users/admin
+    passwordKey: PG_DEV_ADMIN_PASSWORD
+    environmentSlug: dev
+roles:
+  - name: pg-huginn-admin
+    comment: Huginn Database
+    passwordSecret:
+      name: pg-huginn-database-credentials-secret
+      secretPath: /huginn/postgres
+      passwordKey: POSTGRES_PASSWORD
+  - name: pg-serenemind-admin
+    comment: Serenemind Database
+    passwordSecret:
+      name: pg-serenemind-database-credentials-secret
+      secretPath: /serenemind/postgres
+      passwordKey: password
+      environmentSlug: staging
+      reflectTo: [serenemind]
+databases:
+  - name: pg-huginn
+    owner: pg-huginn-admin
+  - name: pg-serenemind
+    owner: pg-serenemind-admin

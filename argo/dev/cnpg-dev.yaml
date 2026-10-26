@@ -1,0 +1,28 @@
+# CNPG cluster pg-dev from the cnpg-cluster chart in GHCR. New install: pg-dev does not run today.
+# Manual sync keeps database restarts deliberate; values come from apps/dev/cnpg-dev.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cnpg-dev
+  namespace: argocd
+  annotations:
+    # root-dev must never delete this Application.
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: cnpg-cluster
+      targetRevision: 1.0.1-feature-devsecops-59-7236a9a-40fe50d-1
+      helm:
+        # The release name is the CNPG Cluster name.
+        releaseName: pg-dev
+        valueFiles:
+          - $values/apps/dev/cnpg-dev.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  revisionHistoryLimit: 10
