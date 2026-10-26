@@ -13,7 +13,7 @@ spec:
   sources:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: cnpg-cluster
-      targetRevision: 1.0.1-feature-devsecops-59-77376f8-40fe50d-3
+      targetRevision: 1.0.1-feature-devsecops-59-e3d651a-40fe50d-4
       helm:
         # The release name is the CNPG Cluster name.
         releaseName: pg-prod
