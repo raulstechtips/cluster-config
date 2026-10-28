@@ -1,0 +1,45 @@
+# Values for the minio chart (ghcr.io/raulstechtips/charts/minio): the MinIO Tenant tenant-s3.
+# No secret values here. The root user and password, and the OIDC client ID and secret, come from
+# Infisical /minio. Buckets, users, policies, versioning and public access are managed by hand in
+# the MinIO console (see the minio repo README).
+tenant:
+  # Do not change: the PVC names (data0-tenant-s3-pool-0-0, ...) come from this name.
+  name: tenant-s3
+  # Do not change name, servers or volumesPerServer after the first install.
+  pools:
+    - name: pool-0
+      servers: 3
+      volumesPerServer: 2
+      size: 75Gi
+      storageClassName: longhorn-storage-class-local
+# Shared Infisical connection (DEVSECOPS-153).
+infisical:
+  authRef:
+    name: infisical-prod-universal-auth
+    namespace: default
+  projectSlug: k3s-ntpo
+  environmentSlug: prod
+# Keycloak login for the MinIO console.
+oidc:
+  enabled: true
+  configUrl: https://keycloak.prod.raulstechtips.dev/realms/raulstechtips/.well-known/openid-configuration
+# The public wildcard certificate, after the chart's internal certificate.
+tls:
+  externalCertSecrets:
+    - prod-raulstechtips-tls
+ingressRoute:
+  enabled: true
+  middlewares:
+    - name: default-headers
+      namespace: default
+  tlsSecretName: prod-raulstechtips-tls
+  console:
+    host: s3.prod.raulstechtips.dev
+  api:
+    hosts:
+      # The first host is the Tenant domain (MINIO_SERVER_URL). DEVSECOPS-181 moves dev first.
+      - name: prod
+        host: s3-api.prod.raulstechtips.dev
+      - name: dev
+        host: s3-api.dev.raulstechtips.dev
+        tlsSecretName: dev-raulstechtips-tls
