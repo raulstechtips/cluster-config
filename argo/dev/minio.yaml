@@ -15,7 +15,7 @@ spec:
   sources:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: minio
-      targetRevision: 1.0.1-feature-devsecops-58-7d2c426-5cc0a20-2
+      targetRevision: 1.0.1-main-b8e937c-1
       helm:
         releaseName: tenant-s3
         valueFiles:
