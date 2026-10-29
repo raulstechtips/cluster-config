@@ -1,0 +1,29 @@
+# MinIO tenant tenant-s3 from the minio chart in GHCR.
+# Manual sync keeps MinIO restarts deliberate; values come from apps/dev/minio.yaml.
+# The file name is the chart project name (the shared library argo-deploy step edits
+# argo/dev/<project-name>.yaml); the Application keeps its live name, tenant-s3.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tenant-s3
+  namespace: argocd
+  annotations:
+    # root-dev must never delete this Application.
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: minio
+      targetRevision: 1.0.1-feature-devsecops-58-7d2c426-5cc0a20-2
+      helm:
+        releaseName: tenant-s3
+        valueFiles:
+          - $values/apps/dev/minio.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: minio
+  revisionHistoryLimit: 10
