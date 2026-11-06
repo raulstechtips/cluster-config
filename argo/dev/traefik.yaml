@@ -14,7 +14,7 @@ spec:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: traefik
       # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
-      targetRevision: 1.0.1-feature-devsecops-60-ddd4224-dd91a9d-1
+      targetRevision: 1.0.1-main-d4a33d8-2
       helm:
         releaseName: traefik
         skipCrds: true
