@@ -13,6 +13,7 @@ spec:
     - https://github.com/raulstechtips/cluster-config.git
     - ghcr.io/raulstechtips/charts
     - harbor.prod.raulstechtips.dev/raulstechtips/charts
+    - https://charts.jetstack.io
   destinations:
     - server: https://kubernetes.default.svc
       namespace: '*'
