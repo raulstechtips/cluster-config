@@ -1,0 +1,19 @@
+# Environment values for the upstream jetstack/cert-manager chart.
+# No secret values here.
+
+# CRDs are installed separately. This Application must not take ownership.
+crds:
+  enabled: false
+# The old Kustomize renderer omitted Helm hooks. Keep the same resource set.
+startupapicheck:
+  enabled: false
+# Helm replaces lists: include both DNS01 arguments here.
+extraArgs:
+  - --dns01-recursive-nameservers=1.1.1.1:53,9.9.9.9:53
+  - --dns01-recursive-nameservers-only
+# Use the recursive resolvers for DNS01 self-checks.
+podDnsPolicy: None
+podDnsConfig:
+  nameservers:
+    - 1.1.1.1
+    - 9.9.9.9

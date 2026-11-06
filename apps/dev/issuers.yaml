@@ -1,0 +1,16 @@
+# Environment values for the issuers wrapper chart.
+# No secret values here.
+acme:
+  enabled: true
+  email: support@raulstechtips.dev
+  dnsZones: [raulstechtips.dev]
+ca:
+  enabled: true
+cloudflareToken:
+  enabled: true
+infisical:
+  authRef:
+    name: infisical-prod-universal-auth
+    namespace: default
+  projectSlug: k3s-ntpo
+  environmentSlug: prod
