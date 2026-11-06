@@ -13,7 +13,7 @@ spec:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: issuers
       # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
-      targetRevision: 1.0.1-feature-devsecops-56-62a7ec4-ee70934-1
+      targetRevision: 1.0.1-main-bf4d68b-1
       helm:
         releaseName: issuers
         valueFiles:
