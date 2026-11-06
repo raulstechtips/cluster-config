@@ -1,9 +1,0 @@
----
-defaultSettings:
-  orphanAutoDeletion: true
-  logLevel: info
-longhornUI:
-  replicas: 1
-longhornManager:
-  log:
-    format: json
