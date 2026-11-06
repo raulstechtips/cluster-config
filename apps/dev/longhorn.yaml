@@ -1,0 +1,29 @@
+# Dev values for the Longhorn wrapper chart (ghcr.io/raulstechtips/charts/longhorn).
+# No secret values here. Storage and snapshot policies are chart defaults.
+infisical:
+  authRef:
+    name: infisical-prod-universal-auth
+    namespace: default
+  projectSlug: k3s-ntpo
+  environmentSlug: prod
+minioSecret:
+  enabled: true
+  endpoint: https://s3-api.prod.raulstechtips.dev
+ingressRoute:
+  enabled: true
+  host: longhorn.prod.raulstechtips.dev
+  tlsSecretName: prod-raulstechtips-tls
+  middlewares:
+    - name: default-headers
+      namespace: default
+    - name: oauth-chain
+      namespace: default
+backupTargets:
+  - name: default
+    # MinIO tenant-s3, bucket `longhorn-backup`.
+    # MinIO has no region configured, so it reports the S3 default `us-east-1`;
+    # Longhorn requires the @region component even when the backend ignores it.
+    backupTargetURL: s3://longhorn-backup@us-east-1/
+    # Synced from Infisical (/minio/users/longhorn) by minioSecret above.
+    credentialSecret: minio-secret
+    pollInterval: 5m0s

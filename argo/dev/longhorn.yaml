@@ -1,0 +1,35 @@
+# Longhorn from the wrapper chart in GHCR, including its existing CRDs.
+# Manual sync keeps adoption deliberate; values come from apps/dev/longhorn.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn-system
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: longhorn
+      # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
+      targetRevision: 1.0.1-feature-devsecops-57-4d1adea-3067f41-1
+      helm:
+        releaseName: longhorn
+        valueFiles:
+          - $values/apps/dev/longhorn.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  revisionHistoryLimit: 10
+  ignoreDifferences:
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+      jsonPointers:
+        - /spec/preserveUnknownFields
+  syncPolicy:
+    syncOptions:
+      - RespectIgnoreDifferences=true
