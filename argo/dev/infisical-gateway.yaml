@@ -19,7 +19,7 @@ spec:
         valueFiles:
           - $values/apps/dev/infisical-gateway.yaml
     - repoURL: https://github.com/raulstechtips/cluster-config.git
-      targetRevision: feature/DEVSECOPS-187-Move-minio-operator-infisical-gateway-infisical-secrets-operator-to-its-own-repo
+      targetRevision: main
       ref: values
   destination:
     server: https://kubernetes.default.svc
