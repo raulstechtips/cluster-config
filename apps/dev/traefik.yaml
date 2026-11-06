@@ -1,0 +1,82 @@
+# Dev values for the Traefik wrapper chart (ghcr.io/raulstechtips/charts/traefik).
+# No secret values here. The load-balancer, route, endpoint, and VPN addresses come from live resources.
+dashboard:
+  enabled: true
+  host: traefik.prod.raulstechtips.dev
+  tlsSecretName: prod-raulstechtips-tls
+  middlewares:
+    - name: oauth-chain
+      namespace: default
+
+# Cluster routes use the shared middleware objects in default.
+middlewares:
+  enabled: true
+  namespace: default
+  defaultHeaders:
+    contentSecurityPolicy: "default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https:; media-src 'self' blob: https:; object-src 'none'; frame-ancestors 'self'; base-uri 'self'; form-action 'self' http://localhost:8000 http://localhost:8080 https://*.prod.raulstechtips.dev https://*.uat.raulstechtips.dev https://*.raulstechtips.dev;"
+
+externalServices:
+  - name: firewall
+    namespace: default
+    serviceName: firewall-service
+    ingressRouteName: firewall-ingress-prod
+    ingressClass: traefik-external
+    entryPoints:
+      - websecure
+    host: firewall.prod.raulstechtips.dev
+    tlsSecretName: prod-raulstechtips-tls
+    port: 443
+    targetPort: 443
+    endpointIP: 10.29.0.1
+    middlewares:
+      - name: default-headers
+        namespace: default
+  - name: pihole
+    namespace: default
+    serviceName: pihole-service
+    ingressRouteName: pihole-ingress-prod
+    ingressClass: traefik-external
+    entryPoints:
+      - websecure
+    host: pihole.prod.raulstechtips.dev
+    tlsSecretName: prod-raulstechtips-tls
+    port: 80
+    targetPort: 80
+    endpointIP: 10.29.0.3
+    middlewares:
+      - name: redirectregex-pihole
+        spec:
+          redirectRegex:
+            regex: /admin/(.*)
+            replacement: /
+      - name: default-headers
+      - name: addprefix-pihole
+        spec:
+          addPrefix:
+            prefix: /admin
+      - name: https-redirectscheme-pihole
+        spec:
+          redirectScheme:
+            scheme: https
+            permanent: true
+  - name: pve
+    namespace: default
+    serviceName: pve-service
+    ingressRouteName: pve-ingress-dev
+    ingressClass: traefik-external
+    entryPoints:
+      - websecure
+    host: pve1.dev.raulstechtips.dev
+    tlsSecretName: dev-raulstechtips-tls
+    port: 8006
+    targetPort: 8006
+    endpointIP: 10.29.30.20
+    scheme: https
+    middlewares:
+      - name: default-headers
+        namespace: default
+
+traefik:
+  service:
+    spec:
+      loadBalancerIP: 10.29.30.180
