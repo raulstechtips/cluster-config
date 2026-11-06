@@ -1,0 +1,29 @@
+# Traefik and shared routing resources from the Traefik wrapper chart in GHCR.
+# Manual sync keeps the ownership handover deliberate; values come from apps/dev/traefik.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  annotations:
+    # root-dev must never delete this Application.
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: traefik
+      # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
+      targetRevision: PENDING_CI_VERSION
+      helm:
+        releaseName: traefik
+        skipCrds: true
+        valueFiles:
+          - $values/apps/dev/traefik.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+  revisionHistoryLimit: 10
