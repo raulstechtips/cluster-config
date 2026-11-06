@@ -13,7 +13,7 @@ spec:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: gha-runners
       # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
-      targetRevision: 1.0.1-feature-devsecops-47-f6f61a0-1de53ba-1
+      targetRevision: 1.0.1-main-ebf8008-1
       helm:
         releaseName: gha-runners-packer
         valueFiles:
