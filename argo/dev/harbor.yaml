@@ -1,0 +1,68 @@
+# Harbor container registry from the GHCR wrapper chart.
+# Manual sync keeps adoption deliberate; values come from apps/dev/harbor.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: harbor
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: harbor
+      # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
+      targetRevision: 1.0.1-feature-devsecops-42-040571d-5659fd9-1
+      helm:
+        releaseName: harbor
+        valueFiles:
+          - $values/apps/dev/harbor.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: harbor
+  syncPolicy:
+    syncOptions:
+      - RespectIgnoreDifferences=true
+  revisionHistoryLimit: 10
+  # The upstream chart makes new random values for these Secrets and the
+  # checksum annotations at each render. Keep the live values.
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: harbor-core
+      jsonPointers:
+        - /data
+    - group: ""
+      kind: Secret
+      name: harbor-jobservice
+      jsonPointers:
+        - /data
+    - group: ""
+      kind: Secret
+      name: harbor-registry
+      jsonPointers:
+        - /data
+    - group: ""
+      kind: Secret
+      name: harbor-registryctl
+      jsonPointers:
+        - /data
+    - group: apps
+      kind: Deployment
+      name: harbor-core
+      jsonPointers:
+        - /spec/template/metadata/annotations
+    - group: apps
+      kind: Deployment
+      name: harbor-jobservice
+      jsonPointers:
+        - /spec/template/metadata/annotations
+    - group: apps
+      kind: Deployment
+      name: harbor-registry
+      jsonPointers:
+        - /spec/template/metadata/annotations
