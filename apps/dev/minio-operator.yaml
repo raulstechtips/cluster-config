@@ -1,0 +1,14 @@
+# Environment values for the minio-operator wrapper chart.
+# No secret values here.
+infisical:
+  authRef:
+    name: infisical-prod-universal-auth
+    namespace: default
+  projectSlug: k3s-ntpo
+  environmentSlug: prod
+stsCertificate:
+  enabled: true
+operatorCaSecret:
+  enabled: true
+  # This Secret name is tied to the environment's tenant name.
+  secretName: operator-ca-tls-tenant-s3

@@ -1,0 +1,27 @@
+# Infisical Gateway from the wrapper chart in GHCR.
+# Manual sync keeps adoption deliberate; values come from apps/dev/infisical-gateway.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: infisical-gateway
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: infisical-gateway
+      # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
+      targetRevision: 1.0.1-feature-devsecops-187-59722f4-33e7bde-2
+      helm:
+        releaseName: infisical-gateway
+        valueFiles:
+          - $values/apps/dev/infisical-gateway.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: infisical-gateway
+  revisionHistoryLimit: 10
