@@ -1,0 +1,28 @@
+# Kubernetes runners from the gha-runners wrapper chart in GHCR.
+# Manual sync keeps adoption deliberate; values come from apps/dev/gha-runners.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gha-runners
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: gha-runners
+      # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
+      targetRevision: 1.0.1-feature-devsecops-47-f6f61a0-1de53ba-1
+      helm:
+        releaseName: gha-runners
+        valueFiles:
+          - $values/apps/dev/gha-runners.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: arc-runners
+  revisionHistoryLimit: 10
+  syncPolicy: {}

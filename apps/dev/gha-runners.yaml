@@ -1,0 +1,20 @@
+# Kubernetes runners from the gha-runners wrapper chart.
+# Environment-specific settings only. No secret values here.
+infisical:
+  authRef:
+    name: infisical-prod-universal-auth
+    namespace: default
+  projectSlug: k3s-ntpo
+  environmentSlug: prod
+githubAppSecret:
+  enabled: true
+limitRange:
+  enabled: true
+gha-runner-scale-set:
+  # Only this release uses Docker in Docker.
+  containerMode:
+    type: dind
+  template:
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: dev-k3s-node-3

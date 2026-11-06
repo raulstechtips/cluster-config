@@ -1,0 +1,26 @@
+# Packer runners from the shared gha-runners wrapper chart.
+# Environment and release-specific overrides. No secret values here.
+# The other application owns the shared GitHub App Secret and LimitRange.
+packerService:
+  enabled: true
+  loadBalancerIP: 10.29.30.181
+  port: 8802
+  targetPort: 8802
+gha-runner-scale-set:
+  runnerScaleSetName: self-hosted-packer
+  template:
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: dev-k3s-node-2
+      # Helm replaces lists. Repeat the runner to change only its memory limit.
+      containers:
+        - name: runner
+          image: ghcr.io/actions/actions-runner:latest
+          command: ["/home/runner/run.sh"]
+          resources:
+            requests:
+              cpu: 10m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
