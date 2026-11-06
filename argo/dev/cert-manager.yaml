@@ -1,0 +1,26 @@
+# cert-manager from the upstream Jetstack chart (no wrapper chart).
+# Manual sync keeps adoption deliberate; values come from apps/dev/cert-manager.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: https://charts.jetstack.io
+      chart: cert-manager
+      targetRevision: v1.17.1
+      helm:
+        releaseName: cert-manager
+        valueFiles:
+          - $values/apps/dev/cert-manager.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  revisionHistoryLimit: 10

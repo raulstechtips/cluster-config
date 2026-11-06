@@ -1,0 +1,34 @@
+# Shared certificates and CA export from the global-certs chart.
+# No secret values here.
+internalCA:
+  enabled: true
+  pushToInfisical: true
+wildcardCertificates:
+  - name: live-raulstechtips
+    secretName: live-raulstechtips-tls
+    domain: raulstechtips.dev
+    issuer: letsencrypt-production
+  - name: prod-raulstechtips
+    secretName: prod-raulstechtips-tls
+    domain: prod.raulstechtips.dev
+    issuer: letsencrypt-production
+  - name: stage-raulstechtips
+    secretName: stage-raulstechtips-tls
+    domain: stage.raulstechtips.dev
+    issuer: letsencrypt-staging
+  - name: uat-raulstechtips
+    secretName: uat-raulstechtips-tls
+    domain: uat.raulstechtips.dev
+    issuer: letsencrypt-production
+  - name: dev-raulstechtips
+    secretName: dev-raulstechtips-tls
+    domain: dev.raulstechtips.dev
+    issuer: letsencrypt-production
+infisical:
+  projectSlug: k3s-ntpo
+  environmentSlug: prod
+  push:
+    hostAPI: https://infisical.prod.raulstechtips.dev/api
+    credentialsRef:
+      name: universal-auth-credentials
+      namespace: infisical

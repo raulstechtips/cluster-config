@@ -1,0 +1,27 @@
+# Certificate issuers from the issuers wrapper chart in GHCR.
+# Manual sync keeps adoption deliberate; values come from apps/dev/issuers.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: issuers
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: issuers
+      # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
+      targetRevision: 1.0.1-feature-devsecops-56-62a7ec4-ee70934-1
+      helm:
+        releaseName: issuers
+        valueFiles:
+          - $values/apps/dev/issuers.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  revisionHistoryLimit: 10
