@@ -1,0 +1,21 @@
+# Environment values for the oauth2-proxy wrapper chart.
+# No secret values here.
+infisical:
+  authRef:
+    name: infisical-prod-universal-auth
+    namespace: default
+  projectSlug: k3s-ntpo
+  environmentSlug: prod
+clientSecret:
+  enabled: true
+configSecret:
+  enabled: true
+ingressRoute:
+  enabled: true
+  host: oauth2-proxy.prod.raulstechtips.dev
+  tlsSecretName: prod-raulstechtips-tls
+  middlewares:
+    - name: default-headers
+      namespace: default
+    - name: strict-referrer
+      namespace: default

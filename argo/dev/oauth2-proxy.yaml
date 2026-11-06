@@ -1,0 +1,27 @@
+# OAuth2 Proxy from the GHCR wrapper chart.
+# Manual sync keeps adoption deliberate; values come from apps/dev/oauth2-proxy.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: oauth2-proxy
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: oauth2-proxy
+      # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
+      targetRevision: 1.0.1-feature-devsecops-46-3d16225-362b9f7-1
+      helm:
+        releaseName: oauth2-proxy
+        valueFiles:
+          - $values/apps/dev/oauth2-proxy.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: oauth2-proxy
+  revisionHistoryLimit: 10
