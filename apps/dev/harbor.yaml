@@ -1,0 +1,46 @@
+# Environment values for the Harbor wrapper chart.
+# No secret values here.
+infisical:
+  authRef:
+    name: infisical-prod-universal-auth
+    namespace: default
+  projectSlug: k3s-ntpo
+  environmentSlug: prod
+adminSecret:
+  enabled: true
+secretKey:
+  enabled: true
+registrySecret:
+  enabled: true
+s3Secret:
+  enabled: true
+redisSecret:
+  enabled: true
+ingressRoute:
+  enabled: true
+  host: harbor.prod.raulstechtips.dev
+  tlsSecretName: prod-raulstechtips-tls
+  middlewares:
+    - name: strict-referrer
+      namespace: default
+    - name: default-headers
+      namespace: default
+harbor:
+  externalURL: https://harbor.prod.raulstechtips.dev
+  # 2 replicas because the dev cluster is low on resources (chart default is 3).
+  portal:
+    replicas: 2
+  core:
+    replicas: 2
+  jobservice:
+    replicas: 2
+  registry:
+    replicas: 2
+  persistence:
+    imageChartStorage:
+      s3:
+        bucket: harbor-prod
+        regionendpoint: https://s3-api.prod.raulstechtips.dev
+  database:
+    external:
+      host: pg-prod-rw.prod.svc.cluster.local
