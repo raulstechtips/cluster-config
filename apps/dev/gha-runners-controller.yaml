@@ -1,0 +1,6 @@
+# Environment values for the gha-runners-controller wrapper chart.
+# No secret values here.
+gha-runner-scale-set-controller:
+  flags:
+    # The runners live in this namespace; keep their watch RBAC there.
+    watchSingleNamespace: arc-runners
