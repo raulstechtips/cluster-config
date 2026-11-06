@@ -1,0 +1,19 @@
+# Environment values for the infisical-gateway wrapper chart.
+# No secret values here.
+infisical:
+  authRef:
+    name: infisical-prod-universal-auth
+    namespace: default
+  projectSlug: k3s-ntpo
+  environmentSlug: prod
+enrollmentSecret:
+  enabled: true
+infisical-gateway:
+  gateway:
+    name: dev-infisical-gateway-1
+    domain: https://infisical.prod.raulstechtips.dev
+    relayName: dev-infisical-relay-1
+    enrollment:
+      method: token
+  persistence:
+    storageClass: longhorn-default-storage-class

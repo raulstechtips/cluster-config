@@ -1,0 +1,28 @@
+# MinIO Operator from the minio-operator wrapper chart in GHCR.
+# Manual sync keeps the handover deliberate.
+# Environment values come from apps/dev/minio-operator.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: minio-operator
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-options: Delete=false
+spec:
+  project: platform
+  sources:
+    - repoURL: ghcr.io/raulstechtips/charts
+      chart: minio-operator
+      # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
+      targetRevision: 1.0.1-feature-devsecops-187-3d6eb73-6fa2745-1
+      helm:
+        releaseName: minio-operator
+        valueFiles:
+          - $values/apps/dev/minio-operator.yaml
+    - repoURL: https://github.com/raulstechtips/cluster-config.git
+      targetRevision: feature/DEVSECOPS-187-Move-minio-operator-infisical-gateway-infisical-secrets-operator-to-its-own-repo
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: minio-operator
+  revisionHistoryLimit: 10
