@@ -1,0 +1,2 @@
+# Environment values for the upstream emberstack/reflector chart.
+fullnameOverride: reflector
