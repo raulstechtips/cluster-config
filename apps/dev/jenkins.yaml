@@ -41,7 +41,8 @@ webhookRoute:
       namespace: default
   # One trusted proxy (Cloudflare) in front of Traefik.
   ipStrategyDepth: 1
-deployNamespaces: []
+deployNamespaces:
+  - redis
 sharedLibraries:
   - name: jenkins-shared-library
     repo: https://github.com/raulstechtips/jenkins-shared-library.git
