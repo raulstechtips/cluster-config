@@ -12,7 +12,7 @@ spec:
   sources:
     - repoURL: harbor.prod.raulstechtips.dev/raulstechtips/charts
       chart: argocd
-      targetRevision: 1.0.1-main-4d2a1bb-1
+      targetRevision: 0.1.0-main-2c21ef4-2
       helm:
         releaseName: argocd
         valueFiles:
