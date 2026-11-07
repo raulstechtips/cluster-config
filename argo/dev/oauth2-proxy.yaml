@@ -13,7 +13,7 @@ spec:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: oauth2-proxy
       # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
-      targetRevision: 1.0.1-main-44230f3-1
+      targetRevision: 0.1.0-main-4693a5b-2
       helm:
         releaseName: oauth2-proxy
         valueFiles:
