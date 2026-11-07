@@ -13,7 +13,7 @@ spec:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: harbor
       # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
-      targetRevision: 1.0.1-main-0f3c817-1
+      targetRevision: 0.1.0-main-6f750c5-2
       helm:
         releaseName: harbor
         valueFiles:
