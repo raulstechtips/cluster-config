@@ -13,7 +13,7 @@ spec:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: longhorn
       # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
-      targetRevision: 1.0.1-main-fec56a7-1
+      targetRevision: 0.1.0-main-aaec2db-2
       helm:
         releaseName: longhorn
         valueFiles:
