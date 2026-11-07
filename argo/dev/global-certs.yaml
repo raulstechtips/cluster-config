@@ -13,7 +13,7 @@ spec:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: global-certs
       # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
-      targetRevision: 1.0.1-main-40b78e2-1
+      targetRevision: 0.1.0-main-067f46f-2
       helm:
         releaseName: global-certs
         valueFiles:
