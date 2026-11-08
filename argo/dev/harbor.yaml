@@ -28,41 +28,43 @@ spec:
     syncOptions:
       - RespectIgnoreDifferences=true
   revisionHistoryLimit: 10
-  # The upstream chart makes new random values for these Secrets and the
-  # checksum annotations at each render. Keep the live values.
+  # Preserve generated credentials/signing keys and their unstable checksums.
+  # Configuration checksums remain managed so configuration changes roll pods.
   ignoreDifferences:
     - group: ""
       kind: Secret
       name: harbor-core
       jsonPointers:
-        - /data
+        - /data/secret
+        - /data/CSRF_KEY
+        - /data/tls.key
+        - /data/tls.crt
     - group: ""
       kind: Secret
       name: harbor-jobservice
       jsonPointers:
-        - /data
+        - /data/JOBSERVICE_SECRET
     - group: ""
       kind: Secret
       name: harbor-registry
       jsonPointers:
-        - /data
-    - group: ""
-      kind: Secret
-      name: harbor-registryctl
-      jsonPointers:
-        - /data
+        - /data/REGISTRY_HTTP_SECRET
     - group: apps
       kind: Deployment
       name: harbor-core
       jsonPointers:
-        - /spec/template/metadata/annotations
+        - /spec/template/metadata/annotations/checksum~1secret
+        - /spec/template/metadata/annotations/checksum~1secret-jobservice
     - group: apps
       kind: Deployment
       name: harbor-jobservice
       jsonPointers:
-        - /spec/template/metadata/annotations
+        - /spec/template/metadata/annotations/checksum~1secret
+        - /spec/template/metadata/annotations/checksum~1secret-core
     - group: apps
       kind: Deployment
       name: harbor-registry
       jsonPointers:
-        - /spec/template/metadata/annotations
+        - /spec/template/metadata/annotations/checksum~1secret
+        - /spec/template/metadata/annotations/checksum~1secret-jobservice
+        - /spec/template/metadata/annotations/checksum~1secret-core
