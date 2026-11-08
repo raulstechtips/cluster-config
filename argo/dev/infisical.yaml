@@ -13,7 +13,7 @@ spec:
   sources:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: infisical
-      targetRevision: 0.1.0-main-1fc607f-4
+      targetRevision: 0.1.0
       helm:
         releaseName: infisical
         valueFiles:
