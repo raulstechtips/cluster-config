@@ -18,15 +18,15 @@ redisSecret:
   enabled: true
 ingressRoute:
   enabled: true
-  host: harbor.prod.raulstechtips.dev
-  tlsSecretName: prod-raulstechtips-tls
+  host: harbor.dev.raulstechtips.dev
+  tlsSecretName: dev-raulstechtips-tls
   middlewares:
     - name: strict-referrer
       namespace: default
     - name: default-headers
       namespace: default
 harbor:
-  externalURL: https://harbor.prod.raulstechtips.dev
+  externalURL: https://harbor.dev.raulstechtips.dev
   # 2 replicas because the dev cluster is low on resources (chart default is 3).
   portal:
     replicas: 2
