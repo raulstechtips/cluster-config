@@ -61,9 +61,18 @@ infisical-standalone:
           items:
             - key: ca.crt
               path: postgres-ca.crt
+      - name: redis-ca
+        secret:
+          secretName: infisical-redis-tls
+          items:
+            - key: ca.crt
+              path: ca.crt
     extraVolumeMounts:
       - name: postgres-ca-cert
         mountPath: /etc/custom-certs
+        readOnly: true
+      - name: redis-ca
+        mountPath: /etc/redis-ca
         readOnly: true
     # Lists replace wholesale, so this is the full env list for the pod.
     extraEnv:
@@ -93,7 +102,7 @@ infisical-standalone:
       - name: DB_CONNECTION_URI
         value: postgres://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=verify-ca&sslrootcert=$(DB_SSL_ROOT_CERT)
       - name: REDIS_HOST
-        value: redis-infisical-master.infisical.svc.cluster.local
+        value: infisical-redis
       - name: REDIS_PORT
         value: "6379"
       - name: REDIS_PASSWORD
@@ -102,7 +111,9 @@ infisical-standalone:
             name: infisical-redis-admin-credentials-secret
             key: redis-password
       - name: REDIS_URL
-        value: redis://default:$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)
+        value: rediss://default:$(REDIS_PASSWORD)@$(REDIS_HOST):$(REDIS_PORT)
+      - name: NODE_EXTRA_CA_CERTS
+        value: /etc/redis-ca/ca.crt
       - name: SMTP_HOST
         valueFrom:
           secretKeyRef:
