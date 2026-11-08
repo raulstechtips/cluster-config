@@ -40,7 +40,7 @@ harbor:
     imageChartStorage:
       s3:
         bucket: harbor-prod
-        regionendpoint: https://s3-api.prod.raulstechtips.dev
+        regionendpoint: https://s3-api.dev.raulstechtips.dev
   database:
     external:
       host: pg-prod-rw.prod.svc.cluster.local
