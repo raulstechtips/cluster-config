@@ -14,7 +14,7 @@ spec:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: gha-runners-controller
       # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
-      targetRevision: 0.1.0-main-df39a28-2
+      targetRevision: 0.1.0
       helm:
         releaseName: gha-runners-controller
         # Keep the four CRDs already tracked by this Application.
