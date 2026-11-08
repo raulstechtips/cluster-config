@@ -17,6 +17,9 @@ ingressRoute:
     - name: default-headers
       namespace: default
   hosts:
+    - name: dev
+      host: keycloak.dev.raulstechtips.dev
+      tlsSecretName: dev-raulstechtips-tls
     - name: prod
       host: keycloak.prod.raulstechtips.dev
       tlsSecretName: prod-raulstechtips-tls
