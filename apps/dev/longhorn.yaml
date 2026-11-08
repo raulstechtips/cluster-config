@@ -8,11 +8,11 @@ infisical:
   environmentSlug: prod
 minioSecret:
   enabled: true
-  endpoint: https://s3-api.prod.raulstechtips.dev
+  endpoint: https://s3-api.dev.raulstechtips.dev
 ingressRoute:
   enabled: true
-  host: longhorn.prod.raulstechtips.dev
-  tlsSecretName: prod-raulstechtips-tls
+  host: longhorn.dev.raulstechtips.dev
+  tlsSecretName: dev-raulstechtips-tls
   middlewares:
     - name: default-headers
       namespace: default

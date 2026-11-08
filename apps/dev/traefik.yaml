@@ -2,8 +2,8 @@
 # No secret values here. The load-balancer, route, endpoint, and VPN addresses come from live resources.
 dashboard:
   enabled: true
-  host: traefik.prod.raulstechtips.dev
-  tlsSecretName: prod-raulstechtips-tls
+  host: traefik.dev.raulstechtips.dev
+  tlsSecretName: dev-raulstechtips-tls
   middlewares:
     - name: oauth-chain
       namespace: default
@@ -19,12 +19,12 @@ externalServices:
   - name: firewall
     namespace: default
     serviceName: firewall-service
-    ingressRouteName: firewall-ingress-prod
+    ingressRouteName: firewall-ingress-dev
     ingressClass: traefik-external
     entryPoints:
       - websecure
-    host: firewall.prod.raulstechtips.dev
-    tlsSecretName: prod-raulstechtips-tls
+    host: firewall.dev.raulstechtips.dev
+    tlsSecretName: dev-raulstechtips-tls
     port: 443
     targetPort: 443
     endpointIP: 10.29.0.1
@@ -38,8 +38,8 @@ externalServices:
     ingressClass: traefik-external
     entryPoints:
       - websecure
-    host: pihole.prod.raulstechtips.dev
-    tlsSecretName: prod-raulstechtips-tls
+    host: pihole.dev.raulstechtips.dev
+    tlsSecretName: dev-raulstechtips-tls
     port: 80
     targetPort: 80
     endpointIP: 10.29.0.3

@@ -22,7 +22,7 @@ infisical:
 # Keycloak login for the MinIO console.
 oidc:
   enabled: true
-  configUrl: https://keycloak.prod.raulstechtips.dev/realms/raulstechtips/.well-known/openid-configuration
+  configUrl: https://keycloak.dev.raulstechtips.dev/realms/raulstechtips/.well-known/openid-configuration
 # The public wildcard certificate, after the chart's internal certificate.
 tls:
   externalCertSecrets:

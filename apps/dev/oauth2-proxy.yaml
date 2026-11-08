@@ -12,8 +12,8 @@ configSecret:
   enabled: true
 ingressRoute:
   enabled: true
-  host: oauth2-proxy.prod.raulstechtips.dev
-  tlsSecretName: prod-raulstechtips-tls
+  host: oauth2-proxy.dev.raulstechtips.dev
+  tlsSecretName: dev-raulstechtips-tls
   middlewares:
     - name: default-headers
       namespace: default

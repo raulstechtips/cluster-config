@@ -16,7 +16,7 @@ infisical:
 # Login through Keycloak.
 oidc:
   enabled: true
-  issuer: https://keycloak.prod.raulstechtips.dev/realms/raulstechtips
+  issuer: https://keycloak.dev.raulstechtips.dev/realms/raulstechtips
 # GitHub App credentials, synced from Infisical.
 github:
   enabled: true
