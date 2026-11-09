@@ -26,7 +26,6 @@ oidc:
 # The public wildcard certificate, after the chart's internal certificate.
 tls:
   externalCertSecrets:
-    - prod-raulstechtips-tls
     - dev-raulstechtips-tls
 ingressRoute:
   enabled: true
@@ -38,9 +37,7 @@ ingressRoute:
     host: s3.dev.raulstechtips.dev
   api:
     hosts:
-      # The first host is the Tenant domain (MINIO_SERVER_URL). DEVSECOPS-181 moves dev first.
-      - name: prod
-        host: s3-api.prod.raulstechtips.dev
+      # The first host is the Tenant domain (MINIO_SERVER_URL).
       - name: dev
         host: s3-api.dev.raulstechtips.dev
         tlsSecretName: dev-raulstechtips-tls
