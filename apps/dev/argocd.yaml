@@ -27,7 +27,7 @@ externalRegistrySecrets:
   - name: harbor-raulstechtips-charts-auth
     type: helm
     enableOCI: true
-    url: harbor.prod.raulstechtips.dev/raulstechtips/charts
+    url: harbor.dev.raulstechtips.dev/raulstechtips/charts
     environmentSlug: prod
     secretPath: /registries/harbor
     usernameKey: HARBOR_USERNAME
