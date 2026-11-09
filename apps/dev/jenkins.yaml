@@ -43,6 +43,14 @@ webhookRoute:
   ipStrategyDepth: 1
 deployNamespaces:
   - redis
+infisicalAuthUpdate:
+  enabled: true
+  credentialsRef:
+    name: universal-auth-credentials
+    namespace: infisical
+  connectionRef:
+    name: infisical-prod
+    namespace: default
 sharedLibraries:
   - name: jenkins-shared-library
     repo: https://github.com/raulstechtips/jenkins-shared-library.git
@@ -66,6 +74,11 @@ additionalSecrets:
 organizationFolders:
   - name: raulstechtips
     owner: raulstechtips
+pipelineJobs:
+  - name: update-infisical-auth
+    repo: https://github.com/raulstechtips/platform-operations.git
+    branch: main
+    scriptPath: pipelines/update-infisical-auth.Jenkinsfile
 jenkins:
   controller:
     jenkinsUrl: https://jenkins.dev.raulstechtips.dev
