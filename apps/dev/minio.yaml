@@ -27,14 +27,15 @@ oidc:
 tls:
   externalCertSecrets:
     - prod-raulstechtips-tls
+    - dev-raulstechtips-tls
 ingressRoute:
   enabled: true
   middlewares:
     - name: default-headers
       namespace: default
-  tlsSecretName: prod-raulstechtips-tls
+  tlsSecretName: dev-raulstechtips-tls
   console:
-    host: s3.prod.raulstechtips.dev
+    host: s3.dev.raulstechtips.dev
   api:
     hosts:
       # The first host is the Tenant domain (MINIO_SERVER_URL). DEVSECOPS-181 moves dev first.
