@@ -12,7 +12,7 @@ spec:
   sourceRepos:
     - https://github.com/raulstechtips/cluster-config.git
     - ghcr.io/raulstechtips/charts
-    - harbor.prod.raulstechtips.dev/raulstechtips/charts
+    - harbor.dev.raulstechtips.dev/raulstechtips/charts
     - https://charts.jetstack.io
     - https://emberstack.github.io/helm-charts
   destinations:

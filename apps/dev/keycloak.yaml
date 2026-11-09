@@ -1,4 +1,4 @@
-# Dev values for the keycloak wrapper chart (harbor.prod.raulstechtips.dev/raulstechtips/charts/keycloak).
+# Dev values for the keycloak wrapper chart (harbor.dev.raulstechtips.dev/raulstechtips/charts/keycloak).
 # No secret values here. Database and CA wiring are chart defaults.
 # Infisical connection for the admin password sync (shared auth from DEVSECOPS-153).
 infisical:

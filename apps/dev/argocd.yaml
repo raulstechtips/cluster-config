@@ -14,7 +14,7 @@ infisical:
   projectSlug: k3s-ntpo
 # Argo CD repository credentials, synced from Infisical.
 # One entry per repo URL. ghcr.io/raulstechtips/charts covers the charts published to GHCR;
-# harbor.prod.raulstechtips.dev/raulstechtips/charts covers the charts published to Harbor.
+# harbor.dev.raulstechtips.dev/raulstechtips/charts covers the charts published to Harbor.
 externalRegistrySecrets:
   - name: ghcr-raulstechtips-charts-auth
     type: helm
