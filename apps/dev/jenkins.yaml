@@ -43,6 +43,8 @@ webhookRoute:
   ipStrategyDepth: 1
 deployNamespaces:
   - redis
+  - infisical
+  - default
 sharedLibraries:
   - name: jenkins-shared-library
     repo: https://github.com/raulstechtips/jenkins-shared-library.git
