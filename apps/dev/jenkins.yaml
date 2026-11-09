@@ -44,6 +44,7 @@ webhookRoute:
 deployNamespaces:
   - redis
   - infisical
+  - default
 sharedLibraries:
   - name: jenkins-shared-library
     repo: https://github.com/raulstechtips/jenkins-shared-library.git
