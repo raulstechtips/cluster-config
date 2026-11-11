@@ -14,7 +14,7 @@ spec:
     - repoURL: ghcr.io/raulstechtips/charts
       chart: minio-operator
       # Set to the first CI build (1.0.1-main-<sha>-<run>) after the chart repo is merged.
-      targetRevision: 0.1.0
+      targetRevision: 0.2.0-main-1d6b8db-5
       helm:
         releaseName: minio-operator
         valueFiles:
