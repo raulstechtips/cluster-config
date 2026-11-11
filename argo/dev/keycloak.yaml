@@ -11,7 +11,7 @@ metadata:
 spec:
   project: platform
   sources:
-    - repoURL: harbor.dev.raulstechtips.dev/raulstechtips/charts
+    - repoURL: ghcr.io/raulstechtips/charts
       chart: keycloak
       targetRevision: 0.2.0-main-cd9e0f4-5
       helm:
