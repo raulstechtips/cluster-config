@@ -2,7 +2,7 @@
 # No secret values here.
 infisical:
   authRef:
-    name: infisical-prod-universal-auth
+    name: infisical-dev-universal-auth
     namespace: default
   projectSlug: k3s-ntpo
   environmentSlug: prod
@@ -11,7 +11,7 @@ enrollmentSecret:
 infisical-gateway:
   gateway:
     name: dev-infisical-gateway-1
-    domain: https://infisical.prod.raulstechtips.dev
+    domain: https://infisical.dev.raulstechtips.dev
     relayName: dev-infisical-relay-1
     enrollment:
       method: token
