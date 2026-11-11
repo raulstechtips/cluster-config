@@ -2,7 +2,7 @@
 # No secret values here. Storage and snapshot policies are chart defaults.
 infisical:
   authRef:
-    name: infisical-prod-universal-auth
+    name: infisical-dev-universal-auth
     namespace: default
   projectSlug: k3s-ntpo
   environmentSlug: prod

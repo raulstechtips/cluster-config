@@ -1,5 +1,10 @@
 # Values for pg-prod (cnpg-cluster chart, ghcr.io/raulstechtips/charts/cnpg-cluster).
 # No secret values here. Tuning, HA, TLS, backups and the Infisical connection are chart defaults.
+# Infisical connection for every role password (shared InfisicalAuth).
+infisical:
+  authRef:
+    name: infisical-dev-universal-auth
+  environmentSlug: prod
 description: Prod PostgreSQL Cluster
 enableSuperuserAccess: true
 storage:

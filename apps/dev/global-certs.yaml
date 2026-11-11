@@ -28,7 +28,7 @@ infisical:
   projectSlug: k3s-ntpo
   environmentSlug: prod
   push:
-    hostAPI: https://infisical.prod.raulstechtips.dev/api
+    hostAPI: https://infisical.dev.raulstechtips.dev/api
     credentialsRef:
       name: universal-auth-credentials
       namespace: infisical

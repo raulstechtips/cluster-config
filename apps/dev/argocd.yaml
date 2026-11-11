@@ -3,13 +3,13 @@
 envsubst:
   enabled: true
   infisical:
-    hostAPI: https://infisical.prod.raulstechtips.dev/api
+    hostAPI: https://infisical.dev.raulstechtips.dev/api
     projectSlug: k3s-ntpo
     envSlug: prod
 # Infisical connection for externalRegistrySecrets (shared auth from DEVSECOPS-153).
 infisical:
   authRef:
-    name: infisical-prod-universal-auth
+    name: infisical-dev-universal-auth
     namespace: default
   projectSlug: k3s-ntpo
 # Argo CD repository credentials, synced from Infisical.
