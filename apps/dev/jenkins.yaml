@@ -45,6 +45,7 @@ deployNamespaces:
   - redis
   - infisical
   - default
+  - serenewealth-dev
 sharedLibraries:
   - name: jenkins-shared-library
     repo: https://github.com/raulstechtips/jenkins-shared-library.git
