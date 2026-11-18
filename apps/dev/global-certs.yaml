@@ -4,6 +4,10 @@ internalCA:
   enabled: true
   pushToInfisical: true
 wildcardCertificates:
+  - name: dev-serenewealth
+    secretName: dev-serenewealth-tls
+    domain: dev.serenewealth.io
+    issuer: letsencrypt-production
   - name: live-raulstechtips
     secretName: live-raulstechtips-tls
     domain: raulstechtips.dev
