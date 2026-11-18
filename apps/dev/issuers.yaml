@@ -3,7 +3,9 @@
 acme:
   enabled: true
   email: support@raulstechtips.dev
-  dnsZones: [raulstechtips.dev]
+  dnsZones:
+    - raulstechtips.dev
+    - serenewealth.io
 ca:
   enabled: true
 cloudflareToken:
