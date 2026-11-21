@@ -66,6 +66,22 @@ additionalSecrets:
     jenkinsCredential:
       type: usernamePassword
       description: "Harbor push and cleanup"
+  - name: jenkins-minio
+    secretPath: /jenkins/minio
+    keys:
+      username: Username
+      password: Password
+    jenkinsCredential:
+      type: usernamePassword
+      description: "MinIO bucket automation (jenkins-admin)"
+  - name: jenkins-infisical
+    secretPath: /jenkins/infisical
+    keys:
+      username: Username
+      password: Password
+    jenkinsCredential:
+      type: usernamePassword
+      description: "Infisical jenkins-minio identity"
 organizationFolders:
   - name: raulstechtips
     owner: raulstechtips
