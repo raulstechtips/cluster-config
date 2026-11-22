@@ -9,7 +9,7 @@ spec:
   sources:
     - repoURL: harbor.dev.raulstechtips.dev/raulstechtips/charts
       chart: jenkins
-      targetRevision: 0.1.0
+      targetRevision: 0.2.0-main-8aa61d2-7
       helm:
         releaseName: jenkins
         valueFiles:
