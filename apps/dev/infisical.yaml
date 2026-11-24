@@ -12,7 +12,7 @@ smtp:
 ingressRoute:
   enabled: true
   host: infisical.dev.raulstechtips.dev
-  tlsSecretName: prod-raulstechtips-tls
+  tlsSecretName: dev-raulstechtips-tls
   middlewares:
     - name: default-headers
       namespace: default
