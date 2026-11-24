@@ -23,7 +23,7 @@ infisical-standalone:
     image:
       # Private build carrying the enterprise options.
       repository: ghcr.io/raulstechtips/secrets-manager
-      tag: "v0.165.14-release-321f931-1"
+      tag: "v0.165.16-release-8ab7926-1"
       imagePullSecrets:
         - name: github-registry-secret
     kubeSecretRef: infisical-bootstrap
